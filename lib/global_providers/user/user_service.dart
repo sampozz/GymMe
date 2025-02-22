@@ -3,22 +3,30 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
 
 class UserService {
-  Future<User?> getUser() async {
+  /// This method will fetch the user data from Firestore
+  /// If the user is not found in Firestore, the method will return null
+  /// If the user is found in Firestore, the method will return a User model object
+  Future<User?> getUser(auth.User firebaseUser) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    String? userId = auth.FirebaseAuth.instance.currentUser?.uid;
 
-    if (userId == null) {
-      return null;
-    }
-
+    // Get user document from Firestore
     DocumentSnapshot userDoc =
-        await firestore.collection('users').doc(userId).get();
+        await firestore.collection('users').doc(firebaseUser.uid).get();
 
     if (!userDoc.exists) {
+      // User not found in Firestore
       return null;
     }
 
     var data = userDoc.data() as Map<String, dynamic>;
+    data.addAll({
+      'email': firebaseUser.email,
+      'displayName': firebaseUser.displayName,
+      'photoURL': firebaseUser.photoURL,
+      'phoneNumber': firebaseUser.phoneNumber,
+    });
+
+    // Create and return User object
     return User.fromJson(data);
   }
 }

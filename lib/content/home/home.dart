@@ -10,23 +10,21 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     final User? user = context.read<UserProvider>().user;
 
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(user != null ? "Welcome, ${user.userName}" : "Welcome, Guest"),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              if (user == null) {
-                Navigator.pushNamed(context, '/login');
-              } else {
-                Navigator.pushNamed(context, '/profile');
-              }
-            },
-            child: Text(user == null ? "Login" : "Go to Profile"),
-          ),
-        ],
+    return Scaffold(
+      // TODO: Implement home screen
+      appBar: AppBar(title: Text('Home')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(user != null ? "Welcome, ${user.email}" : "Welcome, Guest"),
+            if (user == null)
+              ElevatedButton(
+                onPressed: () => Navigator.pushNamed(context, '/login'),
+                child: Text("Login"),
+              ),
+          ],
+        ),
       ),
     );
   }

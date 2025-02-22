@@ -7,19 +7,17 @@ import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
   User? user = FirebaseAuth.instance.currentUser;
 
+  // Add here the routes handled by the app
   switch (settings.name) {
     case '/':
       return MaterialPageRoute(builder: (_) => Home());
     case '/login':
       return MaterialPageRoute(builder: (_) => Login());
     case '/profile':
-      if (user != null) {
-        return MaterialPageRoute(builder: (_) => ProfileScreen());
-      } else {
-        return MaterialPageRoute(
-          builder: (_) => SignInScreen(providers: [EmailAuthProvider()]),
-        ); // Redirect guests to login
-      }
+      // Profile screen is only accessible if user is logged in, otherwise redirect to login
+      return MaterialPageRoute(
+        builder: (_) => user != null ? ProfileScreen() : Login(),
+      );
     default:
       return MaterialPageRoute(
         builder: (_) => Scaffold(body: Center(child: Text("404 Not Found"))),

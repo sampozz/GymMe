@@ -1,19 +1,25 @@
 class User {
-  String userName;
-  bool isGuest;
-  String level;
+  String displayName;
+  String email;
+  String photoURL;
+  String phoneNumber;
+  bool isAdmin;
 
   User({
-    this.userName = 'Preben',
-    this.isGuest = false,
-    this.level = 'beginner',
+    this.displayName = '',
+    this.email = '',
+    this.photoURL = '',
+    this.phoneNumber = '',
+    this.isAdmin = false,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      userName: json['userName'] ?? User().userName,
-      isGuest: json['isGuest'] ?? User().isGuest,
-      level: json['level'] ?? User().level,
+      displayName: json['displayName'] ?? User().displayName,
+      email: json['email'] ?? User().email,
+      photoURL: json['photoURL'] ?? User().photoURL,
+      phoneNumber: json['phoneNumber'] ?? User().phoneNumber,
+      isAdmin: json['isAdmin'] ?? User().isAdmin,
     );
   }
 }
