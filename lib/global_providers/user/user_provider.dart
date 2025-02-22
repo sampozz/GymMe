@@ -12,10 +12,19 @@ class UserProvider extends ChangeNotifier {
 
   // Private property to store the user model
   User? _user;
-  User? get user => _user;
+  User? get user {
+    if (_user == null && isLoggedIn) {
+      // If the user is not set, but it is logged in, fetch the user data from Firestore
+      _userService.getUser(_auth.currentUser!).then((value) {
+        _user = value;
+        notifyListeners();
+      });
+    }
+    return _user;
+  }
 
   // Getter to check if the user is logged in
-  bool get isLoggedIn => _user != null;
+  bool get isLoggedIn => _auth.currentUser != null;
 
   /// This method will sign in the user with the provided email and password
   /// If the user is successfully signed in, the user data will be fetched from Firestore

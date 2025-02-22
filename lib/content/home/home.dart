@@ -8,7 +8,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final User? user = context.read<UserProvider>().user;
+    final User? user = context.watch<UserProvider>().user;
 
     return Scaffold(
       // TODO: Implement home screen
