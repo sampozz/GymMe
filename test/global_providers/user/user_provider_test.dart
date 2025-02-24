@@ -1,0 +1,75 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:dima_project/global_providers/user/user_service.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:dima_project/global_providers/user/user_model.dart';
+import './user_provider_test.mocks.dart';
+
+@GenerateMocks([UserService, auth.User, auth.FirebaseAuth, auth.UserCredential])
+void main() {
+  late MockUserService mockUserService;
+  late MockFirebaseAuth mockFirebaseAuth;
+  late UserProvider userProvider;
+  late MockUser mockFirebaseUser;
+  late MockUserCredential mockUserCredential;
+
+  setUp(() {
+    mockUserService = MockUserService();
+    mockFirebaseAuth = MockFirebaseAuth();
+    userProvider = UserProvider(
+      userService: mockUserService,
+      authInstance: mockFirebaseAuth,
+    );
+    mockFirebaseUser = MockUser();
+    mockUserCredential = MockUserCredential();
+  });
+
+  group('UserProvider', () {
+    test('signIn should return null if authentication fails', () {
+      when(mockFirebaseAuth.currentUser).thenReturn(null);
+      userProvider.signIn('test', 'test');
+      expect(userProvider.user, null);
+    });
+
+    test('signIn should return null if user is not found in Firestore', () {
+      when(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser);
+      when(
+        mockUserService.getUser(mockFirebaseUser),
+      ).thenAnswer((_) async => null);
+      userProvider.signIn('test', 'test');
+      expect(userProvider.user, null);
+    });
+
+    test(
+      'signIn should return user if auth and Firestore fetch succeed',
+      () async {
+        when(
+          mockFirebaseAuth.signInWithEmailAndPassword(
+            email: 'test',
+            password: 'test',
+          ),
+        ).thenAnswer((_) async => mockUserCredential);
+
+        when(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser);
+
+        User testUser = User.fromJson({'email': 'test'});
+
+        when(
+          mockUserService.getUser(mockFirebaseUser),
+        ).thenAnswer((_) async => testUser);
+
+        var res = await userProvider.signIn('test', 'test');
+
+        expect(res, testUser);
+      },
+    );
+
+    test('signOut should make the user null', () async {
+      when(mockFirebaseAuth.currentUser).thenReturn(null);
+      await userProvider.signOut();
+      expect(userProvider.user, null);
+    });
+  });
+}

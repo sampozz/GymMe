@@ -4,14 +4,16 @@ import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 
 class UserProvider extends ChangeNotifier {
-  // Create an instance of the UserService
-  final UserService _userService = UserService();
-
-  // Create an instance of the FirebaseAuth, needed to sign out
-  final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
-
-  // Private property to store the user model
+  final UserService _userService;
+  final auth.FirebaseAuth _auth;
   User? _user;
+
+  // Constructor with dependency injection
+  UserProvider({UserService? userService, auth.FirebaseAuth? authInstance})
+    : _userService = userService ?? UserService(),
+      _auth = authInstance ?? auth.FirebaseAuth.instance;
+
+  // Get user model stored in the provider
   User? get user {
     if (_user == null && isLoggedIn) {
       // If the user is not set, but it is logged in, fetch the user data from Firestore
@@ -35,7 +37,7 @@ class UserProvider extends ChangeNotifier {
       // Sign in with email and password
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       // Get the current firebase user, this user is needed to fetch the user data from Firestore
-      auth.User? firebaseUser = auth.FirebaseAuth.instance.currentUser;
+      auth.User? firebaseUser = _auth.currentUser;
 
       if (firebaseUser == null) {
         throw Exception("Auth error");

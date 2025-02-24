@@ -10,7 +10,7 @@ class Login extends StatelessWidget {
     await Provider.of<UserProvider>(
       context,
       listen: false,
-    ).signIn("test@test.test", "testicolo");
+    ).signIn("test@test.test", "hellas");
 
     // Redirect to home screen
     if (context.mounted) {
