@@ -10,21 +10,18 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     final User? user = context.watch<UserProvider>().user;
 
-    return Scaffold(
-      // TODO: Implement home screen
-      appBar: AppBar(title: Text('Home')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(user != null ? "Welcome, ${user.email}" : "Welcome, Guest"),
-            if (user == null)
-              ElevatedButton(
-                onPressed: () => Navigator.pushNamed(context, '/login'),
-                child: Text("Login"),
-              ),
-          ],
-        ),
+    // TODO: Implement home screen
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(user != null ? "Welcome, ${user.email}" : "Welcome, Guest"),
+          if (user == null)
+            ElevatedButton(
+              onPressed: () => Navigator.pushNamed(context, '/login'),
+              child: Text("Login"),
+            ),
+        ],
       ),
     );
   }
