@@ -27,29 +27,35 @@ void main() {
   });
 
   group('UserProvider', () {
-    test('signIn should return null if authentication fails', () {
+    test('signIn should return null if authentication fails', () async {
+      when(
+        mockUserService.signInWithEmailAndPassword('test', 'test'),
+      ).thenAnswer((_) async => null);
       when(mockFirebaseAuth.currentUser).thenReturn(null);
-      userProvider.signIn('test', 'test');
-      expect(userProvider.user, null);
+      var res = await userProvider.signIn('test', 'test');
+      expect(res, null);
     });
 
-    test('signIn should return null if user is not found in Firestore', () {
-      when(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser);
-      when(
-        mockUserService.getUser(mockFirebaseUser),
-      ).thenAnswer((_) async => null);
-      userProvider.signIn('test', 'test');
-      expect(userProvider.user, null);
-    });
+    test(
+      'signIn should return null if user is not found in Firestore',
+      () async {
+        when(
+          mockUserService.signInWithEmailAndPassword('test', 'test'),
+        ).thenAnswer((_) async => mockUserCredential);
+        when(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser);
+        when(
+          mockUserService.getUser(mockFirebaseUser),
+        ).thenAnswer((_) async => null);
+        var res = await userProvider.signIn('test', 'test');
+        expect(res, null);
+      },
+    );
 
     test(
       'signIn should return user if auth and Firestore fetch succeed',
       () async {
         when(
-          mockFirebaseAuth.signInWithEmailAndPassword(
-            email: 'test',
-            password: 'test',
-          ),
+          mockUserService.signInWithEmailAndPassword('test', 'test'),
         ).thenAnswer((_) async => mockUserCredential);
 
         when(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser);

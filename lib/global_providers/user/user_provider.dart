@@ -33,34 +33,31 @@ class UserProvider extends ChangeNotifier {
   /// and stored in the _user property
   /// If the user is not found in Firestore, the _user property will be set to null
   Future<User?> signIn(String email, String password) async {
-    try {
-      // Sign in with email and password
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-      // Get the current firebase user, this user is needed to fetch the user data from Firestore
-      auth.User? firebaseUser = _auth.currentUser;
+    // Sign in with email and password
+    await _userService.signInWithEmailAndPassword(email, password);
+    // Get the current firebase user, this user is needed to fetch the user data from Firestore
+    auth.User? firebaseUser = _auth.currentUser;
 
-      if (firebaseUser == null) {
-        throw Exception("Auth error");
-      }
-
-      // Fetch the user data from Firestore
-      _user = await _userService.getUser(firebaseUser);
-
-      if (_user == null) {
-        throw Exception("Firestore error");
-      }
-
-      notifyListeners();
-    } catch (e) {
+    if (firebaseUser == null) {
       // TODO: Handle authentication error
+      return null;
     }
 
+    // Fetch the user data from Firestore
+    _user = await _userService.getUser(firebaseUser);
+
+    if (_user == null) {
+      // TODO: Handle user not found in Firestore
+      return null;
+    }
+
+    notifyListeners();
     return _user;
   }
 
   /// This method will sign out the user and set the _user property to null
   Future<void> signOut() async {
-    await _auth.signOut();
+    await _userService.signOut();
     _user = null;
     notifyListeners();
   }

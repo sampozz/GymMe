@@ -78,6 +78,26 @@ class MockUserService extends _i1.Mock implements _i4.UserService {
   }
 
   @override
+  _i5.Future<_i2.UserCredential?> signInWithEmailAndPassword(
+    String? email,
+    String? password,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#signInWithEmailAndPassword, [email, password]),
+            returnValue: _i5.Future<_i2.UserCredential?>.value(),
+          )
+          as _i5.Future<_i2.UserCredential?>);
+
+  @override
+  _i5.Future<void> signOut() =>
+      (super.noSuchMethod(
+            Invocation.method(#signOut, []),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
   _i5.Future<_i6.User?> getUser(_i2.User? firebaseUser) =>
       (super.noSuchMethod(
             Invocation.method(#getUser, [firebaseUser]),
