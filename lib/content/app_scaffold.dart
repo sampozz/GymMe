@@ -1,4 +1,7 @@
+import 'package:dima_project/content/custom_appbar.dart';
+import 'package:dima_project/content/custom_bottomnavbar.dart';
 import 'package:dima_project/content/home/home.dart';
+import 'package:dima_project/content/profile/profile.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -37,48 +40,27 @@ class _AppScaffoldState extends State<AppScaffold> {
         "title": "Map",
         "description": "Map page",
         "icon": Icons.map_outlined,
-        "widget": null,
+        "widget": null, // TODO: implement map page
       },
       {
         "title": "Bookings",
         "description": "Bookings page",
         "icon": Icons.calendar_today_outlined,
-        "widget": null,
+        "widget": null, // TODO: implement Bookings page
       },
       {
         "title": "Favourites",
         "description": "Favourites page",
         "icon": Icons.favorite_border,
-        "widget": null,
+        "widget": null, // TODO: implement favourites page
       },
       {
         "title": "Profile",
         "description": "Profile page",
         "icon": Icons.person_outline,
-        "widget": null,
+        "widget": Profile(),
       },
     ];
-  }
-
-  /// Create bottom navigation bar
-  Widget _buildBottomNavigationBar() {
-    return BottomNavigationBar(
-      elevation: 0,
-      backgroundColor: Colors.white,
-      unselectedItemColor: Colors.grey,
-      type: BottomNavigationBarType.fixed,
-      showUnselectedLabels: true,
-      currentIndex: _currentIndex,
-      selectedItemColor: Colors.green,
-      onTap: _navigateTab,
-      items:
-          _pages.map((p) {
-            return BottomNavigationBarItem(
-              icon: Icon(p["icon"]),
-              label: p["title"],
-            );
-          }).toList(),
-    );
   }
 
   @override
@@ -87,21 +69,27 @@ class _AppScaffoldState extends State<AppScaffold> {
     ScreenProvider screenProvider = context.read<ScreenProvider>();
     screenProvider.screenData = MediaQuery.of(context);
 
+    // TODO: setup internationalization
+
     _createPagesList();
 
     return Scaffold(
       // Top app bar
-      appBar: AppBar(
-        title: Text(_pages[_currentIndex]["title"]),
-        backgroundColor: Colors.green,
-      ),
+      appBar: CustomAppBar(title: _pages[_currentIndex]["title"]),
 
       // Widget selected in the navigation bar
       body: _pages[_currentIndex]["widget"],
 
       // Create bottom navigation bar only if the screen is mobile
+      // TODO: Create navbar for wider devices
       bottomNavigationBar:
-          screenProvider.useMobileLayout ? _buildBottomNavigationBar() : null,
+          screenProvider.useMobileLayout
+              ? CustomBottomNavBar(
+                pages: _pages,
+                currentIndex: _currentIndex,
+                onTapCallback: _navigateTab,
+              )
+              : null,
     );
   }
 }
