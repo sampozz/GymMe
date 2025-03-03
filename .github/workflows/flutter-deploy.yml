@@ -1,4 +1,4 @@
-name: Deploy Flutter Web to Raspberry Pi
+name: Deploy Flutter Web and Release APK
 
 on:
   push:
@@ -100,3 +100,23 @@ jobs:
           username: ${{ secrets.RPI_USER }}
           password: ${{ secrets.RPI_PASSWORD }}
           script: sudo systemctl restart nginx
+  
+  notify:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Send Telegram Notification
+        uses: appleboy/telegram-action@v1.0.1
+        if: always()
+        with:
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ github.actor }} created commit:
+            Commit message: ${{ github.event.commits[0].message }}
+
+            Deployment Status: ${{ needs.deploy.result }}
+
+            Repository: ${{ github.repository }}
+            
+            See changes: https://github.com/${{ github.repository }}/commit/${{github.sha}}
