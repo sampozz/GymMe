@@ -28,6 +28,9 @@ class UserProvider extends ChangeNotifier {
   // Getter to check if the user is logged in
   bool get isLoggedIn => _auth.currentUser != null;
 
+  // Getter to check if the user is an admin
+  bool get isAdmin => _user?.isAdmin ?? false;
+
   /// This method will sign in the user with the provided email and password
   /// If the user is successfully signed in, the user data will be fetched from Firestore
   /// and stored in the _user property
