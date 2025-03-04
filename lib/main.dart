@@ -37,6 +37,8 @@ class App extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: const AuthGate(),
+      // TODO: Add splash screen
+      initialRoute: '/',
     );
   }
 }
