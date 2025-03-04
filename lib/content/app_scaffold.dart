@@ -1,5 +1,7 @@
+import 'package:dima_project/content/bookings/widgets/bookings.dart';
 import 'package:dima_project/content/custom_appbar.dart';
 import 'package:dima_project/content/custom_bottomnavbar.dart';
+import 'package:dima_project/content/favourites/favourites.dart';
 import 'package:dima_project/content/home/home.dart';
 import 'package:dima_project/content/profile/profile.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
@@ -46,13 +48,13 @@ class _AppScaffoldState extends State<AppScaffold> {
         "title": "Bookings",
         "description": "Bookings page",
         "icon": Icons.calendar_today_outlined,
-        "widget": null, // TODO: implement Bookings page
+        "widget": Bookings(),
       },
       {
         "title": "Favourites",
         "description": "Favourites page",
         "icon": Icons.favorite_border,
-        "widget": null, // TODO: implement favourites page
+        "widget": Favourites(),
       },
       {
         "title": "Profile",

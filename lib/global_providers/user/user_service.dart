@@ -41,6 +41,7 @@ class UserService {
 
     var data = userDoc.data() as Map<String, dynamic>;
     data.addAll({
+      'uid': firebaseUser.uid,
       'email': firebaseUser.email,
       'displayName': firebaseUser.displayName,
       'photoURL': firebaseUser.photoURL,

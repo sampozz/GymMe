@@ -1,4 +1,4 @@
-import 'package:dima_project/content/gym/gym_service.dart';
+import 'package:dima_project/content/home/gym/gym_service.dart';
 import 'package:flutter/material.dart';
 
 class GymProvider with ChangeNotifier {
