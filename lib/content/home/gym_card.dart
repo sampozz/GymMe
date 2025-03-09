@@ -1,9 +1,10 @@
+import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:flutter/material.dart';
 
 class GymCard extends StatelessWidget {
-  final String title;
+  final Gym gym;
 
-  const GymCard({super.key, required this.title});
+  const GymCard({super.key, required this.gym});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class GymCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              title,
+              gym.name,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),

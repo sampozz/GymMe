@@ -1,4 +1,5 @@
 import 'package:dima_project/content/home/gym/gym_model.dart';
+import 'package:dima_project/content/home/gym/gym_page.dart';
 import 'package:dima_project/content/home/gym/gym_provider.dart';
 import 'package:dima_project/content/home/gym_card.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,14 @@ class Home extends StatelessWidget {
     await Provider.of<GymProvider>(context, listen: false).getGymList();
   }
 
+  /// Navigates to the gym page when a gym card is tapped
+  void _onGymCardTap(BuildContext context, Gym gym) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => GymPage(gym: gym)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Gym>? gymList = context.watch<GymProvider>().gymList;
@@ -21,13 +30,24 @@ class Home extends StatelessWidget {
     // TODO: show next bookings if any
     // TODO: replace CircularProgressIndicator with shimmer effect https://docs.flutter.dev/cookbook/effects/shimmer-loading
     return gymList == null
+        // If the gym list is null, show a loading indicator
         ? Center(child: CircularProgressIndicator())
+        // If the gym list is not null, show the gym list
+        // refresh indicator allows the user to refresh the gym list by pulling down
         : RefreshIndicator(
           color: Colors.white,
           backgroundColor: Colors.blue,
           onRefresh: () => _onRefresh(context),
           child: ListView(
-            children: gymList.map((gym) => GymCard(title: gym.name)).toList(),
+            children:
+                gymList
+                    .map(
+                      (gym) => GestureDetector(
+                        child: GymCard(gym: gym),
+                        onTap: () => _onGymCardTap(context, gym),
+                      ),
+                    )
+                    .toList(),
           ),
         );
   }
