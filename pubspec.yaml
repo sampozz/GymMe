@@ -40,6 +40,7 @@ dependencies:
   firebase_ui_auth: ^1.16.1
   cloud_firestore: ^5.6.4
   mockito: ^5.4.5
+  google_maps_flutter: ^2.10.1
 
 dev_dependencies:
   flutter_test:

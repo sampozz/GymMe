@@ -3,6 +3,11 @@
         android:label="dima_project"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <!-- Google Maps API key for Android -->
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA78dAdSxee-z3tu89roFSfuihVVTjMGHY" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
