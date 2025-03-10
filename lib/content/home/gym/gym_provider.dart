@@ -20,7 +20,7 @@ class GymProvider with ChangeNotifier {
 
   /// Returns a list of Gym objects.
   Future<List<Gym>> getGymList() async {
-    var data = await _gymService.getGymList();
+    var data = await _gymService.fetchGymList();
     _gymList = data;
     notifyListeners();
     return data;

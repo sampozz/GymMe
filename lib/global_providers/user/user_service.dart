@@ -27,7 +27,7 @@ class UserService {
   /// This method will fetch the user data from Firestore
   /// If the user is not found in Firestore, the method will return null
   /// If the user is found in Firestore, the method will return a User model object
-  Future<User?> getUser(auth.User firebaseUser) async {
+  Future<User?> fetchUser(auth.User firebaseUser) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     // Get user document from Firestore
@@ -41,7 +41,6 @@ class UserService {
 
     var data = userDoc.data() as Map<String, dynamic>;
     data.addAll({
-      'uid': firebaseUser.uid,
       'email': firebaseUser.email,
       'displayName': firebaseUser.displayName,
       'photoURL': firebaseUser.photoURL,
@@ -49,6 +48,6 @@ class UserService {
     });
 
     // Create and return User object
-    return User.fromJson(data);
+    return User.fromJson(firebaseUser.uid, data);
   }
 }

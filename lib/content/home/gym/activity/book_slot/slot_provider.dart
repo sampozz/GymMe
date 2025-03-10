@@ -1,0 +1,45 @@
+import 'package:dima_project/content/home/gym/activity/activity_model.dart';
+import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
+import 'package:dima_project/content/home/gym/activity/book_slot/slot_service.dart';
+import 'package:dima_project/content/home/gym/gym_model.dart';
+import 'package:flutter/material.dart';
+
+class SlotProvider extends ChangeNotifier {
+  final SlotService _slotService;
+  final Gym gym;
+  final Activity activity;
+  List<Slot>? _nextSlots;
+
+  /// Getter for the next slots. If the list is null, fetch it from the service.
+  /// The key is a tuple of gymId and activityId.
+  List<Slot>? get nextSlots {
+    if (_nextSlots == null) {
+      getUpcomingSlots();
+    }
+    return _nextSlots;
+  }
+
+  // Dependency injection, needed for unit testing
+  SlotProvider({
+    SlotService? slotService,
+    required this.gym,
+    required this.activity,
+  }) : _slotService = slotService ?? SlotService();
+
+  /// Fetches the next available slots for a given gym and activity.
+  Future<List<Slot>> getUpcomingSlots() async {
+    final currentDate = DateTime.now();
+    var slots = await _slotService.fetchUpcomingSlots(
+      gym.id,
+      activity.id,
+      currentDate,
+    );
+    for (var slot in slots) {
+      slot.gym = gym;
+      slot.activity = activity;
+    }
+    _nextSlots = slots;
+    notifyListeners();
+    return slots;
+  }
+}

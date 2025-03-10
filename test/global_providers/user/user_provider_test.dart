@@ -44,7 +44,7 @@ void main() {
         ).thenAnswer((_) async => mockUserCredential);
         when(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser);
         when(
-          mockUserService.getUser(mockFirebaseUser),
+          mockUserService.fetchUser(mockFirebaseUser),
         ).thenAnswer((_) async => null);
         var res = await userProvider.signIn('test', 'test');
         expect(res, null);
@@ -60,10 +60,10 @@ void main() {
 
         when(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser);
 
-        User testUser = User.fromJson({'email': 'test'});
+        User testUser = User.fromJson('1', {'email': 'test'});
 
         when(
-          mockUserService.getUser(mockFirebaseUser),
+          mockUserService.fetchUser(mockFirebaseUser),
         ).thenAnswer((_) async => testUser);
 
         var res = await userProvider.signIn('test', 'test');
