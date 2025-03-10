@@ -1,4 +1,5 @@
 class User {
+  String uid;
   String displayName;
   String email;
   String photoURL;
@@ -6,6 +7,7 @@ class User {
   bool isAdmin;
 
   User({
+    this.uid = '',
     this.displayName = '',
     this.email = '',
     this.photoURL = '',
@@ -15,6 +17,7 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
+      uid: json['uid'] ?? User().uid,
       displayName: json['displayName'] ?? User().displayName,
       email: json['email'] ?? User().email,
       photoURL: json['photoURL'] ?? User().photoURL,

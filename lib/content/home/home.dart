@@ -1,11 +1,54 @@
+import 'package:dima_project/content/home/gym/gym_model.dart';
+import 'package:dima_project/content/home/gym/gym_page.dart';
+import 'package:dima_project/content/home/gym/gym_provider.dart';
+import 'package:dima_project/content/home/gym_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
 
+  /// Refreshes the gym list by fetching it from the provider
+  Future<void> _onRefresh(BuildContext context) async {
+    await Provider.of<GymProvider>(context, listen: false).getGymList();
+  }
+
+  /// Navigates to the gym page when a gym card is tapped
+  void _onGymCardTap(BuildContext context, Gym gym) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => GymPage(gym: gym)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // TODO: Implement home screen
-    return Center(child: Text("Ciao"));
+    List<Gym>? gymList = context.watch<GymProvider>().gymList;
+
+    // TODO: sort the gym list by distance
+    // TODO: add a search bar to filter the gym list
+    // TODO: show next bookings if any
+    // TODO: replace CircularProgressIndicator with shimmer effect https://docs.flutter.dev/cookbook/effects/shimmer-loading
+    return gymList == null
+        // If the gym list is null, show a loading indicator
+        ? Center(child: CircularProgressIndicator())
+        // If the gym list is not null, show the gym list
+        // refresh indicator allows the user to refresh the gym list by pulling down
+        : RefreshIndicator(
+          color: Colors.white,
+          backgroundColor: Colors.blue,
+          onRefresh: () => _onRefresh(context),
+          child: ListView(
+            children:
+                gymList
+                    .map(
+                      (gym) => GestureDetector(
+                        child: GymCard(gym: gym),
+                        onTap: () => _onGymCardTap(context, gym),
+                      ),
+                    )
+                    .toList(),
+          ),
+        );
   }
 }

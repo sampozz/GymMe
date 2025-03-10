@@ -13,11 +13,6 @@ class Login extends StatelessWidget {
       context,
       listen: false,
     ).signIn(isAdmin ? "admin@test.test" : "test@test.test", "hellas");
-
-    // Redirect to home screen
-    if (context.mounted) {
-      Navigator.pushReplacementNamed(context, '/');
-    }
   }
 
   @override
