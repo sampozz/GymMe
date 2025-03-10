@@ -1,7 +1,6 @@
 import 'package:dima_project/content/home/gym/gym_model.dart';
-import 'package:dima_project/content/home/gym/gym_page.dart';
 import 'package:dima_project/content/home/gym/gym_provider.dart';
-import 'package:dima_project/content/home/gym_card.dart';
+import 'package:dima_project/content/home/gym/gym_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,14 +10,6 @@ class Home extends StatelessWidget {
   /// Refreshes the gym list by fetching it from the provider
   Future<void> _onRefresh(BuildContext context) async {
     await Provider.of<GymProvider>(context, listen: false).getGymList();
-  }
-
-  /// Navigates to the gym page when a gym card is tapped
-  void _onGymCardTap(BuildContext context, Gym gym) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => GymPage(gym: gym)),
-    );
   }
 
   @override
@@ -39,15 +30,7 @@ class Home extends StatelessWidget {
           backgroundColor: Colors.blue,
           onRefresh: () => _onRefresh(context),
           child: ListView(
-            children:
-                gymList
-                    .map(
-                      (gym) => GestureDetector(
-                        child: GymCard(gym: gym),
-                        onTap: () => _onGymCardTap(context, gym),
-                      ),
-                    )
-                    .toList(),
+            children: gymList.map((gym) => GymCard(gym: gym)).toList(),
           ),
         );
   }

@@ -17,7 +17,7 @@ class UserProvider extends ChangeNotifier {
   User? get user {
     if (_user == null && isLoggedIn) {
       // If the user is not set, but it is logged in, fetch the user data from Firestore
-      _userService.getUser(_auth.currentUser!).then((value) {
+      _userService.fetchUser(_auth.currentUser!).then((value) {
         _user = value;
         notifyListeners();
       });
@@ -47,7 +47,7 @@ class UserProvider extends ChangeNotifier {
     }
 
     // Fetch the user data from Firestore
-    _user = await _userService.getUser(firebaseUser);
+    _user = await _userService.fetchUser(firebaseUser);
 
     if (_user == null) {
       // TODO: Handle user not found in Firestore

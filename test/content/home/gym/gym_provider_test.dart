@@ -22,7 +22,7 @@ void main() {
         Gym(name: 'Gym 1', address: 'Address 1'),
         Gym(name: 'Gym 2', address: 'Address 2'),
       ];
-      when(mockGymService.getGymList()).thenAnswer((_) async => gymList);
+      when(mockGymService.fetchGymList()).thenAnswer((_) async => gymList);
       var res = await gymProvider.getGymList();
       expect(res, gymList);
     });

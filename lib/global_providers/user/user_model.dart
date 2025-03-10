@@ -15,9 +15,9 @@ class User {
     this.isAdmin = false,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
+  factory User.fromJson(String? uid, Map<String, dynamic> json) {
     return User(
-      uid: json['uid'] ?? User().uid,
+      uid: uid ?? User().uid,
       displayName: json['displayName'] ?? User().displayName,
       email: json['email'] ?? User().email,
       photoURL: json['photoURL'] ?? User().photoURL,

@@ -17,9 +17,9 @@ class Booking {
     this.gymId = '',
   });
 
-  factory Booking.fromJson(Map<String, dynamic> json) {
+  factory Booking.fromJson(String? id, Map<String, dynamic> json) {
     return Booking(
-      id: json['id'] ?? Booking().id,
+      id: id ?? Booking().id,
       title: json['title'] ?? Booking().title,
       description: json['description'] ?? Booking().description,
       dateTime:
