@@ -34,8 +34,24 @@ class MockGymService extends _i1.Mock implements _i2.GymService {
   @override
   _i3.Future<List<_i4.Gym>> fetchGymList() =>
       (super.noSuchMethod(
-            Invocation.method(#getGymList, []),
+            Invocation.method(#fetchGymList, []),
             returnValue: _i3.Future<List<_i4.Gym>>.value(<_i4.Gym>[]),
           )
           as _i3.Future<List<_i4.Gym>>);
+
+  @override
+  _i3.Future<String?> setGym(_i4.Gym? gym) =>
+      (super.noSuchMethod(
+            Invocation.method(#setGym, [gym]),
+            returnValue: _i3.Future<String?>.value(),
+          )
+          as _i3.Future<String?>);
+
+  @override
+  _i3.Future<String?> deleteGym(_i4.Gym? gym) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteGym, [gym]),
+            returnValue: _i3.Future<String?>.value(),
+          )
+          as _i3.Future<String?>);
 }

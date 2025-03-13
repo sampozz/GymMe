@@ -1,5 +1,5 @@
 import 'package:dima_project/content/home/gym/gym_model.dart';
-import 'package:dima_project/content/home/gym/gym_provider.dart';
+import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/content/home/gym/gym_card.dart';
 import 'package:dima_project/content/home/home.dart';
 import 'package:flutter/material.dart';

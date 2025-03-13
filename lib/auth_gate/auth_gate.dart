@@ -1,9 +1,7 @@
 import 'package:dima_project/content/app_scaffold.dart';
-import 'package:dima_project/content/home/gym/gym_provider.dart';
 import 'package:dima_project/content/profile/login/login.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
@@ -17,13 +15,7 @@ class AuthGate extends StatelessWidget {
           return Login();
         }
 
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (context) => GymProvider()),
-            // Add other providers here if needed
-          ],
-          child: AppScaffold(),
-        );
+        return AppScaffold();
       },
     );
   }

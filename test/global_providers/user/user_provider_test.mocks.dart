@@ -100,7 +100,7 @@ class MockUserService extends _i1.Mock implements _i4.UserService {
   @override
   _i5.Future<_i6.User?> fetchUser(_i2.User? firebaseUser) =>
       (super.noSuchMethod(
-            Invocation.method(#getUser, [firebaseUser]),
+            Invocation.method(#fetchUser, [firebaseUser]),
             returnValue: _i5.Future<_i6.User?>.value(),
           )
           as _i5.Future<_i6.User?>);

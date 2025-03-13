@@ -21,7 +21,7 @@ void main() {
     test('getNextAvailableSlots should return a list of slots', () async {
       var slotProvider = SlotProvider(
         slotService: mockSlotService,
-        gym: Gym(),
+        gym: Gym(id: '1'),
         activity: Activity(),
       );
 

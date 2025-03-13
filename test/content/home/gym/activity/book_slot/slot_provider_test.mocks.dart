@@ -40,11 +40,7 @@ class MockSlotService extends _i1.Mock implements _i2.SlotService {
     DateTime? date,
   ) =>
       (super.noSuchMethod(
-            Invocation.method(#getNextAvailableSlots, [
-              gymId,
-              activityId,
-              date,
-            ]),
+            Invocation.method(#fetchUpcomingSlots, [gymId, activityId, date]),
             returnValue: _i3.Future<List<_i4.Slot>>.value(<_i4.Slot>[]),
           )
           as _i3.Future<List<_i4.Slot>>);

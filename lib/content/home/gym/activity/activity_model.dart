@@ -4,10 +4,11 @@ class Activity {
 
   Activity({this.id = '', this.name = ''});
 
-  factory Activity.fromJson(Map<String, dynamic> json) {
-    return Activity(
-      id: json['id'] ?? Activity().id,
-      name: json['name'] ?? Activity().name,
-    );
+  factory Activity.fromFirestore(Map<String, dynamic> data) {
+    return Activity(id: data['id'], name: data['name']);
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {'name': name};
   }
 }
