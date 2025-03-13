@@ -25,10 +25,10 @@ class Slot {
       id: id,
       gym: null,
       activity: null,
-      start: DateTime(0, 0),
-      duration: json['duration'],
-      maxUsers: json['maxUsers'],
-      bookedUsers: List<String>.from(json['bookedUsers']),
+      start: json['start']?.toDate() ?? DateTime(0),
+      duration: json['duration'] ?? 0,
+      maxUsers: json['maxUsers'] ?? 0,
+      bookedUsers: List<String>.from(json['bookedUsers'] ?? []),
     );
   }
 }

@@ -25,4 +25,26 @@ class GymProvider with ChangeNotifier {
     notifyListeners();
     return data;
   }
+
+  /// Adds a new gym to the gym list.
+  Future<void> addGym(Gym gym) async {
+    await _gymService.setGym(gym);
+    _gymList!.add(gym);
+    notifyListeners();
+  }
+
+  /// Updates a gym in the gym list.
+  Future<void> updateGym(Gym gym) async {
+    await _gymService.setGym(gym);
+    var index = _gymList!.indexWhere((element) => element.id == gym.id);
+    _gymList![index] = gym;
+    notifyListeners();
+  }
+
+  /// Removes a gym from the gym list.
+  Future<void> removeGym(Gym gym) async {
+    await _gymService.deleteGym(gym);
+    _gymList!.remove(gym);
+    notifyListeners();
+  }
 }

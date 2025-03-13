@@ -30,7 +30,7 @@ class SlotProvider extends ChangeNotifier {
   Future<List<Slot>> getUpcomingSlots() async {
     final currentDate = DateTime.now();
     var slots = await _slotService.fetchUpcomingSlots(
-      gym.id,
+      gym.id!,
       activity.id,
       currentDate,
     );

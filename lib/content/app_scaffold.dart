@@ -2,9 +2,12 @@ import 'package:dima_project/content/bookings/widgets/bookings.dart';
 import 'package:dima_project/content/custom_appbar.dart';
 import 'package:dima_project/content/custom_bottomnavbar.dart';
 import 'package:dima_project/content/favourites/favourites.dart';
+import 'package:dima_project/content/home/gym/new_gym.dart';
 import 'package:dima_project/content/home/home.dart';
 import 'package:dima_project/content/profile/profile.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
+import 'package:dima_project/global_providers/user/user_model.dart';
+import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,6 +30,11 @@ class _AppScaffoldState extends State<AppScaffold> {
     setState(() {
       _currentIndex = index;
     });
+  }
+
+  /// Navigate to the add gym page
+  void _navigateToAddGym(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => NewGym()));
   }
 
   /// Create list of pages to show in the navigation bar
@@ -71,6 +79,9 @@ class _AppScaffoldState extends State<AppScaffold> {
     ScreenProvider screenProvider = context.read<ScreenProvider>();
     screenProvider.screenData = MediaQuery.of(context);
 
+    // Get the user data
+    User? user = context.watch<UserProvider>().user;
+
     // TODO: setup internationalization
 
     _createPagesList();
@@ -90,6 +101,15 @@ class _AppScaffoldState extends State<AppScaffold> {
                 pages: _pages,
                 currentIndex: _currentIndex,
                 onTapCallback: _navigateTab,
+              )
+              : null,
+
+      // Floating action button to add a gym if the user is an admin
+      floatingActionButton:
+          user != null && user.isAdmin
+              ? FloatingActionButton(
+                child: Icon(Icons.add),
+                onPressed: () => _navigateToAddGym(context),
               )
               : null,
     );

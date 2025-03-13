@@ -1,4 +1,5 @@
 import 'package:dima_project/auth_gate/auth_gate.dart';
+import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ void main() async {
         // List of global providers (accessible to all widgets)
         ChangeNotifierProvider(create: (context) => ScreenProvider()),
         ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => GymProvider()),
       ],
       // Root app
       child: const App(),
