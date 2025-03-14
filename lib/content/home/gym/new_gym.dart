@@ -39,6 +39,7 @@ class NewGym extends StatelessWidget {
 
     // Navigate back to the previous page
     if (context.mounted) {
+      // TODO: find way to navigate to the gym page with the updated gym
       Navigator.of(context).popUntil((route) => route.isFirst);
     }
   }

@@ -1,5 +1,5 @@
 class Activity {
-  String id;
+  String? id;
   String name;
 
   Activity({this.id = '', this.name = ''});
@@ -9,6 +9,10 @@ class Activity {
   }
 
   Map<String, dynamic> toFirestore() {
-    return {'name': name};
+    return {if (id != null) 'id': id, 'name': name};
+  }
+
+  Activity copyWith({String? name}) {
+    return Activity(id: id, name: name ?? this.name);
   }
 }

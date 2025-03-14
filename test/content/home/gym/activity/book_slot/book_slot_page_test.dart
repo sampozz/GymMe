@@ -4,16 +4,21 @@ import 'package:dima_project/content/home/gym/activity/book_slot/slot_card.dart'
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart';
 import 'package:dima_project/content/home/gym/gym_model.dart';
+import 'package:dima_project/global_providers/user/user_model.dart';
+import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
-// Create a mock of SlotProvider
+// Create mocks providers
 class MockSlotProvider extends Mock implements SlotProvider {}
+
+class MockUserProvider extends Mock implements UserProvider {}
 
 void main() {
   group('BookSlotPage tests', () {
+    User user = User(uid: 'u1', email: '');
     Gym gym = Gym(id: 'g1', name: 'Gym 1');
     Activity activity = Activity(id: 'a1', name: 'Activity 1');
 
@@ -22,9 +27,11 @@ void main() {
       (WidgetTester tester) async {
         // Create an instance of the mock provider
         final mockSlotProvider = MockSlotProvider();
+        final mockUserProvider = MockUserProvider();
 
         // Stub the nextSlots to return null
         when(mockSlotProvider.nextSlots).thenReturn(null);
+        when(mockUserProvider.user).thenReturn(user);
 
         // Build the widget
         await tester.pumpWidget(
@@ -32,6 +39,9 @@ void main() {
             providers: [
               ChangeNotifierProvider<SlotProvider>.value(
                 value: mockSlotProvider,
+              ),
+              ChangeNotifierProvider<UserProvider>.value(
+                value: mockUserProvider,
               ),
             ],
             child: MaterialApp(
@@ -53,9 +63,11 @@ void main() {
       (WidgetTester tester) async {
         // Create an instance of the mock provider
         final mockSlotProvider = MockSlotProvider();
+        final mockUserProvider = MockUserProvider();
 
         // Stub the nextSlots to return an empty list
         when(mockSlotProvider.nextSlots).thenReturn([]);
+        when(mockUserProvider.user).thenReturn(user);
 
         // Build the widget
         await tester.pumpWidget(
@@ -63,6 +75,9 @@ void main() {
             providers: [
               ChangeNotifierProvider<SlotProvider>.value(
                 value: mockSlotProvider,
+              ),
+              ChangeNotifierProvider<UserProvider>.value(
+                value: mockUserProvider,
               ),
             ],
             child: MaterialApp(
@@ -84,17 +99,20 @@ void main() {
     ) async {
       // Create an instance of the mock provider
       final mockSlotProvider = MockSlotProvider();
+      final mockUserProvider = MockUserProvider();
 
       // Stub the nextSlots to return fake data
       when(
         mockSlotProvider.nextSlots,
       ).thenReturn([Slot(id: 's1', start: DateTime(10, 10))]);
+      when(mockUserProvider.user).thenReturn(user);
 
       // Build the widget
       await tester.pumpWidget(
         MultiProvider(
           providers: [
             ChangeNotifierProvider<SlotProvider>.value(value: mockSlotProvider),
+            ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
           ],
           child: MaterialApp(home: BookSlotPage(gym: gym, activity: activity)),
         ),

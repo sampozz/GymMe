@@ -1,5 +1,6 @@
 import 'package:dima_project/content/custom_appbar.dart';
 import 'package:dima_project/content/home/gym/activity/activity_card.dart';
+import 'package:dima_project/content/home/gym/activity/new_activity.dart';
 import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:dima_project/content/home/gym/new_gym.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
@@ -18,6 +19,16 @@ class GymPage extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => NewGym(gym: gym)),
+    );
+  }
+
+  /// Navigate to the new activity page
+  void _addActivity(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => NewActivity(gym: gym, activity: null),
+      ),
     );
   }
 
@@ -48,6 +59,10 @@ class GymPage extends StatelessWidget {
             if (user?.isAdmin ?? false)
               Column(
                 children: [
+                  ElevatedButton(
+                    onPressed: () => _addActivity(context),
+                    child: Text('Add Activity'),
+                  ),
                   ElevatedButton(
                     onPressed: () => _modifyGym(context),
                     child: Text('Modify gym'),

@@ -14,13 +14,17 @@ class SlotService {
       var slotRef =
           await FirebaseFirestore.instance
               .collection('slot')
+              .withConverter(
+                fromFirestore: Slot.fromFirestore,
+                toFirestore: (slot, options) => slot.toFirestore(),
+              )
               .where('gymId', isEqualTo: gymId)
               .where('activityId', isEqualTo: activityId)
               .where('start', isGreaterThanOrEqualTo: date)
               .get();
 
       for (var doc in slotRef.docs) {
-        slots.add(Slot.fromJson(doc.id, doc.data()));
+        slots.add(doc.data());
       }
     } catch (e) {
       // TODO: Handle error

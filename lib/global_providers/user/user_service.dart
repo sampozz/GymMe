@@ -31,23 +31,22 @@ class UserService {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     // Get user document from Firestore
-    DocumentSnapshot userDoc =
-        await firestore.collection('users').doc(firebaseUser.uid).get();
+    var userDoc =
+        await firestore
+            .collection('users')
+            .doc(firebaseUser.uid)
+            .withConverter(
+              fromFirestore: User.fromFirestore,
+              toFirestore: (user, options) => user.toFirestore(),
+            )
+            .get();
 
     if (!userDoc.exists) {
       // User not found in Firestore
       return null;
     }
 
-    var data = userDoc.data() as Map<String, dynamic>;
-    data.addAll({
-      'email': firebaseUser.email,
-      'displayName': firebaseUser.displayName,
-      'photoURL': firebaseUser.photoURL,
-      'phoneNumber': firebaseUser.phoneNumber,
-    });
-
     // Create and return User object
-    return User.fromJson(firebaseUser.uid, data);
+    return userDoc.data();
   }
 }

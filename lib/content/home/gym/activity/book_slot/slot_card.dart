@@ -11,7 +11,7 @@ class SlotCard extends StatelessWidget {
     // TODO: Implement the slot card
     return Card(
       child: SizedBox(
-        width: 100,
+        width: 400,
         height: 50,
         child: Center(child: Text('Slot ${slot.start?.toLocal()}')),
       ),
