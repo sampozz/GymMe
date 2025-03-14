@@ -23,9 +23,9 @@ class Gym {
     var data = snapshot.data()!;
     return Gym(
       id: snapshot.id,
-      name: data['name'] ?? '',
-      address: data['address'] ?? '',
-      phone: data['phone'] ?? '',
+      name: data['name'] ?? Gym().name,
+      address: data['address'] ?? Gym().address,
+      phone: data['phone'] ?? Gym().phone,
       activities:
           data['activities'] == null
               ? []

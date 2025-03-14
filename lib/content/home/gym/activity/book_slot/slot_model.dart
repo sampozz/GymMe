@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima_project/content/home/gym/activity/activity_model.dart';
 import 'package:dima_project/content/home/gym/gym_model.dart';
 
@@ -20,15 +21,30 @@ class Slot {
     this.bookedUsers = const [],
   });
 
-  factory Slot.fromJson(String id, Map<String, dynamic> json) {
+  factory Slot.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
+    var data = snapshot.data()!;
     return Slot(
-      id: id,
+      id: snapshot.id,
       gym: null,
       activity: null,
-      start: json['start']?.toDate() ?? DateTime(0),
-      duration: json['duration'] ?? 0,
-      maxUsers: json['maxUsers'] ?? 0,
-      bookedUsers: List<String>.from(json['bookedUsers'] ?? []),
+      start: data['start']?.toDate() ?? DateTime(0),
+      duration: data['duration'] ?? Slot().duration,
+      maxUsers: data['maxUsers'] ?? Slot().maxUsers,
+      bookedUsers: List<String>.from(data['bookedUsers'] ?? []),
     );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'start': start,
+      if (gym != null) 'gymId': gym!.id,
+      if (activity != null) 'activityId': activity!.id,
+      'duration': duration,
+      'maxUsers': maxUsers,
+      'bookedUsers': bookedUsers,
+    };
   }
 }

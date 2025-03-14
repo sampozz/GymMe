@@ -60,7 +60,7 @@ void main() {
 
         when(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser);
 
-        User testUser = User.fromJson('1', {'email': 'test'});
+        User testUser = User(email: 'test');
 
         when(
           mockUserService.fetchUser(mockFirebaseUser),

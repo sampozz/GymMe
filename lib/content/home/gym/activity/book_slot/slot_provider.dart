@@ -31,7 +31,7 @@ class SlotProvider extends ChangeNotifier {
     final currentDate = DateTime.now();
     var slots = await _slotService.fetchUpcomingSlots(
       gym.id!,
-      activity.id,
+      activity.id!,
       currentDate,
     );
     for (var slot in slots) {
