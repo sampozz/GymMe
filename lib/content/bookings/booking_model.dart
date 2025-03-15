@@ -1,22 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Booking {
-  String id;
+  String? id;
   String title;
   String description;
   DateTime? dateTime;
   int duration;
   String userId;
   String gymId;
+  String slotId;
+  String activityId;
 
   Booking({
-    this.id = '',
+    this.id,
     this.title = '',
     this.description = '',
     this.dateTime,
     this.duration = 0,
     this.userId = '',
     this.gymId = '',
+    this.slotId = '',
+    this.activityId = '',
   });
 
   factory Booking.fromFirestore(
@@ -32,6 +36,8 @@ class Booking {
       duration: data['duration'] ?? Booking().duration,
       userId: data['userId'] ?? Booking().userId,
       gymId: data['gymId'] ?? Booking().gymId,
+      slotId: data['slotId'] ?? Booking().slotId,
+      activityId: data['activityId'] ?? Booking().activityId,
     );
   }
 
@@ -43,6 +49,8 @@ class Booking {
       'duration': duration,
       'userId': userId,
       'gymId': gymId,
+      'slotId': slotId,
+      'activityId': activityId,
     };
   }
 }

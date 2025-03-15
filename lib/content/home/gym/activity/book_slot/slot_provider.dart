@@ -2,6 +2,7 @@ import 'package:dima_project/content/home/gym/activity/activity_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_service.dart';
 import 'package:dima_project/content/home/gym/gym_model.dart';
+import 'package:dima_project/global_providers/user/user_model.dart';
 import 'package:flutter/material.dart';
 
 class SlotProvider extends ChangeNotifier {
@@ -41,5 +42,14 @@ class SlotProvider extends ChangeNotifier {
     _nextSlots = slots;
     notifyListeners();
     return slots;
+  }
+
+  /// Books a slot for the current user
+  Future<void> addUserToSlot(User user, Slot slot) async {
+    // TODO: check if the user is already booked
+    // TODO: check if the number of booked users is less than the max number of users
+    slot.bookedUsers.add(user.uid);
+    await _slotService.updateSlot(slot);
+    notifyListeners();
   }
 }

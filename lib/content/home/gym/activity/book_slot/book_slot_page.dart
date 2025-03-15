@@ -1,4 +1,6 @@
+import 'package:dima_project/content/bookings/bookings_provider.dart';
 import 'package:dima_project/content/home/gym/activity/activity_model.dart';
+import 'package:dima_project/content/home/gym/activity/book_slot/confirm_booking_modal.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_card.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart';
@@ -26,10 +28,28 @@ class BookSlotPage extends StatelessWidget {
       context,
       listen: false,
     ).removeActivity(gym, activity);
+
     if (context.mounted) {
       // TODO: find way to navigate to the activity page with the updated activity list
       Navigator.of(context).popUntil((route) => route.isFirst);
     }
+  }
+
+  void _showBookingModal(BuildContext context, Slot slot, User user) {
+    showModalBottomSheet<void>(
+      context: context,
+      useRootNavigator: true,
+      builder:
+          (context) => MultiProvider(
+            providers: [
+              ChangeNotifierProvider(
+                create: (context) => SlotProvider(gym: gym, activity: activity),
+              ),
+              ChangeNotifierProvider(create: (context) => BookingsProvider()),
+            ],
+            child: ConfirmBookingModal(slot: slot, user: user),
+          ),
+    );
   }
 
   @override
@@ -53,7 +73,15 @@ class BookSlotPage extends StatelessWidget {
                 onRefresh: () => _onRefresh(context),
                 child: Column(
                   children:
-                      slotList.map((slot) => SlotCard(slot: slot)).toList(),
+                      slotList
+                          .map(
+                            (slot) => GestureDetector(
+                              onTap:
+                                  () => _showBookingModal(context, slot, user!),
+                              child: SlotCard(slot: slot),
+                            ),
+                          )
+                          .toList(),
                 ),
               ),
             },

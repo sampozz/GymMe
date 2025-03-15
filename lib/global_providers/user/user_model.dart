@@ -23,7 +23,7 @@ class User {
   ) {
     var data = snapshot.data()!;
     return User(
-      uid: data['uid'] ?? User().uid,
+      uid: snapshot.id,
       displayName: data['displayName'] ?? User().displayName,
       email: data['email'] ?? User().email,
       photoURL: data['photoURL'] ?? User().photoURL,

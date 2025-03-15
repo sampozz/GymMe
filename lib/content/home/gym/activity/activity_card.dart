@@ -1,3 +1,4 @@
+import 'package:dima_project/content/bookings/bookings_provider.dart';
 import 'package:dima_project/content/home/gym/activity/activity_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/book_slot_page.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart';
@@ -17,8 +18,8 @@ class ActivityCard extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder:
-            (context) => ChangeNotifierProvider(
-              create: (context) => SlotProvider(gym: gym, activity: activity),
+            (context) => ChangeNotifierProvider<SlotProvider>(
+              create: (_) => SlotProvider(gym: gym, activity: activity),
               child: BookSlotPage(gym: gym, activity: activity),
             ),
       ),
