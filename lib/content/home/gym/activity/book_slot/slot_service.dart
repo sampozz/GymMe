@@ -33,4 +33,17 @@ class SlotService {
 
     return slots;
   }
+
+  /// Books a slot for the current user
+  Future<void> updateSlot(Slot slot) async {
+    try {
+      await FirebaseFirestore.instance.collection('slot').doc(slot.id).update({
+        'bookedUsers': slot.bookedUsers,
+      });
+    } catch (e) {
+      // TODO: handle error
+      print(e);
+      rethrow;
+    }
+  }
 }
