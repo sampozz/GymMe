@@ -46,4 +46,18 @@ class SlotService {
       rethrow;
     }
   }
+
+  /// Create a new slot
+  /// This method is used to create a new slot in the Firestore 'slots' collection.
+  Future<void> createSlot(Slot slot) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('slot')
+          .add(slot.toFirestore());
+    } catch (e) {
+      // TODO: handle error
+      print(e);
+      rethrow;
+    }
+  }
 }
