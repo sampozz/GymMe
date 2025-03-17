@@ -46,6 +46,4 @@ void main() {
     expect(googleMapWidget.onMapCreated, isNotNull);
   });
   
-  // Note: to test marker creation you will need mocks for getGymLocations
-  // Here you could add more advanced tests with mockito to simulate data loading
 }

@@ -11,10 +11,8 @@ class GymMap extends StatefulWidget {
 }
 
 class _GymAppState extends State<GymMap> {
-  late GoogleMapController mapController;
-
+  GoogleMapController? mapController;
   final Map<String, Marker> _markers = {};
-
   LatLng _currentPosition = const LatLng(45.46427, 9.18951);
   bool _locationGranted = false;
 
@@ -40,7 +38,9 @@ class _GymAppState extends State<GymMap> {
       }
 
       if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
-        Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+        Position position = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(accuracy: LocationAccuracy.high)
+        );
         setState(() {
           _currentPosition = LatLng(position.latitude, position.longitude);
           _locationGranted = true;
@@ -51,8 +51,8 @@ class _GymAppState extends State<GymMap> {
         });
       }
 
-      if (mapController != null) {
-        mapController.animateCamera(CameraUpdate.newCameraPosition(
+            if (mapController != null) {
+        mapController!.animateCamera(CameraUpdate.newCameraPosition(
           CameraPosition(
             target: _currentPosition,
             zoom: 14,
@@ -70,9 +70,10 @@ class _GymAppState extends State<GymMap> {
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
     mapController = controller;
-    if (_locationGranted) {
-      _getUserLocation();
+        if (_locationGranted) {
+      _updateCameraPosition();
     }
+    
     final gyms = await locations.getGymLocations();
     setState(() {
       _markers.clear();
@@ -89,10 +90,22 @@ class _GymAppState extends State<GymMap> {
       }
     });
   }
+  
+  // Metodo separato per aggiornare la posizione della camera
+  void _updateCameraPosition() {
+    if (mapController != null) {
+      mapController!.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: _currentPosition,
+          zoom: 14,
+        ),
+      ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-// TODO: implement map screen
+    // TODO: implement map interface
     return GoogleMap(
       onMapCreated: _onMapCreated,
       initialCameraPosition: CameraPosition(
