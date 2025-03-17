@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+import '../src/locations.dart' as locations;
 
 class GymMap extends StatefulWidget {
   const GymMap({super.key});
@@ -11,23 +13,95 @@ class GymMap extends StatefulWidget {
 class _GymAppState extends State<GymMap> {
   late GoogleMapController mapController;
 
-  // TODO: request access and use user location data
-  // point to center of Milan
-  final LatLng _center = const LatLng(45.46427, 9.18951);
+  final Map<String, Marker> _markers = {};
 
-  void _onMapCreated(GoogleMapController controller) {
+  LatLng _currentPosition = const LatLng(45.46427, 9.18951);
+  bool _locationGranted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserLocation();
+  }
+
+  Future<void> _getUserLocation() async {
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        // Permissions are denied forever, handle appropriately
+        setState(() {
+          _locationGranted = false;
+        });
+        return;
+      }
+
+      if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
+        Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+        setState(() {
+          _currentPosition = LatLng(position.latitude, position.longitude);
+          _locationGranted = true;
+        });
+      } else {
+        setState(() {
+          _locationGranted = false;
+        });
+      }
+
+      if (mapController != null) {
+        mapController.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(
+            target: _currentPosition,
+            zoom: 14,
+          ),
+        ));
+      }
+    } catch (e) {
+      // Handle any errors that might occur during the permission request
+      setState(() {
+        _locationGranted = false;
+      });
+      print('Error getting location permissions: $e');
+    }
+  }
+
+  Future<void> _onMapCreated(GoogleMapController controller) async {
     mapController = controller;
+    if (_locationGranted) {
+      _getUserLocation();
+    }
+    final gyms = await locations.getGymLocations();
+    setState(() {
+      _markers.clear();
+      for (final gym in gyms.gyms) {
+        final marker = Marker(
+          markerId: MarkerId(gym.id),
+          position: LatLng(gym.lat, gym.lng),
+          infoWindow: InfoWindow(
+            title: gym.name,
+            snippet: gym.address,
+          ),
+        );
+        _markers[gym.id] = marker;
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement map screen
+// TODO: implement map screen
     return GoogleMap(
       onMapCreated: _onMapCreated,
       initialCameraPosition: CameraPosition(
-        target: _center,
+        target: _currentPosition,
         zoom: 14,
-        ),
-      );
+      ),
+      markers: _markers.values.toSet(),
+      myLocationEnabled: _locationGranted,
+      myLocationButtonEnabled: true,
+    );
   }
 }
