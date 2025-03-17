@@ -1,22 +1,26 @@
 import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:dima_project/content/home/gym/gym_page.dart';
+import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class GymCard extends StatelessWidget {
-  final Gym gym;
+  final int gymIndex;
 
-  const GymCard({super.key, required this.gym});
+  const GymCard({super.key, required this.gymIndex});
 
   /// Navigates to the gym page when a gym card is tapped
   void _onGymCardTap(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => GymPage(gym: gym)),
+      MaterialPageRoute(builder: (context) => GymPage(gymIndex: gymIndex)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    Gym gym = context.watch<GymProvider>().gymList![gymIndex];
+
     // TODO: Customize the card with more information
     return GestureDetector(
       onTap: () => _onGymCardTap(context),

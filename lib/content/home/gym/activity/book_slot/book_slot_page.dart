@@ -12,10 +12,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class BookSlotPage extends StatelessWidget {
-  final Gym gym;
-  final Activity activity;
+  final int gymIndex;
+  final int activityIndex;
 
-  const BookSlotPage({super.key, required this.gym, required this.activity});
+  const BookSlotPage({
+    super.key,
+    required this.gymIndex,
+    required this.activityIndex,
+  });
 
   /// Refreshes the gym list by fetching it from the provider
   Future<void> _onRefresh(BuildContext context) async {
@@ -23,19 +27,23 @@ class BookSlotPage extends StatelessWidget {
   }
 
   /// Deletes the activity from the database
-  Future<void> _deleteActivity(BuildContext context) async {
-    await Provider.of<GymProvider>(
+  void _deleteActivity(BuildContext context, Gym gym, Activity activity) {
+    Provider.of<GymProvider>(
       context,
       listen: false,
     ).removeActivity(gym, activity);
 
     if (context.mounted) {
-      // TODO: find way to navigate to the activity page with the updated activity list
-      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.pop(context);
     }
   }
 
-  void _showBookingModal(BuildContext context, Slot slot, User user) {
+  void _showBookingModal(
+    BuildContext context,
+    String gymId,
+    String activityId,
+    Slot slot,
+  ) {
     showModalBottomSheet<void>(
       context: context,
       useRootNavigator: true,
@@ -43,17 +51,21 @@ class BookSlotPage extends StatelessWidget {
           (context) => MultiProvider(
             providers: [
               ChangeNotifierProvider(
-                create: (context) => SlotProvider(gym: gym, activity: activity),
+                create:
+                    (context) =>
+                        SlotProvider(gymId: gymId, activityId: activityId),
               ),
               ChangeNotifierProvider(create: (context) => BookingsProvider()),
             ],
-            child: ConfirmBookingModal(slot: slot, user: user),
+            child: ConfirmBookingModal(slot: slot),
           ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    Gym gym = context.watch<GymProvider>().gymList![gymIndex];
+    Activity activity = gym.activities[activityIndex];
     List<Slot>? slotList = context.watch<SlotProvider>().nextSlots;
     User? user = context.watch<UserProvider>().user;
 
@@ -77,7 +89,12 @@ class BookSlotPage extends StatelessWidget {
                           .map(
                             (slot) => GestureDetector(
                               onTap:
-                                  () => _showBookingModal(context, slot, user!),
+                                  () => _showBookingModal(
+                                    context,
+                                    gym.id!,
+                                    activity.id!,
+                                    slot,
+                                  ),
                               child: SlotCard(slot: slot),
                             ),
                           )
@@ -87,7 +104,7 @@ class BookSlotPage extends StatelessWidget {
             },
             if (user != null && user.isAdmin)
               ElevatedButton(
-                onPressed: () => _deleteActivity(context),
+                onPressed: () => _deleteActivity(context, gym, activity),
                 child: Text('Delete Activity'),
               ),
           ],

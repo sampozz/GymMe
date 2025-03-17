@@ -44,4 +44,13 @@ class MockSlotService extends _i1.Mock implements _i2.SlotService {
             returnValue: _i3.Future<List<_i4.Slot>>.value(<_i4.Slot>[]),
           )
           as _i3.Future<List<_i4.Slot>>);
+
+  @override
+  _i3.Future<void> updateSlot(_i4.Slot? slot) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateSlot, [slot]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
 }

@@ -4,6 +4,7 @@ import 'package:dima_project/content/home/gym/activity/book_slot/slot_card.dart'
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart';
 import 'package:dima_project/content/home/gym/gym_model.dart';
+import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -16,19 +17,25 @@ class MockSlotProvider extends Mock implements SlotProvider {}
 
 class MockUserProvider extends Mock implements UserProvider {}
 
+class MockGymProvider extends Mock implements GymProvider {}
+
 void main() {
+  MockSlotProvider mockSlotProvider = MockSlotProvider();
+  MockUserProvider mockUserProvider = MockUserProvider();
+  MockGymProvider mockGymProvider = MockGymProvider();
+
+  setUp(() {
+    when(mockGymProvider.gymList).thenReturn([
+      Gym(name: 'Gym 1', activities: [Activity(name: 'Activity 1')]),
+    ]);
+  });
+
   group('BookSlotPage tests', () {
     User user = User(uid: 'u1', email: '');
-    Gym gym = Gym(id: 'g1', name: 'Gym 1');
-    Activity activity = Activity(id: 'a1', name: 'Activity 1');
 
     testWidgets(
       'should display a loading indicator when the slot list is null',
       (WidgetTester tester) async {
-        // Create an instance of the mock provider
-        final mockSlotProvider = MockSlotProvider();
-        final mockUserProvider = MockUserProvider();
-
         // Stub the nextSlots to return null
         when(mockSlotProvider.nextSlots).thenReturn(null);
         when(mockUserProvider.user).thenReturn(user);
@@ -43,9 +50,10 @@ void main() {
               ChangeNotifierProvider<UserProvider>.value(
                 value: mockUserProvider,
               ),
+              ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
             ],
             child: MaterialApp(
-              home: BookSlotPage(gym: gym, activity: activity),
+              home: BookSlotPage(gymIndex: 0, activityIndex: 0),
             ),
           ),
         );
@@ -61,10 +69,6 @@ void main() {
     testWidgets(
       'should display that no slots are available if slot list is empty',
       (WidgetTester tester) async {
-        // Create an instance of the mock provider
-        final mockSlotProvider = MockSlotProvider();
-        final mockUserProvider = MockUserProvider();
-
         // Stub the nextSlots to return an empty list
         when(mockSlotProvider.nextSlots).thenReturn([]);
         when(mockUserProvider.user).thenReturn(user);
@@ -79,9 +83,10 @@ void main() {
               ChangeNotifierProvider<UserProvider>.value(
                 value: mockUserProvider,
               ),
+              ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
             ],
             child: MaterialApp(
-              home: BookSlotPage(gym: gym, activity: activity),
+              home: BookSlotPage(gymIndex: 0, activityIndex: 0),
             ),
           ),
         );
@@ -97,10 +102,6 @@ void main() {
     testWidgets('should display the book slot page with a slot card', (
       WidgetTester tester,
     ) async {
-      // Create an instance of the mock provider
-      final mockSlotProvider = MockSlotProvider();
-      final mockUserProvider = MockUserProvider();
-
       // Stub the nextSlots to return fake data
       when(
         mockSlotProvider.nextSlots,
@@ -113,8 +114,9 @@ void main() {
           providers: [
             ChangeNotifierProvider<SlotProvider>.value(value: mockSlotProvider),
             ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
+            ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
           ],
-          child: MaterialApp(home: BookSlotPage(gym: gym, activity: activity)),
+          child: MaterialApp(home: BookSlotPage(gymIndex: 0, activityIndex: 0)),
         ),
       );
 

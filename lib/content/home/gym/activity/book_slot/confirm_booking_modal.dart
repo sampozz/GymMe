@@ -1,19 +1,13 @@
 import 'package:dima_project/content/bookings/bookings_provider.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart';
-import 'package:dima_project/global_providers/user/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ConfirmBookingModal extends StatefulWidget {
   final Slot slot;
-  final User user;
 
-  const ConfirmBookingModal({
-    super.key,
-    required this.slot,
-    required this.user,
-  });
+  const ConfirmBookingModal({super.key, required this.slot});
 
   @override
   _ConfirmBookingModalState createState() => _ConfirmBookingModalState();
@@ -26,12 +20,12 @@ class _ConfirmBookingModalState extends State<ConfirmBookingModal> {
     Provider.of<SlotProvider>(
       context,
       listen: false,
-    ).addUserToSlot(widget.user, widget.slot);
+    ).addUserToSlot(widget.slot);
 
     Provider.of<BookingsProvider>(
       context,
       listen: false,
-    ).createBooking(widget.user, widget.slot);
+    ).createBooking(widget.slot);
 
     setState(() {
       _isBookingConfirmed = true;

@@ -10,12 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class GymPage extends StatelessWidget {
-  final Gym gym;
+  final int gymIndex;
 
-  const GymPage({super.key, required this.gym});
+  const GymPage({super.key, required this.gymIndex});
 
   /// Navigate to the new gym page
-  void _modifyGym(BuildContext context) {
+  void _modifyGym(BuildContext context, Gym gym) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => NewGym(gym: gym)),
@@ -23,7 +23,7 @@ class GymPage extends StatelessWidget {
   }
 
   /// Navigate to the new activity page
-  void _addActivity(BuildContext context) {
+  void _addActivity(BuildContext context, Gym gym) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -33,17 +33,18 @@ class GymPage extends StatelessWidget {
   }
 
   /// Delete the gym from the database
-  Future<void> _deleteGym(BuildContext context) async {
-    // TODO: add confirmation dialog
-    await Provider.of<GymProvider>(context, listen: false).removeGym(gym);
+  Future<void> _deleteGym(BuildContext context, Gym gym) async {
     if (context.mounted) {
       Navigator.pop(context);
     }
+    // TODO: add confirmation dialog
+    await Provider.of<GymProvider>(context, listen: false).removeGym(gym);
   }
 
   @override
   Widget build(BuildContext context) {
     User? user = context.watch<UserProvider>().user;
+    Gym gym = context.watch<GymProvider>().gymList![gymIndex];
 
     // TODO: create gym page
     return Scaffold(
@@ -53,22 +54,27 @@ class GymPage extends StatelessWidget {
           children: [
             Text('Welcome to the gym ${gym.name}!'),
             Text('Activities:'),
-            ...gym.activities.map(
-              (activity) => ActivityCard(gym: gym, activity: activity),
+            Expanded(
+              child: ListView.builder(
+                itemCount: gym.activities.length,
+                itemBuilder: (context, index) {
+                  return ActivityCard(gymIndex: gymIndex, activityIndex: index);
+                },
+              ),
             ),
             if (user?.isAdmin ?? false)
               Column(
                 children: [
                   ElevatedButton(
-                    onPressed: () => _addActivity(context),
+                    onPressed: () => _addActivity(context, gym),
                     child: Text('Add Activity'),
                   ),
                   ElevatedButton(
-                    onPressed: () => _modifyGym(context),
+                    onPressed: () => _modifyGym(context, gym),
                     child: Text('Modify gym'),
                   ),
                   ElevatedButton(
-                    onPressed: () => _deleteGym(context),
+                    onPressed: () => _deleteGym(context, gym),
                     child: Text('Delete gym'),
                   ),
                 ],

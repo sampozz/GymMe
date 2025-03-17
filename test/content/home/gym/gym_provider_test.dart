@@ -31,11 +31,11 @@ void main() {
       // Create test objects
       var gymProvider = GymProvider(gymService: mockGymService);
       var testGym = Gym(name: 'Gym 1', address: 'Address 1');
-      var newGym = Gym(name: 'Gym 2', address: 'Address 2');
+      var newGym = Gym(id: '1', name: 'Gym 2', address: 'Address 2');
       var gymList = [testGym];
 
       when(mockGymService.fetchGymList()).thenAnswer((_) async => gymList);
-      when(mockGymService.setGym(newGym)).thenAnswer((_) async => null);
+      when(mockGymService.addGym(newGym)).thenAnswer((_) async => '1');
 
       // Populate the gym list (needed to initialize the gym list)
       await gymProvider.getGymList();
@@ -55,7 +55,7 @@ void main() {
       var gymList = [testGym];
 
       when(mockGymService.fetchGymList()).thenAnswer((_) async => gymList);
-      when(mockGymService.setGym(updatedGym)).thenAnswer((_) async => null);
+      when(mockGymService.updateGym(updatedGym)).thenAnswer((_) async => null);
 
       // Populate the gym list (needed to initialize the gym list)
       await gymProvider.getGymList();
@@ -69,12 +69,13 @@ void main() {
 
     test('should delete a gym from the gym list', () async {
       // Create test objects
+      var gymId = '1';
       var gymProvider = GymProvider(gymService: mockGymService);
-      var testGym = Gym(name: 'Gym 1', address: 'Address 1');
+      var testGym = Gym(id: gymId, name: 'Gym 1', address: 'Address 1');
       var gymList = [testGym];
 
       when(mockGymService.fetchGymList()).thenAnswer((_) async => gymList);
-      when(mockGymService.deleteGym(testGym)).thenAnswer((_) async => null);
+      when(mockGymService.deleteGym(gymId)).thenAnswer((_) async => null);
 
       // Populate the gym list (needed to initialize the gym list)
       await gymProvider.getGymList();
