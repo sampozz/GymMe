@@ -5,6 +5,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
+import 'package:dima_project/content/home/gym/activity/activity_model.dart'
+    as _i5;
 import 'package:dima_project/content/home/gym/gym_model.dart' as _i4;
 import 'package:dima_project/content/home/gym/gym_service.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
@@ -40,17 +42,41 @@ class MockGymService extends _i1.Mock implements _i2.GymService {
           as _i3.Future<List<_i4.Gym>>);
 
   @override
-  _i3.Future<String?> setGym(_i4.Gym? gym) =>
+  _i3.Future<String?> addGym(_i4.Gym? gym) =>
       (super.noSuchMethod(
-            Invocation.method(#setGym, [gym]),
+            Invocation.method(#addGym, [gym]),
             returnValue: _i3.Future<String?>.value(),
           )
           as _i3.Future<String?>);
 
   @override
-  _i3.Future<String?> deleteGym(_i4.Gym? gym) =>
+  _i3.Future<String?> updateGym(_i4.Gym? gym) =>
       (super.noSuchMethod(
-            Invocation.method(#deleteGym, [gym]),
+            Invocation.method(#updateGym, [gym]),
+            returnValue: _i3.Future<String?>.value(),
+          )
+          as _i3.Future<String?>);
+
+  @override
+  _i3.Future<String?> deleteGym(String? gymId) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteGym, [gymId]),
+            returnValue: _i3.Future<String?>.value(),
+          )
+          as _i3.Future<String?>);
+
+  @override
+  _i3.Future<String?> setActivity(String? gymId, _i5.Activity? activity) =>
+      (super.noSuchMethod(
+            Invocation.method(#setActivity, [gymId, activity]),
+            returnValue: _i3.Future<String?>.value(),
+          )
+          as _i3.Future<String?>);
+
+  @override
+  _i3.Future<String?> deleteActivity(_i4.Gym? gym, _i5.Activity? activity) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteActivity, [gym, activity]),
             returnValue: _i3.Future<String?>.value(),
           )
           as _i3.Future<String?>);

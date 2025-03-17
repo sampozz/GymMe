@@ -24,6 +24,7 @@ class NewGym extends StatelessWidget {
           name: nameCtrl.text,
           address: addressCtrl.text,
           phone: phoneCtrl.text,
+          activities: [],
         );
 
     if (gym == null) {
@@ -40,7 +41,7 @@ class NewGym extends StatelessWidget {
     // Navigate back to the previous page
     if (context.mounted) {
       // TODO: find way to navigate to the gym page with the updated gym
-      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.pop(context);
     }
   }
 

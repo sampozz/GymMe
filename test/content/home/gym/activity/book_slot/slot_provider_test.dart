@@ -1,8 +1,6 @@
-import 'package:dima_project/content/home/gym/activity/activity_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_service.dart';
-import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -21,8 +19,8 @@ void main() {
     test('getNextAvailableSlots should return a list of slots', () async {
       var slotProvider = SlotProvider(
         slotService: mockSlotService,
-        gym: Gym(id: '1'),
-        activity: Activity(),
+        gymId: '1',
+        activityId: '1',
       );
 
       var slotList = [

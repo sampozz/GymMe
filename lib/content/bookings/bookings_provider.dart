@@ -1,7 +1,7 @@
 import 'package:dima_project/content/bookings/booking_model.dart';
 import 'package:dima_project/content/bookings/bookings_service.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
-import 'package:dima_project/global_providers/user/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 
 class BookingsProvider extends ChangeNotifier {
@@ -28,13 +28,14 @@ class BookingsProvider extends ChangeNotifier {
   }
 
   /// Books a slot for the current user
-  Future<void> createBooking(User user, Slot slot) async {
+  Future<void> createBooking(Slot slot) async {
+    auth.User user = auth.FirebaseAuth.instance.currentUser!;
+
     Booking booking = Booking(
       userId: user.uid,
       slotId: slot.id,
-      gymId: slot.gym!.id!,
-      activityId: slot.activity!.id!,
-      title: slot.activity!.name,
+      gymId: slot.gymId,
+      activityId: slot.activityId,
       dateTime: slot.start!,
       duration: slot.duration,
     );

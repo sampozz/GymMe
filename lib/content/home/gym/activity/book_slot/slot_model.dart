@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dima_project/content/home/gym/activity/activity_model.dart';
-import 'package:dima_project/content/home/gym/gym_model.dart';
 
 class Slot {
   final String id;
-  Gym? gym;
-  Activity? activity;
+  final String gymId;
+  final String activityId;
   final DateTime? start;
   final int duration;
   final int maxUsers;
@@ -13,8 +11,8 @@ class Slot {
 
   Slot({
     this.id = '',
-    this.gym,
-    this.activity,
+    this.gymId = '',
+    this.activityId = '',
     this.start,
     this.duration = 0,
     this.maxUsers = 0,
@@ -28,8 +26,8 @@ class Slot {
     var data = snapshot.data()!;
     return Slot(
       id: snapshot.id,
-      gym: null,
-      activity: null,
+      gymId: data['gymId'] ?? Slot().gymId,
+      activityId: data['activityId'] ?? Slot().activityId,
       start: data['start']?.toDate() ?? DateTime(0),
       duration: data['duration'] ?? Slot().duration,
       maxUsers: data['maxUsers'] ?? Slot().maxUsers,
@@ -40,8 +38,8 @@ class Slot {
   Map<String, dynamic> toFirestore() {
     return {
       'start': start,
-      if (gym != null) 'gymId': gym!.id,
-      if (activity != null) 'activityId': activity!.id,
+      'gymId': gymId,
+      'activityId': activityId,
       'duration': duration,
       'maxUsers': maxUsers,
       'bookedUsers': bookedUsers,

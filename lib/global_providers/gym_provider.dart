@@ -29,14 +29,17 @@ class GymProvider with ChangeNotifier {
 
   /// Adds a new gym to the gym list.
   Future<void> addGym(Gym gym) async {
-    await _gymService.setGym(gym);
-    _gymList!.add(gym);
-    notifyListeners();
+    String? gymId = await _gymService.addGym(gym);
+    if (gymId != null) {
+      gym.id = gymId;
+      _gymList!.add(gym);
+      notifyListeners();
+    }
   }
 
   /// Updates a gym in the gym list.
   Future<void> updateGym(Gym gym) async {
-    await _gymService.setGym(gym);
+    await _gymService.updateGym(gym);
     var index = _gymList!.indexWhere((element) => element.id == gym.id);
     _gymList![index] = gym;
     notifyListeners();
@@ -44,14 +47,14 @@ class GymProvider with ChangeNotifier {
 
   /// Removes a gym from the gym list.
   Future<void> removeGym(Gym gym) async {
-    await _gymService.deleteGym(gym);
-    _gymList!.remove(gym);
+    await _gymService.deleteGym(gym.id!);
+    _gymList!.removeWhere((element) => element.id == gym.id);
     notifyListeners();
   }
 
   /// Adds a new activity to the gym list.
   Future<void> addActivity(Gym gym, Activity activity) async {
-    await _gymService.setActivity(gym, activity);
+    await _gymService.setActivity(gym.id!, activity);
     var index = _gymList!.indexWhere((element) => element.id == gym.id);
     _gymList![index].activities.add(activity);
     notifyListeners();
@@ -59,7 +62,7 @@ class GymProvider with ChangeNotifier {
 
   /// Updates an activity in the gym list.
   Future<void> updateActivity(Gym gym, Activity activity) async {
-    await _gymService.setActivity(gym, activity);
+    await _gymService.setActivity(gym.id!, activity);
     var gymIndex = _gymList!.indexWhere((element) => element.id == gym.id);
     var activityIndex = _gymList![gymIndex].activities.indexWhere(
       (element) => element.id == activity.id,

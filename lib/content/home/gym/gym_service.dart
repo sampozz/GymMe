@@ -30,19 +30,34 @@ class GymService {
   }
 
   /// Sets a gym in the Firestore 'gym' collection.
-  /// If the gym does not exist, it will be created.
   /// Throws a FirebaseException if there is an error during the set operation.
   /// Returns the id of the set gym.
-  Future<String?> setGym(Gym gym) async {
+  Future<String?> addGym(Gym gym) async {
     try {
-      await FirebaseFirestore.instance
+      var ref = await FirebaseFirestore.instance
           .collection('gym')
           .withConverter(
             fromFirestore: Gym.fromFirestore,
             toFirestore: (Gym gym, options) => gym.toFirestore(),
           )
+          .add(gym);
+      return ref.id;
+    } catch (e) {
+      // TODO: Handle error
+      print(e);
+      rethrow;
+    }
+  }
+
+  /// Updates a gym in the Firestore 'gym' collection.
+  /// Throws a FirebaseException if there is an error during the set operation.
+  /// Returns the id of the set gym.
+  Future<String?> updateGym(Gym gym) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('gym')
           .doc(gym.id)
-          .set(gym);
+          .set(gym.toFirestore(), SetOptions(merge: true));
       return gym.id;
     } catch (e) {
       // TODO: Handle error
@@ -54,10 +69,10 @@ class GymService {
   /// Deletes a gym from the Firestore 'gym' collection.
   /// Throws a FirebaseException if there is an error during the delete operation.
   /// Returns the id of the deleted gym.
-  Future<String?> deleteGym(Gym gym) async {
+  Future<String?> deleteGym(String gymId) async {
     try {
-      await FirebaseFirestore.instance.collection('gym').doc(gym.id).delete();
-      return gym.id;
+      await FirebaseFirestore.instance.collection('gym').doc(gymId).delete();
+      return gymId;
     } catch (e) {
       // TODO: Handle error
       print(e);
@@ -68,9 +83,9 @@ class GymService {
   /// Updates the gym document in the Firestore 'gym' collection with the new activity.
   /// Throws a FirebaseException if there is an error during the set operation.
   /// Returns the id of the set activity.
-  Future<String?> setActivity(Gym gym, Activity activity) async {
+  Future<String?> setActivity(String gymId, Activity activity) async {
     try {
-      await FirebaseFirestore.instance.collection('gym').doc(gym.id).update({
+      await FirebaseFirestore.instance.collection('gym').doc(gymId).update({
         'activities': FieldValue.arrayUnion([activity.toFirestore()]),
       });
       return activity.id;

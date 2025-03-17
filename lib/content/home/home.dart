@@ -29,8 +29,9 @@ class Home extends StatelessWidget {
           color: Colors.white,
           backgroundColor: Colors.blue,
           onRefresh: () => _onRefresh(context),
-          child: ListView(
-            children: gymList.map((gym) => GymCard(gym: gym)).toList(),
+          child: ListView.builder(
+            itemCount: gymList.length,
+            itemBuilder: (context, index) => GymCard(gymIndex: index),
           ),
         );
   }
