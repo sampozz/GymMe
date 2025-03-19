@@ -36,7 +36,7 @@ class App extends StatelessWidget {
       title: 'Flutter Demo',
       // TODO: Decide App theme
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.cyan),
       ),
       home: const AuthGate(),
       // TODO: Add splash screen
