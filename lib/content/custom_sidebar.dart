@@ -7,14 +7,14 @@ class CustomSidebar extends StatelessWidget {
   final List pages;
   final int currentIndex;
   final Function(int) onTapCallback;
-  final GlobalKey<NavigatorState> navigatorKey;
+  final GlobalKey<NavigatorState>? navigatorKey;
 
   const CustomSidebar({
     super.key,
     required this.pages,
     required this.currentIndex,
     required this.onTapCallback,
-    required this.navigatorKey,
+    this.navigatorKey,
   });
 
   Widget _buildHeader(BuildContext context) {
@@ -92,7 +92,6 @@ class CustomSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: customize the sidebar theme
     return Container(
       height: double.infinity,
       width: 250,
@@ -117,7 +116,7 @@ class CustomSidebar extends StatelessWidget {
               title: page['title'],
               isSelected: pages.indexOf(page) == currentIndex,
               onTapCallback: () {
-                navigatorKey.currentState?.popUntil((route) => route.isFirst);
+                navigatorKey?.currentState?.popUntil((route) => route.isFirst);
                 onTapCallback(pages.indexOf(page));
               },
             );
