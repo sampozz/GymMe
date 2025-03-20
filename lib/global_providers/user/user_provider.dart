@@ -64,4 +64,27 @@ class UserProvider extends ChangeNotifier {
     _user = null;
     notifyListeners();
   }
+
+  /// This method will get the list of favourite gyms of the user
+  List<String> getFavouriteGyms() {
+    return _user?.favouriteGyms ?? [];
+  }
+
+  /// This method will add a gym to the favourite gyms list of the user
+  Future<void> addFavouriteGym(String gymId) async {
+    if (_user != null) {
+      _user!.favouriteGyms.add(gymId);
+      await _userService.updateUserFavourites(_user!);
+      notifyListeners();
+    }
+  }
+
+  /// This method will remove a gym from the favourite gyms list of the user
+  Future<void> removeFavouriteGym(String gymId) async {
+    if (_user != null) {
+      _user!.favouriteGyms.remove(gymId);
+      await _userService.updateUserFavourites(_user!);
+      notifyListeners();
+    }
+  }
 }
