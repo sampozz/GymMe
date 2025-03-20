@@ -106,7 +106,7 @@ class _AppScaffoldState extends State<AppScaffold> {
 
       // Floating action button to add a gym if the user is an admin
       floatingActionButton:
-          user != null && user.isAdmin
+          user != null && user.isAdmin && _currentIndex == 0
               ? FloatingActionButton(
                 child: Icon(Icons.add),
                 onPressed: () => _navigateToAddGym(context),

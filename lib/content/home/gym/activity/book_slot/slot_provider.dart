@@ -47,4 +47,11 @@ class SlotProvider extends ChangeNotifier {
     await _slotService.updateSlot(slot);
     notifyListeners();
   }
+
+  /// Create a new slot
+  Future<void> createSlot(Slot slot) async {
+    await _slotService.createSlot(slot);
+    _nextSlots = null;
+    notifyListeners();
+  }
 }
