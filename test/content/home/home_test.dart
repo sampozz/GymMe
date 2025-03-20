@@ -21,15 +21,20 @@ void main() {
       (WidgetTester tester) async {
         // Create an instance of the mock provider
         final mockGymProvider = MockGymProvider();
+        final mockUserProvider = MockUserProvider();
 
         // Stub the gymList to return fake data
         when(mockGymProvider.gymList).thenReturn(null);
+        when(mockUserProvider.user).thenReturn(User());
 
         // Build the widget with the mock provider
         await tester.pumpWidget(
           MultiProvider(
             providers: [
               ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
+              ChangeNotifierProvider<UserProvider>.value(
+                value: mockUserProvider,
+              ),
             ],
             child: MaterialApp(home: Home()),
           ),
