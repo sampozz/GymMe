@@ -1,13 +1,11 @@
 import 'package:dima_project/content/bookings/widgets/bookings.dart';
 import 'package:dima_project/content/custom_appbar.dart';
 import 'package:dima_project/content/custom_bottomnavbar.dart';
+import 'package:dima_project/content/custom_sidebar.dart';
 import 'package:dima_project/content/favourites/favourites.dart';
-import 'package:dima_project/content/home/gym/new_gym.dart';
 import 'package:dima_project/content/home/home.dart';
 import 'package:dima_project/content/profile/profile.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
-import 'package:dima_project/global_providers/user/user_model.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,6 +17,8 @@ class AppScaffold extends StatefulWidget {
 }
 
 class _AppScaffoldState extends State<AppScaffold> {
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
   // Current page of the navigation bar
   int _currentIndex = 0;
 
@@ -30,11 +30,6 @@ class _AppScaffoldState extends State<AppScaffold> {
     setState(() {
       _currentIndex = index;
     });
-  }
-
-  /// Navigate to the add gym page
-  void _navigateToAddGym(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => NewGym()));
   }
 
   /// Create list of pages to show in the navigation bar
@@ -79,39 +74,51 @@ class _AppScaffoldState extends State<AppScaffold> {
     ScreenProvider screenProvider = context.read<ScreenProvider>();
     screenProvider.screenData = MediaQuery.of(context);
 
-    // Get the user data
-    User? user = context.watch<UserProvider>().user;
-
     // TODO: setup internationalization
 
     _createPagesList();
 
-    return Scaffold(
-      // Top app bar
-      appBar: CustomAppBar(title: _pages[_currentIndex]["title"]),
+    return Row(
+      children: [
+        // Sidebar only if the screen is not mobile
+        !(screenProvider.useMobileLayout)
+            ? CustomSidebar(
+              pages: _pages,
+              currentIndex: _currentIndex,
+              onTapCallback: _navigateTab,
+              navigatorKey: navigatorKey,
+            )
+            : Container(),
+        Expanded(
+          child: Navigator(
+            key: navigatorKey,
+            onGenerateRoute: (settings) {
+              return MaterialPageRoute(
+                builder:
+                    (context) => Scaffold(
+                      // Top app bar
+                      appBar: CustomAppBar(
+                        title: _pages[_currentIndex]["title"],
+                      ),
 
-      // Widget selected in the navigation bar
-      body: _pages[_currentIndex]["widget"],
+                      // Widget selected in the navigation bar
+                      body: _pages[_currentIndex]["widget"],
 
-      // Create bottom navigation bar only if the screen is mobile
-      // TODO: Create navbar for wider devices
-      bottomNavigationBar:
-          screenProvider.useMobileLayout
-              ? CustomBottomNavBar(
-                pages: _pages,
-                currentIndex: _currentIndex,
-                onTapCallback: _navigateTab,
-              )
-              : null,
-
-      // Floating action button to add a gym if the user is an admin
-      floatingActionButton:
-          user != null && user.isAdmin && _currentIndex == 0
-              ? FloatingActionButton(
-                child: Icon(Icons.add),
-                onPressed: () => _navigateToAddGym(context),
-              )
-              : null,
+                      // Create bottom navigation bar only if the screen is mobile
+                      bottomNavigationBar:
+                          screenProvider.useMobileLayout
+                              ? CustomBottomNavBar(
+                                pages: _pages,
+                                currentIndex: _currentIndex,
+                                onTapCallback: _navigateTab,
+                              )
+                              : null,
+                    ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
