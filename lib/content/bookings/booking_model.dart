@@ -1,34 +1,56 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Booking {
-  String id;
+  String? id;
   String title;
   String description;
   DateTime? dateTime;
   int duration;
   String userId;
   String gymId;
+  String slotId;
+  String activityId;
 
   Booking({
-    this.id = '',
+    this.id,
     this.title = '',
     this.description = '',
     this.dateTime,
     this.duration = 0,
     this.userId = '',
     this.gymId = '',
+    this.slotId = '',
+    this.activityId = '',
   });
 
-  factory Booking.fromJson(Map<String, dynamic> json) {
+  factory Booking.fromFirestore(
+    DocumentSnapshot<Map<String, dynamic>> snapshot,
+    SnapshotOptions? options,
+  ) {
+    var data = snapshot.data()!;
     return Booking(
-      id: json['id'] ?? Booking().id,
-      title: json['title'] ?? Booking().title,
-      description: json['description'] ?? Booking().description,
-      dateTime:
-          json['date'] != null
-              ? DateTime.parse(json['date'])
-              : Booking().dateTime,
-      duration: json['duration'] ?? Booking().duration,
-      userId: json['userId'] ?? Booking().userId,
-      gymId: json['gymId'] ?? Booking().gymId,
+      id: snapshot.id,
+      title: data['title'] ?? Booking().title,
+      description: data['description'] ?? Booking().description,
+      dateTime: data['date']?.toDate() ?? Booking().dateTime,
+      duration: data['duration'] ?? Booking().duration,
+      userId: data['userId'] ?? Booking().userId,
+      gymId: data['gymId'] ?? Booking().gymId,
+      slotId: data['slotId'] ?? Booking().slotId,
+      activityId: data['activityId'] ?? Booking().activityId,
     );
+  }
+
+  Map<String, dynamic> toFirestore() {
+    return {
+      'title': title,
+      'description': description,
+      'date': dateTime,
+      'duration': duration,
+      'userId': userId,
+      'gymId': gymId,
+      'slotId': slotId,
+      'activityId': activityId,
+    };
   }
 }
