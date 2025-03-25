@@ -37,7 +37,6 @@ class GymCard extends StatelessWidget {
     Gym gym = context.watch<GymProvider>().gymList![gymIndex];
     User? user = context.watch<UserProvider>().user!;
     bool isFavourite = user.favouriteGyms.contains(gym.id);
-    print(isFavourite);
 
     // TODO: Customize the card with more information
     return GestureDetector(

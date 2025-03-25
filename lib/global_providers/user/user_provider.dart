@@ -37,7 +37,7 @@ class UserProvider extends ChangeNotifier {
   /// If the user is not found in Firestore, the _user property will be set to null
   Future<User?> signIn(String email, String password) async {
     // Sign in with email and password
-    await _userService.signInWithEmailAndPassword(email, password);
+    //await _userService.signInWithEmailAndPassword(email, password);
     // Get the current firebase user, this user is needed to fetch the user data from Firestore
     auth.User? firebaseUser = _auth.currentUser;
 

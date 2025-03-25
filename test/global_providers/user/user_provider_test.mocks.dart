@@ -104,6 +104,15 @@ class MockUserService extends _i1.Mock implements _i4.UserService {
             returnValue: _i5.Future<_i6.User?>.value(),
           )
           as _i5.Future<_i6.User?>);
+
+  @override
+  _i5.Future<void> updateUserFavourites(_i6.User? user) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateUserFavourites, [user]),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 }
 
 /// A class which mocks [User].
