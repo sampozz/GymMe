@@ -108,6 +108,7 @@ class _GymAppState extends State<GymMap> {
     // TODO: implement map interface
     return GoogleMap(
       onMapCreated: _onMapCreated,
+      cloudMapId: '7a4015798822680c',
       initialCameraPosition: CameraPosition(
         target: _currentPosition,
         zoom: 14,

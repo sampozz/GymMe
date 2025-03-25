@@ -43,16 +43,16 @@ void main() {
   
   // Test that verifies if location permissions are properly requested
   testWidgets('GymMap requests location permissions on initialization', (WidgetTester tester) async {
-    // Creiamo uno spy sul nostro mock per verificare che i metodi vengano chiamati
+    // Create a spy on our mock to verify that methods are called
     final spyGeolocator = MockGeolocatorPlatform();
     GeolocatorPlatform.instance = spyGeolocator;
     
     await tester.pumpWidget(const MaterialApp(home: Scaffold(body: GymMap())));
     
-    // Diamo il tempo all'app di processare le operazioni asincrone
+    // Give the app time to process asynchronous operations
     await tester.pumpAndSettle(const Duration(seconds: 1));
     
-    // Non possiamo usare verify con la classe modificata, quindi facciamo un'asserzione base
+    // We cannot use verify with the modified class, so we make a basic assertion
     expect(find.byType(GymMap), findsOneWidget);
   });
   
@@ -62,16 +62,16 @@ void main() {
     final mockGeolocator = MockGeolocatorPlatform();
     GeolocatorPlatform.instance = mockGeolocator;
     
-    // Usiamo thenAnswer invece di thenReturn per i Future
+    // Use thenAnswer instead of thenReturn for Futures
     // when(mockGeolocator.checkPermission()).thenAnswer((_) => Future.value(LocationPermission.whileInUse));
     
     await tester.pumpWidget(const MaterialApp(home: Scaffold(body: GymMap())));
     
-    // Diamo il tempo all'app di processare le operazioni asincrone
+    // Give the app time to process asynchronous operations
     await tester.pumpAndSettle(const Duration(seconds: 1));
     
-    // In una situazione reale, avremmo bisogno di attendere che la UI si aggiorni
-    // Questa è un'asserzione di base che dovrebbe passare
+    // In a real situation, we would need to wait for the UI to update
+    // This is a basic assertion that should pass
     expect(find.byType(GoogleMap), findsOneWidget);
   });
   
@@ -79,13 +79,13 @@ void main() {
   testWidgets('GymMap contains a GoogleMap widget', (WidgetTester tester) async {
     await tester.pumpWidget(const MaterialApp(home: Scaffold(body: GymMap())));
     
-    // Diamo tempo all'app di renderizzare
+    // Give the app time to render
     await tester.pumpAndSettle();
     
-    // Verifichiamo che ci sia un widget GoogleMap
+    // Verify that there is a GoogleMap widget
     expect(find.byType(GoogleMap), findsOneWidget);
     
-    // Verifichiamo l'impostazione iniziale di Milano
+    // Verify the initial setting of Milan
     final googleMapWidget = tester.widget<GoogleMap>(find.byType(GoogleMap));
     expect(googleMapWidget.initialCameraPosition.target.latitude, 45.46427);
     expect(googleMapWidget.initialCameraPosition.target.longitude, 9.18951);

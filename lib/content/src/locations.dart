@@ -25,7 +25,6 @@ class Gym {
   Gym({
     required this.address,
     required this.id,
-    required this.image,
     required this.lat,
     required this.lng,
     required this.name,
@@ -36,7 +35,6 @@ class Gym {
 
   final String address;
   final String id;
-  final String image;
   final double lat;
   final double lng;
   final String name;
@@ -54,10 +52,34 @@ class Locations {
   final List<Gym> gyms;
 }
 
-Future<Locations> getGymLocations() async {
-  // TODO: ask Firebase for the gym locations
-
+Future<Map <String, double>> getCoordinatesFromAddress(String address) async {
   try {
+    List<Location> locations = await locationFromAddress(address);
+
+    if (locations.isNotEmpty) {
+      return {
+        'lat': locations.first.latitude,
+        'lng': locations.first.longitude,
+      };
+    }
+    return { 'lat': 0.0, 'lng': 0.0 }; // Return a default value if no location is found
+  }
+  catch (e) {
+    if (kDebugMode) {
+      print('Error geocoding address: $e');
+    }
+    return { 'lat': 0.0, 'lng': 0.0 }; // Return a default value if an error occurs
+  }
+}
+
+Future<Locations> getGymLocations() async {
+  try {
+    final firestoreInstance = FirebaseFirestore.instance;
+    final gymsCollection = await firestoreInstance.collection('gym').get();
+
+    List<Gym> gyms = [];
+
+    
     // TODO: wait for response and if successful return json.decode as Map<String, dynamic>
   } catch (e) {
     if (kDebugMode) {
