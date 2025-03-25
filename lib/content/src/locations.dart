@@ -74,12 +74,12 @@ Future<Map <String, double>> getCoordinatesFromAddress(String address) async {
 
 Future<Locations> getGymLocations() async {
   try {
-    final firestoreInstance = FirebaseFirestore.instance;
-    final gymsCollection = await firestoreInstance.collection('gym').get();
+    //final firestoreInstance = FirebaseFirestore.instance;
+    //final gymsCollection = await firestoreInstance.collection('gym').get();
 
-    List<Gym> gyms = [];
+    //List<Gym> gyms = [];
 
-    
+
     // TODO: wait for response and if successful return json.decode as Map<String, dynamic>
   } catch (e) {
     if (kDebugMode) {
