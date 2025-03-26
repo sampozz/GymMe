@@ -66,5 +66,4 @@ class DefaultFirebaseOptions {
     projectId: 'dima-app-ea636',
     storageBucket: 'dima-app-ea636.firebasestorage.app',
   );
-
 }

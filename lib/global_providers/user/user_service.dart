@@ -49,4 +49,17 @@ class UserService {
     // Create and return User object
     return userDoc.data();
   }
+
+  /// This method will update the user favourite gyms in Firestore
+  Future<void> updateUserFavourites(User user) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    try {
+      await firestore.collection('users').doc(user.uid).update({
+        'favouriteGyms': user.favouriteGyms,
+      });
+    } catch (e) {
+      // TODO: Handle error
+      print('Error updating favourite gyms');
+    }
+  }
 }

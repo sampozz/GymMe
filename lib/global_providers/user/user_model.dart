@@ -7,6 +7,7 @@ class User {
   String photoURL;
   String phoneNumber;
   bool isAdmin;
+  List<String> favouriteGyms;
 
   User({
     this.uid = '',
@@ -15,6 +16,7 @@ class User {
     this.photoURL = 'assets/avatar.png',
     this.phoneNumber = '',
     this.isAdmin = false,
+    this.favouriteGyms = const [],
   });
 
   factory User.fromFirestore(
@@ -29,6 +31,7 @@ class User {
       photoURL: data['photoURL'] ?? User().photoURL,
       phoneNumber: data['phoneNumber'] ?? User().phoneNumber,
       isAdmin: data['isAdmin'] ?? User().isAdmin,
+      favouriteGyms: List<String>.from(data['favouriteGyms'] ?? []),
     );
   }
 
@@ -40,6 +43,7 @@ class User {
       'photoURL': photoURL,
       'phoneNumber': phoneNumber,
       'isAdmin': isAdmin,
+      'favouriteGyms': favouriteGyms,
     };
   }
 }

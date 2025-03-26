@@ -46,10 +46,22 @@ class ActivityCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => _navigateToBookSlotPage(context, gym.id!, activity.id!),
       child: Card(
-        child: SizedBox(
-          width: 200,
-          height: 50,
-          child: Center(child: Text(activity.name)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        elevation: 5,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                activity.name,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
         ),
       ),
     );

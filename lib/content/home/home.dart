@@ -31,7 +31,7 @@ class Home extends StatelessWidget {
     // TODO: replace CircularProgressIndicator with shimmer effect https://docs.flutter.dev/cookbook/effects/shimmer-loading
     return Scaffold(
       body:
-          gymList == null
+          (gymList == null || user == null)
               // If the gym list is null, show a loading indicator
               ? Center(child: CircularProgressIndicator())
               // If the gym list is not null, show the gym list
@@ -42,7 +42,13 @@ class Home extends StatelessWidget {
                 onRefresh: () => _onRefresh(context),
                 child: ListView.builder(
                   itemCount: gymList.length,
-                  itemBuilder: (context, index) => GymCard(gymIndex: index),
+                  itemBuilder:
+                      (context, index) => GymCard(
+                        gymIndex: index,
+                        isFavourite: user.favouriteGyms.contains(
+                          gymList[index].id,
+                        ),
+                      ),
                 ),
               ),
       floatingActionButton:
