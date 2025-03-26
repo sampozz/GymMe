@@ -37,7 +37,7 @@ class UserProvider extends ChangeNotifier {
   /// If the user is not found in Firestore, the _user property will be set to null
   Future<User?> signIn(String email, String password) async {
     // Sign in with email and password
-    //await _userService.signInWithEmailAndPassword(email, password);
+    await _userService.signInWithEmailAndPassword(email, password);
     // Get the current firebase user, this user is needed to fetch the user data from Firestore
     auth.User? firebaseUser = _auth.currentUser;
 
@@ -65,9 +65,10 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// This method will get the list of favourite gyms of the user
-  List<String> getFavouriteGyms() {
-    return _user?.favouriteGyms ?? [];
+  /// This method will fetch the user data from Firestore
+  /// If the user is not found in Firestore, the method will return null
+  Future<User?> fetchUser() async {
+    return await _userService.fetchUser(_auth.currentUser!);
   }
 
   /// This method will add a gym to the favourite gyms list of the user

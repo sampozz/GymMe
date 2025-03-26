@@ -10,7 +10,8 @@ class Favourites extends StatelessWidget {
 
   /// Refreshes the gym list by fetching it from the provider
   Future<void> _onRefresh(BuildContext context) async {
-    Provider.of<UserProvider>(context, listen: false).getFavouriteGyms();
+    Provider.of<UserProvider>(context, listen: false).fetchUser();
+    Provider.of<GymProvider>(context, listen: false).getGymList();
   }
 
   @override
@@ -34,7 +35,7 @@ class Favourites extends StatelessWidget {
           itemBuilder:
               (context, index) =>
                   (favouriteGymsIds.contains(gymList[index].id))
-                      ? GymCard(gymIndex: index)
+                      ? GymCard(gymIndex: index, isFavourite: true)
                       : Container(),
         ),
       );

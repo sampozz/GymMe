@@ -1,6 +1,8 @@
 import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/content/home/gym/gym_card.dart';
+import 'package:dima_project/global_providers/user/user_model.dart';
+import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,12 +17,13 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Gym>? gymList = context.watch<GymProvider>().gymList;
+    User? user = context.watch<UserProvider>().user;
 
     // TODO: sort the gym list by distance
     // TODO: add a search bar to filter the gym list
     // TODO: show next bookings if any
     // TODO: replace CircularProgressIndicator with shimmer effect https://docs.flutter.dev/cookbook/effects/shimmer-loading
-    return gymList == null
+    return (gymList == null || user == null)
         // If the gym list is null, show a loading indicator
         ? Center(child: CircularProgressIndicator())
         // If the gym list is not null, show the gym list
@@ -31,7 +34,11 @@ class Home extends StatelessWidget {
           onRefresh: () => _onRefresh(context),
           child: ListView.builder(
             itemCount: gymList.length,
-            itemBuilder: (context, index) => GymCard(gymIndex: index),
+            itemBuilder:
+                (context, index) => GymCard(
+                  gymIndex: index,
+                  isFavourite: user.favouriteGyms.contains(gymList[index].id),
+                ),
           ),
         );
   }
