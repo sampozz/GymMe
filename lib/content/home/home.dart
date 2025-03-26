@@ -24,7 +24,6 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     User? user = context.watch<UserProvider>().user;
     List<Gym>? gymList = context.watch<GymProvider>().gymList;
-    User? user = context.watch<UserProvider>().user;
 
     // TODO: sort the gym list by distance
     // TODO: add a search bar to filter the gym list
@@ -43,11 +42,13 @@ class Home extends StatelessWidget {
                 onRefresh: () => _onRefresh(context),
                 child: ListView.builder(
                   itemCount: gymList.length,
-                  itemBuilder: 
-                    (context, index) => GymCard(
-                      gymIndex: index
-                      isFavourite: user.favouriteGyms.contains(gymList[index].id),
-                    ),
+                  itemBuilder:
+                      (context, index) => GymCard(
+                        gymIndex: index,
+                        isFavourite: user.favouriteGyms.contains(
+                          gymList[index].id,
+                        ),
+                      ),
                 ),
               ),
       floatingActionButton:

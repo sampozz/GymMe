@@ -32,7 +32,7 @@ void main() {
             ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
             ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
           ],
-          child: MaterialApp(home: GymCard(gymIndex: 0)),
+          child: MaterialApp(home: GymCard(gymIndex: 0, isFavourite: true)),
         ),
       );
 
