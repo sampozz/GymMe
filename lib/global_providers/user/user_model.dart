@@ -13,7 +13,7 @@ class User {
     this.uid = '',
     this.displayName = '',
     this.email = '',
-    this.photoURL = '',
+    this.photoURL = 'assets/avatar.png',
     this.phoneNumber = '',
     this.isAdmin = false,
     this.favouriteGyms = const [],

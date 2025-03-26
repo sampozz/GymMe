@@ -8,7 +8,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: Customize appbar
-    return AppBar(backgroundColor: Colors.blue, title: Text(title));
+    return AppBar(
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+      title: Text(title),
+    );
   }
 
   @override

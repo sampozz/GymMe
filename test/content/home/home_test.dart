@@ -32,6 +32,9 @@ void main() {
           MultiProvider(
             providers: [
               ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
+              ChangeNotifierProvider<UserProvider>.value(
+                value: mockUserProvider,
+              ),
             ],
             child: MaterialApp(home: Home()),
           ),
