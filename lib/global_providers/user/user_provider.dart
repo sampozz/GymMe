@@ -39,6 +39,19 @@ class UserProvider extends ChangeNotifier {
     // Sign in with email and password
     await _userService.signInWithEmailAndPassword(email, password);
     // Get the current firebase user, this user is needed to fetch the user data from Firestore
+    return fetchUser();
+  }
+
+  /// This method will sign out the user and set the _user property to null
+  Future<void> signOut() async {
+    await _userService.signOut();
+    _user = null;
+    notifyListeners();
+  }
+
+  /// This method will fetch the user data from Firestore
+  /// If the user is not found in Firestore, the method will return null
+  Future<User?> fetchUser() async {
     auth.User? firebaseUser = _auth.currentUser;
 
     if (firebaseUser == null) {
@@ -56,19 +69,6 @@ class UserProvider extends ChangeNotifier {
 
     notifyListeners();
     return _user;
-  }
-
-  /// This method will sign out the user and set the _user property to null
-  Future<void> signOut() async {
-    await _userService.signOut();
-    _user = null;
-    notifyListeners();
-  }
-
-  /// This method will fetch the user data from Firestore
-  /// If the user is not found in Firestore, the method will return null
-  Future<User?> fetchUser() async {
-    return await _userService.fetchUser(_auth.currentUser!);
   }
 
   /// This method will add a gym to the favourite gyms list of the user
