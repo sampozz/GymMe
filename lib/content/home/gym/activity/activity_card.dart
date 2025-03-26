@@ -26,7 +26,7 @@ class ActivityCard extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder:
-            (context) => ChangeNotifierProvider<SlotProvider>(
+            (_) => ChangeNotifierProvider<SlotProvider>(
               create: (_) => SlotProvider(gymId: gymId, activityId: activityId),
               child: BookSlotPage(
                 gymIndex: gymIndex,

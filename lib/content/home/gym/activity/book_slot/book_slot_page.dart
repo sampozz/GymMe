@@ -1,6 +1,7 @@
 import 'package:dima_project/content/bookings/bookings_provider.dart';
 import 'package:dima_project/content/home/gym/activity/activity_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/confirm_booking_modal.dart';
+import 'package:dima_project/content/home/gym/activity/book_slot/new_slot.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_card.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart';
@@ -38,6 +39,20 @@ class BookSlotPage extends StatelessWidget {
     }
   }
 
+  /// Navigate to the add slot page
+  void _addSlot(BuildContext context, Gym gym, Activity activity) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (_) => ChangeNotifierProvider.value(
+              value: context.read<SlotProvider>(),
+              child: NewSlot(gymId: gym.id!, activityId: activity.id!),
+            ),
+      ),
+    );
+  }
+
   void _showBookingModal(
     BuildContext context,
     String gymId,
@@ -48,14 +63,10 @@ class BookSlotPage extends StatelessWidget {
       context: context,
       useRootNavigator: true,
       builder:
-          (context) => MultiProvider(
+          (_) => MultiProvider(
             providers: [
-              ChangeNotifierProvider(
-                create:
-                    (context) =>
-                        SlotProvider(gymId: gymId, activityId: activityId),
-              ),
-              ChangeNotifierProvider(create: (context) => BookingsProvider()),
+              ChangeNotifierProvider.value(value: context.read<SlotProvider>()),
+              ChangeNotifierProvider(create: (_) => BookingsProvider()),
             ],
             child: ConfirmBookingModal(slot: slot),
           ),
@@ -104,9 +115,13 @@ class BookSlotPage extends StatelessWidget {
             },
             if (user != null && user.isAdmin)
               ElevatedButton(
-                onPressed: () => _deleteActivity(context, gym, activity),
-                child: Text('Delete Activity'),
+                onPressed: () => _addSlot(context, gym, activity),
+                child: Text('Add Slot'),
               ),
+            ElevatedButton(
+              onPressed: () => _deleteActivity(context, gym, activity),
+              child: Text('Delete Activity'),
+            ),
           ],
         ),
       ),
