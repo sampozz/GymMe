@@ -78,47 +78,68 @@ class _AppScaffoldState extends State<AppScaffold> {
 
     _createPagesList();
 
-    return Row(
-      children: [
-        // Sidebar only if the screen is not mobile
-        !(screenProvider.useMobileLayout)
-            ? CustomSidebar(
-              pages: _pages,
-              currentIndex: _currentIndex,
-              onTapCallback: _navigateTab,
-              navigatorKey: navigatorKey,
-            )
-            : Container(),
-        Expanded(
-          child: Navigator(
-            key: navigatorKey,
-            onGenerateRoute: (settings) {
-              return MaterialPageRoute(
-                builder:
-                    (context) => Scaffold(
-                      // Top app bar
-                      appBar: CustomAppBar(
-                        title: _pages[_currentIndex]["title"],
-                      ),
-
-                      // Widget selected in the navigation bar
-                      body: _pages[_currentIndex]["widget"],
-
-                      // Create bottom navigation bar only if the screen is mobile
-                      bottomNavigationBar:
-                          screenProvider.useMobileLayout
-                              ? CustomBottomNavBar(
-                                pages: _pages,
-                                currentIndex: _currentIndex,
-                                onTapCallback: _navigateTab,
-                              )
-                              : null,
-                    ),
-              );
-            },
-          ),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.white, Theme.of(context).colorScheme.primary],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
-      ],
+      ),
+      child: Row(
+        children: [
+          // Sidebar only if the screen is not mobile
+          !(screenProvider.useMobileLayout)
+              ? CustomSidebar(
+                pages: _pages,
+                currentIndex: _currentIndex,
+                onTapCallback: _navigateTab,
+                navigatorKey: navigatorKey,
+              )
+              : Container(),
+          Expanded(
+            child: Navigator(
+              key: navigatorKey,
+              onGenerateRoute: (settings) {
+                return MaterialPageRoute(
+                  builder:
+                      (context) => Scaffold(
+                        backgroundColor: Colors.transparent,
+                        // Widget selected in the navigation bar
+                        body: Stack(
+                          children: [
+                            _pages[_currentIndex]["widget"],
+
+                            screenProvider.useMobileLayout
+                                ? Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: CustomBottomNavBar(
+                                    pages: _pages,
+                                    currentIndex: _currentIndex,
+                                    onTapCallback: _navigateTab,
+                                    navigatorKey: navigatorKey,
+                                  ),
+                                )
+                                : Container(),
+                          ],
+                        ),
+
+                        // // Create bottom navigation bar only if the screen is mobile
+                        // bottomNavigationBar:
+                        //     screenProvider.useMobileLayout
+                        //         ? CustomBottomNavBar(
+                        //           pages: _pages,
+                        //           currentIndex: _currentIndex,
+                        //           onTapCallback: _navigateTab,
+                        //         )
+                        //         : null,
+                      ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

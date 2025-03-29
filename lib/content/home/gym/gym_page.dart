@@ -48,7 +48,7 @@ class GymPage extends StatelessWidget {
 
     // TODO: create gym page
     return Scaffold(
-      appBar: CustomAppBar(title: "Gym"),
+      appBar: AppBar(title: Text(gym.name)),
       body: Center(
         child: Column(
           children: [

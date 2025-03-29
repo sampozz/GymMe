@@ -28,6 +28,25 @@ class GymCard extends StatelessWidget {
     }
   }
 
+  bool _isOpen(Gym gym) {
+    final now = DateTime.now();
+    final openTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      gym.openTime?.hour ?? 0,
+      gym.openTime?.minute ?? 0,
+    );
+    final closeTime = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      gym.closeTime?.hour ?? 0,
+      gym.closeTime?.minute ?? 0,
+    );
+    return now.isAfter(openTime) && now.isBefore(closeTime);
+  }
+
   @override
   Widget build(BuildContext context) {
     Gym gym = context.watch<GymProvider>().gymList![gymIndex];
@@ -35,36 +54,109 @@ class GymCard extends StatelessWidget {
     // TODO: Customize the card with more information
     return GestureDetector(
       onTap: () => _onGymCardTap(context),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        elevation: 5,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 10.0),
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
+              Stack(
                 children: [
-                  Text(
-                    gym.name,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15.0),
+                      topRight: Radius.circular(15.0),
+                    ),
+                    child: Image.network(
+                      gym.imageUrl,
+                      fit: BoxFit.fitWidth,
+                      height: 150,
+                      width: double.infinity,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        }
+                        return Center(
+                          child: LinearProgressIndicator(
+                            value:
+                                loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        (loadingProgress.expectedTotalBytes ??
+                                            1)
+                                    : null,
+                          ),
+                        );
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/gym.jpeg',
+                          fit: BoxFit.fitWidth,
+                          height: 150,
+                          width: double.infinity,
+                        );
+                      },
+                    ),
                   ),
-                  GestureDetector(
-                    onTap: () => _onFavoriteIconTap(context, gym.id!),
-                    child: Icon(
-                      isFavourite ? Icons.favorite : Icons.favorite_border,
-                      color: isFavourite ? Colors.red : Colors.grey,
+
+                  Positioned(
+                    top: 8.0,
+                    right: 8.0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: Colors.white,
+                      ),
+                      child: IconButton(
+                        icon: Icon(
+                          isFavourite ? Icons.favorite : Icons.favorite_border,
+                          color:
+                              isFavourite
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Colors.grey,
+                          size: 20,
+                        ),
+                        onPressed: () => _onFavoriteIconTap(context, gym.id!),
+                      ),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 10),
-              Text(
-                'This is a description of the gym.',
-                style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+              Container(
+                padding: const EdgeInsets.fromLTRB(8, 5, 8, 8),
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      gym.name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
+                    ),
+                    Text(gym.address, style: TextStyle(fontSize: 12)),
+                    SizedBox(height: 5),
+                    SizedBox(
+                      width: 100,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.circle,
+                            color: _isOpen(gym) ? Colors.green : Colors.red,
+                            size: 10,
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            _isOpen(gym) ? 'Now open' : 'Closed',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

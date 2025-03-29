@@ -59,7 +59,11 @@ class CustomSidebar extends StatelessWidget {
       child: Row(
         children: [
           CircleAvatar(
-            backgroundImage: AssetImage(user?.photoURL ?? 'assets/avatar.png'),
+            backgroundImage: AssetImage(
+              (user == null || user.photoURL.isEmpty)
+                  ? 'assets/avatar.png'
+                  : user.photoURL,
+            ),
             radius: 20,
           ),
           SizedBox(width: 10),
@@ -92,38 +96,44 @@ class CustomSidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: double.infinity,
-      width: 250,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Theme.of(context).colorScheme.primary,
-            Theme.of(context).colorScheme.secondary,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        height: double.infinity,
+        width: 250,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Theme.of(context).colorScheme.primary,
+              Theme.of(context).colorScheme.primary.withValues(alpha: 200),
+            ],
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(context),
+            _buildItemsTitle(context),
+            ...pages.map((page) {
+              return SidebarItem(
+                icon: page['icon'],
+                title: page['title'],
+                isSelected: pages.indexOf(page) == currentIndex,
+                onTapCallback: () {
+                  navigatorKey?.currentState?.popUntil(
+                    (route) => route.isFirst,
+                  );
+                  onTapCallback(pages.indexOf(page));
+                },
+              );
+            }),
+            Expanded(child: Container()),
+            _buildFooter(context),
           ],
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(context),
-          _buildItemsTitle(context),
-          ...pages.map((page) {
-            return SidebarItem(
-              icon: page['icon'],
-              title: page['title'],
-              isSelected: pages.indexOf(page) == currentIndex,
-              onTapCallback: () {
-                navigatorKey?.currentState?.popUntil((route) => route.isFirst);
-                onTapCallback(pages.indexOf(page));
-              },
-            );
-          }),
-          Expanded(child: Container()),
-          _buildFooter(context),
-        ],
       ),
     );
   }
@@ -160,7 +170,7 @@ class _SidebarItemState extends State<SidebarItem> {
         onTap: () => widget.onTapCallback(),
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(20),
             color:
                 widget.isSelected || _isHovered
                     ? Colors.white.withAlpha(20)

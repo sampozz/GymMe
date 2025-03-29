@@ -75,8 +75,8 @@ class UserProvider extends ChangeNotifier {
   Future<void> addFavouriteGym(String gymId) async {
     if (_user != null) {
       _user!.favouriteGyms.add(gymId);
-      await _userService.updateUserFavourites(_user!);
       notifyListeners();
+      await _userService.updateUserFavourites(_user!);
     }
   }
 
@@ -84,8 +84,8 @@ class UserProvider extends ChangeNotifier {
   Future<void> removeFavouriteGym(String gymId) async {
     if (_user != null) {
       _user!.favouriteGyms.remove(gymId);
-      await _userService.updateUserFavourites(_user!);
       notifyListeners();
+      await _userService.updateUserFavourites(_user!);
     }
   }
 }

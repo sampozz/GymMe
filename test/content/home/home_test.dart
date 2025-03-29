@@ -2,18 +2,20 @@ import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/content/home/gym/gym_card.dart';
 import 'package:dima_project/content/home/home.dart';
+import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
-// Create a mock of GymProvider
-class MockGymProvider extends Mock implements GymProvider {}
+import 'home_test.mocks.dart';
 
 class MockUserProvider extends Mock implements UserProvider {}
 
+@GenerateMocks([GymProvider])
 void main() {
   group('Home tests', () {
     testWidgets(
@@ -25,6 +27,7 @@ void main() {
 
         // Stub the gymList to return fake data
         when(mockGymProvider.gymList).thenReturn(null);
+        when(mockGymProvider.getGymList()).thenAnswer((_) async => []);
         when(mockUserProvider.user).thenReturn(User());
 
         // Build the widget with the mock provider
@@ -34,6 +37,9 @@ void main() {
               ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
               ChangeNotifierProvider<UserProvider>.value(
                 value: mockUserProvider,
+              ),
+              ChangeNotifierProvider<ScreenProvider>(
+                create: (_) => ScreenProvider(),
               ),
             ],
             child: MaterialApp(home: Home()),
@@ -57,6 +63,7 @@ void main() {
 
       // Stub the gymList to return fake data
       when(mockGymProvider.gymList).thenReturn([Gym(name: 'Gym 1')]);
+      when(mockGymProvider.getGymIndex(any)).thenReturn(0);
       when(mockUserProvider.user).thenReturn(User());
 
       // Build the widget with the mock provider
@@ -65,6 +72,9 @@ void main() {
           providers: [
             ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
             ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
+            ChangeNotifierProvider<ScreenProvider>(
+              create: (_) => ScreenProvider(),
+            ),
           ],
           child: MaterialApp(home: Home()),
         ),

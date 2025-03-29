@@ -36,7 +36,24 @@ class App extends StatelessWidget {
       title: 'Flutter Demo',
       // TODO: Decide App theme
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.cyan),
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.blue, // Base primary swatch (closest to navy)
+          accentColor: Color(0xFFFFC107), // Gold as secondary color
+          backgroundColor: Color(0xFFF5F5F5), // Light gray background
+          cardColor: Color(0xFFFFFFFF), // White surface for cards
+          errorColor: Color(0xFFD32F2F), // Strong red for errors
+        ).copyWith(
+          primary: Color(0xFF000080), // Navy Blue (custom primary)
+          secondary: Color(0xFFFFC107), // Gold (custom secondary)
+          tertiary: Color(0xFF4C9AFF), // Lighter Blue for accents
+          surface: Color(0xFFAAFFE5), // White surface
+          error: Color(0xFFD32F2F), // Standard material red for errors
+          onPrimary: Colors.white, // White text/icons on primary (navy)
+          onSecondary: Colors.black, // Black text/icons on secondary (gold)
+          onTertiary: Colors.white, // White text/icons on lighter blue
+          onSurface: Colors.black, // Black text on white surfaces
+          onError: Colors.white, // White text on red error color
+        ),
       ),
       home: const AuthGate(),
       // TODO: Add splash screen
