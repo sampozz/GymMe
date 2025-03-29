@@ -2,6 +2,7 @@ import 'package:dima_project/auth_gate/auth_gate.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:dima_project/global_providers/map_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => ScreenProvider()),
         ChangeNotifierProvider(create: (context) => UserProvider()),
         ChangeNotifierProvider(create: (context) => GymProvider()),
+        ChangeNotifierProvider(create: (context) => MapProvider()),
       ],
       // Root app
       child: const App(),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
-import '../src/locations.dart' as locations;
+import 'package:dima_project/global_providers/gym_provider.dart';
+import 'package:dima_project/global_providers/map_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:dima_project/content/home/gym/gym_model.dart';
 
 class GymMap extends StatefulWidget {
   const GymMap({super.key});
@@ -13,6 +15,7 @@ class GymMap extends StatefulWidget {
 class _GymAppState extends State<GymMap> {
   GoogleMapController? mapController;
   final Map<String, Marker> _markers = {};
+  List<Gym>? gymList;
   LatLng _currentPosition = const LatLng(45.46427, 9.18951);
   bool _locationGranted = false;
 
@@ -20,27 +23,14 @@ class _GymAppState extends State<GymMap> {
   void initState() {
     super.initState();
     _getUserLocation();
+    _loadGymList();
   }
 
   Future<void> _getUserLocation() async {
     try {
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-      }
+      final position = await context.read<MapProvider>().getUserLocation();
 
-      if (permission == LocationPermission.deniedForever) {
-        // Permissions are denied forever, handle appropriately
-        setState(() {
-          _locationGranted = false;
-        });
-        return;
-      }
-
-      if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
-        Position position = await Geolocator.getCurrentPosition(
-          locationSettings: const LocationSettings(accuracy: LocationAccuracy.high)
-        );
+      if (position != null) {
         setState(() {
           _currentPosition = LatLng(position.latitude, position.longitude);
           _locationGranted = true;
@@ -51,47 +41,60 @@ class _GymAppState extends State<GymMap> {
         });
       }
 
-            if (mapController != null) {
-        mapController!.animateCamera(CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: _currentPosition,
-            zoom: 14,
-          ),
-        ));
-      }
+      _updateCameraPosition();
+      
     } catch (e) {
-      // Handle any errors that might occur during the permission request
       setState(() {
         _locationGranted = false;
       });
-      print('Error getting location permissions: $e');
+      print('Error getting user location: $e');
+    }
+  }
+
+  Future<void> _loadGymList() async {
+    final gyms = await context.read<GymProvider>().getGymList();
+    if (mounted) {
+      setState(() {
+        gymList = gyms;
+      });
     }
   }
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
     mapController = controller;
-        if (_locationGranted) {
+    if (_locationGranted) {
       _updateCameraPosition();
     }
     
-    final gyms = await locations.getGymLocations();
-    setState(() {
-      _markers.clear();
-      for (final gym in gyms.gyms) {
-        final marker = Marker(
-          markerId: MarkerId(gym.id),
-          position: LatLng(gym.lat, gym.lng),
-          infoWindow: InfoWindow(
-            title: gym.name,
-            snippet: gym.address,
-          ),
-        );
-        _markers[gym.id] = marker;
+    try {
+      final gyms = await context.read<MapProvider>().getGymLocations(gymList);
+      
+      if (mounted) {
+        setState(() {
+          _markers.clear();
+          for (final gym in gyms.gyms) {
+            final marker = Marker(
+              markerId: MarkerId(gym.id),
+              position: LatLng(gym.lat, gym.lng),
+              infoWindow: InfoWindow(
+                title: gym.name,
+                snippet: gym.address,
+              ),
+            );
+            _markers[gym.id] = marker;
+          }
+        });
       }
-    });
+    } catch (e) {
+      print('Error loading gym locations: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Unable to load gym locations')),
+        );
+      }
+    }
   }
   
-  // Metodo separato per aggiornare la posizione della camera
   void _updateCameraPosition() {
     if (mapController != null) {
       mapController!.animateCamera(CameraUpdate.newCameraPosition(
