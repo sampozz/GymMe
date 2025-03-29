@@ -78,4 +78,8 @@ class GymProvider with ChangeNotifier {
     _gymList![gymIndex].activities.remove(activity);
     notifyListeners();
   }
+
+  int getGymIndex(Gym gym) {
+    return _gymList!.indexWhere((element) => element.id == gym.id);
+  }
 }

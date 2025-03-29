@@ -23,7 +23,7 @@ void main() {
       );
 
       expect(find.text("Home"), findsOneWidget);
-      expect(find.text("Search"), findsOneWidget);
+      expect(find.byIcon(Icons.search), findsOneWidget);
     });
 
     testWidgets('Bottom navigation bar calls onTapCallback', (tester) async {
@@ -45,7 +45,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.text("Search"));
+      await tester.tap(find.byIcon(Icons.search));
       expect(tappedIndex, 1);
     });
   });

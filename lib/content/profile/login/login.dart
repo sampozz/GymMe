@@ -1,4 +1,3 @@
-import 'package:dima_project/content/custom_appbar.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +18,6 @@ class Login extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement login screen
     return Scaffold(
-      appBar: CustomAppBar(title: "Login"),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

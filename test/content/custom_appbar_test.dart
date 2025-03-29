@@ -4,14 +4,14 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('CustomAppBar tests', () {
-    testWidgets('should display the title', (WidgetTester tester) async {
+    testWidgets('should display the welcome text', (WidgetTester tester) async {
       // Build the widget
       await tester.pumpWidget(
-        MaterialApp(home: Scaffold(appBar: CustomAppBar(title: 'Test'))),
+        MaterialApp(home: Scaffold(appBar: CustomAppBar())),
       );
 
       // Find the title widget
-      final titleFinder = find.text('Test');
+      final titleFinder = find.text('Welcome back,');
 
       // Expect the title to be displayed
       expect(titleFinder, findsOneWidget);

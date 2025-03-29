@@ -7,6 +7,9 @@ class Gym {
   String address;
   String phone;
   List<Activity> activities;
+  String imageUrl;
+  DateTime? openTime;
+  DateTime? closeTime;
 
   Gym({
     this.id,
@@ -14,6 +17,9 @@ class Gym {
     this.address = '',
     this.phone = '',
     this.activities = const [],
+    this.imageUrl = '',
+    this.openTime,
+    this.closeTime,
   });
 
   factory Gym.fromFirestore(
@@ -32,6 +38,9 @@ class Gym {
               : data['activities']
                   .map<Activity>((activity) => Activity.fromFirestore(activity))
                   .toList(),
+      imageUrl: data['imageUrl'] ?? Gym().imageUrl,
+      openTime: data['openTime']?.toDate() ?? DateTime(0),
+      closeTime: data['closeTime']?.toDate() ?? DateTime(0),
     );
   }
 
@@ -41,6 +50,9 @@ class Gym {
     String? address,
     String? phone,
     List<Activity>? activities,
+    String? imageUrl,
+    DateTime? openTime,
+    DateTime? closeTime,
   }) {
     return Gym(
       id: id ?? this.id,
@@ -48,6 +60,9 @@ class Gym {
       address: address ?? this.address,
       phone: phone ?? this.phone,
       activities: activities ?? this.activities,
+      imageUrl: imageUrl ?? this.imageUrl,
+      openTime: openTime ?? this.openTime,
+      closeTime: closeTime ?? this.closeTime,
     );
   }
 
@@ -58,6 +73,9 @@ class Gym {
       'phone': phone,
       'activities':
           activities.map((activity) => activity.toFirestore()).toList(),
+      'imageUrl': imageUrl,
+      'openTime': openTime,
+      'closeTime': closeTime,
     };
   }
 }
