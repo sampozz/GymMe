@@ -51,6 +51,7 @@ class MapService {
         final String id = gym.id;
         final String name = gym.name;
         final String address = gym.address;
+        //final String imageUrl = gym.imageUrl;
         
         // Get coordinates from address using geocoding
         final coordinates = await _getCoordinatesFromAddress(address);
@@ -60,6 +61,7 @@ class MapService {
           id: id,
           name: name,
           address: address,
+          //imageUrl: imageUrl,
           lat: coordinates['lat'] ?? 0,
           lng: coordinates['lng'] ?? 0,
         );

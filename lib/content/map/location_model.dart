@@ -9,6 +9,7 @@ class GymLocation {
   final String id;
   final String name;
   final String address;
+  //final String imageUrl;
   final double lat;
   final double lng;
   
@@ -16,6 +17,7 @@ class GymLocation {
     required this.id,
     required this.name,
     required this.address,
+    //required this.imageUrl, 
     required this.lat, 
     required this.lng
   });
