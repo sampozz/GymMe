@@ -51,7 +51,6 @@ class GymCard extends StatelessWidget {
   Widget build(BuildContext context) {
     Gym gym = context.watch<GymProvider>().gymList![gymIndex];
 
-    // TODO: Customize the card with more information
     return GestureDetector(
       onTap: () => _onGymCardTap(context),
       child: Padding(
@@ -72,7 +71,7 @@ class GymCard extends StatelessWidget {
                     child: Image.network(
                       gym.imageUrl,
                       fit: BoxFit.fitWidth,
-                      height: 150,
+                      height: 175,
                       width: double.infinity,
                       loadingBuilder: (context, child, loadingProgress) {
                         if (loadingProgress == null) {
@@ -93,7 +92,7 @@ class GymCard extends StatelessWidget {
                         return Image.asset(
                           'assets/gym.jpeg',
                           fit: BoxFit.fitWidth,
-                          height: 150,
+                          height: 175,
                           width: double.infinity,
                         );
                       },

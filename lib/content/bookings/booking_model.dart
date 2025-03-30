@@ -4,8 +4,15 @@ class Booking {
   String? id;
   String title;
   String description;
-  DateTime? dateTime;
+  DateTime? startTime;
+  DateTime? endTime;
   int duration;
+  double price;
+  String gymName;
+  String room;
+  String instructorName;
+  String instructorPhoto;
+  String instructorTitle;
   String userId;
   String gymId;
   String slotId;
@@ -15,8 +22,15 @@ class Booking {
     this.id,
     this.title = '',
     this.description = '',
-    this.dateTime,
+    this.startTime,
+    this.endTime,
     this.duration = 0,
+    this.price = 0,
+    this.gymName = '',
+    this.room = '',
+    this.instructorName = '',
+    this.instructorPhoto = '',
+    this.instructorTitle = '',
     this.userId = '',
     this.gymId = '',
     this.slotId = '',
@@ -32,8 +46,15 @@ class Booking {
       id: snapshot.id,
       title: data['title'] ?? Booking().title,
       description: data['description'] ?? Booking().description,
-      dateTime: data['date']?.toDate() ?? Booking().dateTime,
+      startTime: data['startTime']?.toDate() ?? DateTime(0),
+      endTime: data['endTime']?.toDate() ?? DateTime(0),
       duration: data['duration'] ?? Booking().duration,
+      price: data['price'] ?? Booking().price,
+      gymName: data['gymName'] ?? Booking().gymName,
+      room: data['room'] ?? Booking().room,
+      instructorName: data['instructorName'] ?? Booking().instructorName,
+      instructorPhoto: data['instructorPhoto'] ?? Booking().instructorPhoto,
+      instructorTitle: data['instructorTitle'] ?? Booking().instructorTitle,
       userId: data['userId'] ?? Booking().userId,
       gymId: data['gymId'] ?? Booking().gymId,
       slotId: data['slotId'] ?? Booking().slotId,
@@ -45,8 +66,15 @@ class Booking {
     return {
       'title': title,
       'description': description,
-      'date': dateTime,
+      'startTime': startTime,
+      'endTime': endTime,
       'duration': duration,
+      'price': price,
+      'gymName': gymName,
+      'room': room,
+      'instructorName': instructorName,
+      'instructorPhoto': instructorPhoto,
+      'instructorTitle': instructorTitle,
       'userId': userId,
       'gymId': gymId,
       'slotId': slotId,

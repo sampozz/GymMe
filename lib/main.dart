@@ -1,4 +1,5 @@
 import 'package:dima_project/auth_gate/auth_gate.dart';
+import 'package:dima_project/content/bookings/bookings_provider.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
@@ -19,6 +20,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => ScreenProvider()),
         ChangeNotifierProvider(create: (context) => UserProvider()),
         ChangeNotifierProvider(create: (context) => GymProvider()),
+        ChangeNotifierProvider(create: (context) => BookingsProvider()),
       ],
       // Root app
       child: const App(),
@@ -46,7 +48,8 @@ class App extends StatelessWidget {
           primary: Color(0xFF000080), // Navy Blue (custom primary)
           secondary: Color(0xFFFFC107), // Gold (custom secondary)
           tertiary: Color(0xFF4C9AFF), // Lighter Blue for accents
-          surface: Color(0xFFAAFFE5), // White surface
+          surface: Color(0xFFF5F5F5), // White surface
+          primaryContainer: Color(0xFFFFFFFF), // White for primary container
           error: Color(0xFFD32F2F), // Standard material red for errors
           onPrimary: Colors.white, // White text/icons on primary (navy)
           onSecondary: Colors.black, // Black text/icons on secondary (gold)

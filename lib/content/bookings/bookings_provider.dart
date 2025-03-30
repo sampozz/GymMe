@@ -6,22 +6,22 @@ import 'package:flutter/material.dart';
 
 class BookingsProvider extends ChangeNotifier {
   final BookingsService _bookingsService;
-  List<Booking> _bookings = [];
+  List<Booking>? _bookings;
 
   // Dependency injection, needed for unit testing
   BookingsProvider({BookingsService? bookingsService})
     : _bookingsService = bookingsService ?? BookingsService();
 
   /// Getter for the bookings. If the list is empty, fetch it from the service.
-  List<Booking> get bookings {
-    if (_bookings.isEmpty) {
-      _bookingsService.fetchBookings();
+  List<Booking>? get bookings {
+    if (_bookings == null) {
+      getBookings();
     }
     return _bookings;
   }
 
   /// Fetches the bookings for the current user
-  Future<List<Booking>> getBookings() async {
+  Future<List<Booking>?> getBookings() async {
     _bookings = await _bookingsService.fetchBookings();
     notifyListeners();
     return _bookings;
@@ -36,10 +36,18 @@ class BookingsProvider extends ChangeNotifier {
       slotId: slot.id,
       gymId: slot.gymId,
       activityId: slot.activityId,
-      dateTime: slot.start!,
+      startTime: slot.start!,
       duration: slot.duration,
     );
     await _bookingsService.addBooking(booking);
+
+    // Update the bookings list
+    _bookings ??= [];
+    _bookings!.add(booking);
     notifyListeners();
+  }
+
+  int getBookingIndex(String bookingId) {
+    return _bookings!.indexWhere((booking) => booking.id == bookingId);
   }
 }

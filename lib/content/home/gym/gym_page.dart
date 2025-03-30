@@ -1,4 +1,3 @@
-import 'package:dima_project/content/custom_appbar.dart';
 import 'package:dima_project/content/home/gym/activity/activity_card.dart';
 import 'package:dima_project/content/home/gym/activity/new_activity.dart';
 import 'package:dima_project/content/home/gym/gym_model.dart';
