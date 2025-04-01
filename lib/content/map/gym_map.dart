@@ -181,7 +181,7 @@ class _GymAppState extends State<GymMap> {
             elevation: 4,
             child: TextField(
               decoration: InputDecoration(
-                hintText: 'Cerca palestre...',
+                hintText: 'Search for a gym or location...',
                 prefixIcon: Icon(Icons.search),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
