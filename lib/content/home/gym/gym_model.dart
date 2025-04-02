@@ -4,6 +4,7 @@ import 'package:dima_project/content/home/gym/activity/activity_model.dart';
 class Gym {
   String? id;
   String name;
+  String description;
   String address;
   String phone;
   List<Activity> activities;
@@ -14,6 +15,7 @@ class Gym {
   Gym({
     this.id,
     this.name = '',
+    this.description = '',
     this.address = '',
     this.phone = '',
     this.activities = const [],
@@ -30,6 +32,7 @@ class Gym {
     return Gym(
       id: snapshot.id,
       name: data['name'] ?? Gym().name,
+      description: data['description'] ?? Gym().description,
       address: data['address'] ?? Gym().address,
       phone: data['phone'] ?? Gym().phone,
       activities:
@@ -47,6 +50,7 @@ class Gym {
   Gym copyWith({
     String? id,
     String? name,
+    String? description,
     String? address,
     String? phone,
     List<Activity>? activities,
@@ -69,6 +73,7 @@ class Gym {
   Map<String, dynamic> toFirestore() {
     return {
       'name': name,
+      'description': description,
       'address': address,
       'phone': phone,
       'activities':

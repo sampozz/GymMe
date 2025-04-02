@@ -6,6 +6,7 @@ class BookingsService {
   /// Fetches the bookings for the current user
   /// Returns a list of bookings
   Future<List<Booking>> fetchBookings() async {
+    List<Booking> bookings = [];
     try {
       auth.User user = auth.FirebaseAuth.instance.currentUser!;
       var snapshot =
@@ -17,12 +18,13 @@ class BookingsService {
                 toFirestore: (booking, options) => booking.toFirestore(),
               )
               .get();
-      return snapshot.docs.map((doc) => doc.data()).toList();
+      bookings = snapshot.docs.map((doc) => doc.data()).toList();
     } catch (e) {
       // TODO: handle error
       print(e);
       rethrow;
     }
+    return bookings;
   }
 
   /// Books a slot for the current user and returns the booking ID
