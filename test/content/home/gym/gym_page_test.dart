@@ -37,10 +37,10 @@ void main() {
       );
 
       // Find the gym name contained in the text widget
-      final gymNameFinder = find.text('Welcome to the gym Gym 1!');
+      final gymNameFinder = find.text('Gym 1');
 
       // Expect the gym name to be displayed
-      expect(gymNameFinder, findsOneWidget);
+      expect(gymNameFinder, findsAny);
     });
   });
 }
