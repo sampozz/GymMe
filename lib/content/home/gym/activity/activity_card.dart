@@ -42,24 +42,32 @@ class ActivityCard extends StatelessWidget {
     Gym gym = context.watch<GymProvider>().gymList![gymIndex];
     Activity activity = gym.activities[activityIndex];
 
-    // TODO: Customize the card with more information
     return GestureDetector(
       onTap: () => _navigateToBookSlotPage(context, gym.id!, activity.id!),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        elevation: 5,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                activity.name,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(
+              left: BorderSide(
+                color: Colors.blue, // You can change the color as needed
+                width: 4.0, // Adjust the width as desired
               ),
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Icon(Icons.calendar_month_outlined),
+                  ),
+                  Text(activity.name),
+                ],
+              ),
+              Icon(Icons.arrow_forward_ios_outlined, size: 8),
             ],
           ),
         ),

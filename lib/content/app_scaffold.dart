@@ -1,4 +1,3 @@
-import 'package:dima_project/content/bookings/bookings_provider.dart';
 import 'package:dima_project/content/bookings/widgets/bookings.dart';
 import 'package:dima_project/content/custom_bottomnavbar.dart';
 import 'package:dima_project/content/custom_sidebar.dart';
