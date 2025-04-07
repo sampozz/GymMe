@@ -4,6 +4,7 @@ import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/global_providers/map_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:dima_project/content/home/gym/gym_model.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class GymMap extends StatefulWidget {
   const GymMap({super.key});
@@ -14,9 +15,11 @@ class GymMap extends StatefulWidget {
 
 class _GymAppState extends State<GymMap> {
   GoogleMapController? mapController;
+  final TextEditingController searchBarController = TextEditingController();
   MapProvider? mapProvider;
   Map<String, Marker> _markers = {};
   List<Gym>? gymList;
+  List<Gym>? searchList;
   LatLng _currentPosition = const LatLng(45.46427, 9.18951);
   double _currentZoom = 14;
   bool _locationGranted = false;
@@ -29,19 +32,22 @@ class _GymAppState extends State<GymMap> {
     mapProvider = context.read<MapProvider>();
     initialized = mapProvider?.isInitialized ?? false;
 
-    if (!initialized) {
-      print("enter here");
-      _loadGymList();
-    } else {
+    if (initialized) {
       _currentPosition = mapProvider?.savedPosition ?? _currentPosition;
       _currentZoom = mapProvider?.savedZoom ?? _currentZoom;
     }
-
+    _loadGymList();
     _getUserLocation();
+    searchBarController.addListener(_searchList);
   }
 
   @override
   void dispose() {
+    // Rimuovi il listener prima di distruggere il widget
+    searchBarController.removeListener(_searchList);
+    // Rilascia il controller
+    searchBarController.dispose();
+    
     mapProvider?.saveMapState(_currentPosition, _currentZoom);
     
     super.dispose();
@@ -52,7 +58,6 @@ class _GymAppState extends State<GymMap> {
       final position = await mapProvider?.getUserLocation();
 
       if (position != null) {
-        print(initialized);
         if (!initialized) {
           setState(() {
             _currentPosition = LatLng(position.latitude, position.longitude);
@@ -132,11 +137,29 @@ class _GymAppState extends State<GymMap> {
     }
   }
 
+  void _searchList() {
+    final String query = searchBarController.text.toLowerCase();
+    
+    if(query.isNotEmpty) {
+      setState(() {
+        searchList = gymList?.where((gym) =>
+          gym.name.toLowerCase().contains(query) ||
+          gym.address.toLowerCase().contains(query)
+        ).toList(); 
+      });
+    } else {
+      setState(() {
+        searchList = null;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bool isDesktop = MediaQuery.of(context).size.width > 600;
+    
     return Stack(
       children: [
-        // La mappa come primo elemento (in background)
         GoogleMap(
           onMapCreated: _onMapCreated,
           onCameraMove: _onCameraMove,
@@ -151,6 +174,7 @@ class _GymAppState extends State<GymMap> {
           minMaxZoomPreference: const MinMaxZoomPreference(11, 20),
         ),
         
+        // Location Button (Mantieni questa posizione)
         Positioned(
           right: 16,
           bottom: 100,
@@ -173,23 +197,87 @@ class _GymAppState extends State<GymMap> {
           ),
         ),
         
-        Positioned(
-          top: 48,
-          left: 16,
-          right: 16,
-          child: Card(
-            elevation: 4,
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Search for a gym or location...',
-                prefixIcon: Icon(Icons.search),
-                border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              ),
+        if (isDesktop)
+          Positioned(
+            top: 16,
+            left: 16,
+            child: SizedBox(
+              width: 400,
+              child: _buildSearchBar(),
+            ),
+          )
+        else
+          Positioned(
+            top: 48,
+            left: 16,
+            right: 16,
+            child: SizedBox(
+              width: double.infinity, //TODO FIX sto cazzo di robo
+              child: _buildSearchBar(),
             ),
           ),
-        ),
       ],
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return SearchAnchor(
+      builder: (BuildContext context, SearchController controller) {
+        controller.addListener(() {
+          searchBarController.text = controller.text;
+        });
+        return SearchBar(
+          controller: controller,
+          onChanged: (value) {
+            controller.openView();
+            _searchList();
+          },
+          trailing: controller.text.isNotEmpty
+                    ? [
+                        IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: () {
+                            controller.clear();
+                            searchBarController.clear();
+                          },
+                        ),
+                      ]
+                    : null,
+          padding: const WidgetStatePropertyAll<EdgeInsets>(
+            EdgeInsets.symmetric(horizontal: 16.0),
+          ),
+          leading: const Icon(Icons.search),
+          elevation: WidgetStateProperty.all(0),
+        );
+      },
+      suggestionsBuilder: (BuildContext context, SearchController controller) {
+        if (searchList == null || searchList!.isEmpty) {
+          return [
+            const ListTile(
+              title: Text('No results found'),
+            ),
+          ];
+        }
+        
+        return searchList!.map((gym) => ListTile(
+          title: Text(gym.name),
+          subtitle: Text(gym.address),
+          onTap: () {
+            setState(() {
+              if(_markers.isNotEmpty && _markers.containsKey(gym.id)) {
+                _currentPosition = _markers[gym.id]!.position;
+              }
+            });
+            _updateCameraPosition();
+            Future.delayed(const Duration(milliseconds: 500), () {
+              if (gym.id != null) {
+                mapController?.showMarkerInfoWindow(MarkerId(gym.id!));
+              }
+            });
+            controller.closeView(gym.name);
+          },
+        )).toList();
+      },
     );
   }
 }
