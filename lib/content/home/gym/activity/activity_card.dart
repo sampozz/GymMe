@@ -64,7 +64,7 @@ class ActivityCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Icon(Icons.calendar_month_outlined),
                   ),
-                  Text(activity.name),
+                  Text(activity.title!),
                 ],
               ),
               Icon(Icons.arrow_forward_ios_outlined, size: 8),

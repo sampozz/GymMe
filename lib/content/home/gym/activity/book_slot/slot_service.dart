@@ -20,7 +20,7 @@ class SlotService {
               )
               .where('gymId', isEqualTo: gymId)
               .where('activityId', isEqualTo: activityId)
-              .where('start', isGreaterThanOrEqualTo: date)
+              .where('startTime', isGreaterThanOrEqualTo: date)
               .get();
 
       for (var doc in slotRef.docs) {

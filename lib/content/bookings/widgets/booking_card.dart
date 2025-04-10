@@ -37,11 +37,10 @@ class BookingCard extends StatelessWidget {
         Row(
           children: [
             CircleAvatar(
-              backgroundImage: AssetImage(
-                (booking.instructorPhoto.isEmpty)
-                    ? 'assets/avatar.png'
-                    : booking.instructorPhoto,
-              ),
+              backgroundImage:
+                  booking.instructorPhoto.isEmpty
+                      ? AssetImage('assets/avatar.png')
+                      : NetworkImage(booking.instructorPhoto),
               radius: 20,
             ),
             SizedBox(width: 10),

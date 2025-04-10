@@ -5,6 +5,7 @@ import 'package:dima_project/content/home/gym/activity/book_slot/new_slot.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_card.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart';
+import 'package:dima_project/content/home/gym/activity/new_activity.dart';
 import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
@@ -39,6 +40,16 @@ class BookSlotPage extends StatelessWidget {
     }
   }
 
+  /// Modify the activity
+  void _modifyActivity(BuildContext context, Gym gym, Activity activity) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => NewActivity(gym: gym, activity: activity),
+      ),
+    );
+  }
+
   /// Navigate to the add slot page
   void _addSlot(BuildContext context, Gym gym, Activity activity) {
     Navigator.push(
@@ -55,8 +66,8 @@ class BookSlotPage extends StatelessWidget {
 
   void _showBookingModal(
     BuildContext context,
-    String gymId,
-    String activityId,
+    Gym gym,
+    Activity activity,
     Slot slot,
   ) {
     showModalBottomSheet<void>(
@@ -68,8 +79,34 @@ class BookSlotPage extends StatelessWidget {
               ChangeNotifierProvider.value(value: context.read<SlotProvider>()),
               ChangeNotifierProvider(create: (_) => BookingsProvider()),
             ],
-            child: ConfirmBookingModal(slot: slot),
+            child: ConfirmBookingModal(
+              gym: gym,
+              activity: activity,
+              slot: slot,
+            ),
           ),
+    );
+  }
+
+  Widget _buildAdminActions(BuildContext context, Gym gym, Activity activity) {
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: () => _addSlot(context, gym, activity),
+          child: Text('Add slot'),
+        ),
+        SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: () => _modifyActivity(context, gym, activity),
+          child: Text('Modify activity'),
+        ),
+        SizedBox(height: 20),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+          onPressed: () => _deleteActivity(context, gym, activity),
+          child: Text('Delete activity', style: TextStyle(color: Colors.white)),
+        ),
+      ],
     );
   }
 
@@ -82,7 +119,7 @@ class BookSlotPage extends StatelessWidget {
 
     // TODO: Create activity page
     return Scaffold(
-      appBar: AppBar(title: Text('Activity ${activity.name}')),
+      appBar: AppBar(title: Text(activity.title!)),
       body: Center(
         child: Column(
           children: [
@@ -102,8 +139,8 @@ class BookSlotPage extends StatelessWidget {
                               onTap:
                                   () => _showBookingModal(
                                     context,
-                                    gym.id!,
-                                    activity.id!,
+                                    gym,
+                                    activity,
                                     slot,
                                   ),
                               child: SlotCard(slot: slot),
@@ -114,14 +151,7 @@ class BookSlotPage extends StatelessWidget {
               ),
             },
             if (user != null && user.isAdmin)
-              ElevatedButton(
-                onPressed: () => _addSlot(context, gym, activity),
-                child: Text('Add Slot'),
-              ),
-            ElevatedButton(
-              onPressed: () => _deleteActivity(context, gym, activity),
-              child: Text('Delete Activity'),
-            ),
+              _buildAdminActions(context, gym, activity),
           ],
         ),
       ),

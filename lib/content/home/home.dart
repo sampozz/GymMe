@@ -13,7 +13,7 @@ class Home extends StatefulWidget {
   const Home({super.key});
 
   @override
-  _HomeState createState() => _HomeState();
+  State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
@@ -140,10 +140,14 @@ class _HomeState extends State<Home> {
         : SliverList(
           delegate: SliverChildBuilderDelegate((context, index) {
             Gym gym = _filteredGymList![index];
-            return GymCard(
-              gymIndex: _gymProvider.getGymIndex(gym),
-              isFavourite: _isFavourite(gym),
-            );
+            int gymIndex = _gymProvider.getGymIndex(gym);
+            // If the gym is not in the list, return an empty container
+            return gymIndex != -1
+                ? GymCard(
+                  gymIndex: _gymProvider.getGymIndex(gym),
+                  isFavourite: _isFavourite(gym),
+                )
+                : Container();
           }, childCount: _filteredGymList!.length),
         );
   }

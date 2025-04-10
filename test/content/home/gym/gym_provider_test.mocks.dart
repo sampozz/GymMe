@@ -10,6 +10,7 @@ import 'package:dima_project/content/home/gym/activity/activity_model.dart'
 import 'package:dima_project/content/home/gym/gym_model.dart' as _i4;
 import 'package:dima_project/content/home/gym/gym_service.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i6;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -66,12 +67,13 @@ class MockGymService extends _i1.Mock implements _i2.GymService {
           as _i3.Future<String?>);
 
   @override
-  _i3.Future<String?> setActivity(String? gymId, _i5.Activity? activity) =>
+  _i3.Future<void> setActivity(_i4.Gym? gym) =>
       (super.noSuchMethod(
-            Invocation.method(#setActivity, [gymId, activity]),
-            returnValue: _i3.Future<String?>.value(),
+            Invocation.method(#setActivity, [gym]),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
           )
-          as _i3.Future<String?>);
+          as _i3.Future<void>);
 
   @override
   _i3.Future<String?> deleteActivity(_i4.Gym? gym, _i5.Activity? activity) =>
@@ -80,4 +82,17 @@ class MockGymService extends _i1.Mock implements _i2.GymService {
             returnValue: _i3.Future<String?>.value(),
           )
           as _i3.Future<String?>);
+
+  @override
+  _i3.Future<String> uploadImage(String? base64Image) =>
+      (super.noSuchMethod(
+            Invocation.method(#uploadImage, [base64Image]),
+            returnValue: _i3.Future<String>.value(
+              _i6.dummyValue<String>(
+                this,
+                Invocation.method(#uploadImage, [base64Image]),
+              ),
+            ),
+          )
+          as _i3.Future<String>);
 }

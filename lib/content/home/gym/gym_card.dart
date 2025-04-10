@@ -73,21 +73,6 @@ class GymCard extends StatelessWidget {
                       fit: BoxFit.fitWidth,
                       height: 175,
                       width: double.infinity,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        }
-                        return Center(
-                          child: LinearProgressIndicator(
-                            value:
-                                loadingProgress.expectedTotalBytes != null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                        (loadingProgress.expectedTotalBytes ??
-                                            1)
-                                    : null,
-                          ),
-                        );
-                      },
                       errorBuilder: (context, error, stackTrace) {
                         return Image.asset(
                           'assets/gym.jpeg',

@@ -3,29 +3,43 @@ import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.d
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class NewSlot extends StatelessWidget {
+class NewSlot extends StatefulWidget {
   final String gymId;
   final String activityId;
 
+  const NewSlot({super.key, required this.gymId, required this.activityId});
+
+  @override
+  State<NewSlot> createState() => _NewSlotState();
+}
+
+class _NewSlotState extends State<NewSlot> {
   final _formKey = GlobalKey<FormState>();
   final _slotTimeCtrl = TextEditingController();
   final _maxUsersCtrl = TextEditingController();
 
-  NewSlot({super.key, required this.gymId, required this.activityId});
+  @override
+  void dispose() {
+    _slotTimeCtrl.dispose();
+    _maxUsersCtrl.dispose();
+    super.dispose();
+  }
 
-  void _submitForm(BuildContext context) {
+  void _submitForm(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       Slot newSlot = Slot(
-        gymId: gymId,
-        activityId: activityId,
-        start: DateTime.parse(_slotTimeCtrl.text),
+        gymId: widget.gymId,
+        activityId: widget.activityId,
+        startTime: DateTime.parse(_slotTimeCtrl.text),
         maxUsers: int.parse(_maxUsersCtrl.text),
       );
 
-      Provider.of<SlotProvider>(context, listen: false).createSlot(newSlot);
+      await Provider.of<SlotProvider>(
+        context,
+        listen: false,
+      ).createSlot(newSlot);
+      Navigator.pop(context);
     }
-
-    Navigator.pop(context);
   }
 
   Future<void> _selectDateTime(BuildContext context) async {
@@ -50,7 +64,9 @@ class NewSlot extends StatelessWidget {
           pickedTime.hour,
           pickedTime.minute,
         );
-        _slotTimeCtrl.text = fullDateTime.toString();
+        setState(() {
+          _slotTimeCtrl.text = fullDateTime.toString();
+        });
       }
     }
   }
@@ -72,7 +88,7 @@ class NewSlot extends StatelessWidget {
                 onTap: () => _selectDateTime(context),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a slot time';
+                    return 'This field is required';
                   }
                   return null;
                 },
@@ -83,7 +99,7 @@ class NewSlot extends StatelessWidget {
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter the maximum number of reservations';
+                    return 'This field is required';
                   }
                   if (int.tryParse(value) == null) {
                     return 'Please enter a valid number';

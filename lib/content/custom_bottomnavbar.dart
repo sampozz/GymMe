@@ -72,7 +72,7 @@ class NavBarItem extends StatefulWidget {
   });
 
   @override
-  _NavBarItemState createState() => _NavBarItemState();
+  State<NavBarItem> createState() => _NavBarItemState();
 }
 
 class _NavBarItemState extends State<NavBarItem> {

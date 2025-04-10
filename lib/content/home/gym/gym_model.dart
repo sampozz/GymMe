@@ -61,6 +61,7 @@ class Gym {
     return Gym(
       id: id ?? this.id,
       name: name ?? this.name,
+      description: description ?? this.description,
       address: address ?? this.address,
       phone: phone ?? this.phone,
       activities: activities ?? this.activities,

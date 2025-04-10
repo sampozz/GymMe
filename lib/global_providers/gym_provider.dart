@@ -54,20 +54,20 @@ class GymProvider with ChangeNotifier {
 
   /// Adds a new activity to the gym list.
   Future<void> addActivity(Gym gym, Activity activity) async {
-    await _gymService.setActivity(gym.id!, activity);
     var index = _gymList!.indexWhere((element) => element.id == gym.id);
     _gymList![index].activities.add(activity);
+    await _gymService.setActivity(gym);
     notifyListeners();
   }
 
   /// Updates an activity in the gym list.
   Future<void> updateActivity(Gym gym, Activity activity) async {
-    await _gymService.setActivity(gym.id!, activity);
     var gymIndex = _gymList!.indexWhere((element) => element.id == gym.id);
     var activityIndex = _gymList![gymIndex].activities.indexWhere(
       (element) => element.id == activity.id,
     );
     _gymList![gymIndex].activities[activityIndex] = activity;
+    await _gymService.setActivity(gym);
     notifyListeners();
   }
 
@@ -81,5 +81,11 @@ class GymProvider with ChangeNotifier {
 
   int getGymIndex(Gym gym) {
     return _gymList!.indexWhere((element) => element.id == gym.id);
+  }
+
+  /// Uploads an image to the gym service and returns the URL.
+  Future<String> uploadImage(String base64Image) async {
+    String imageUrl = await _gymService.uploadImage(base64Image);
+    return imageUrl;
   }
 }
