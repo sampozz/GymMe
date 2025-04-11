@@ -3,6 +3,7 @@ import 'package:dima_project/content/home/gym/activity/new_activity.dart';
 import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:dima_project/content/home/gym/new_gym.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
+import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -41,39 +42,49 @@ class GymPage extends StatelessWidget {
     await Provider.of<GymProvider>(context, listen: false).removeGym(gym);
   }
 
-  Widget _buildSliverAppBar(Gym gym) {
+  Widget _buildSliverAppBar(BuildContext context, Gym gym) {
+    bool useMobileLayout = context.watch<ScreenProvider>().useMobileLayout;
+
     return SliverAppBar(
       pinned: true,
       expandedHeight: 200,
-      title: Text(gym.name),
+      title: useMobileLayout ? Text(gym.name) : null,
       flexibleSpace: FlexibleSpaceBar(
-        background: Image.network(
-          gym.imageUrl,
-          fit: BoxFit.fitWidth,
-          height: 200,
-          width: double.infinity,
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) {
-              return child;
-            }
-            return Center(
-              child: LinearProgressIndicator(
-                value:
-                    loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                            (loadingProgress.expectedTotalBytes ?? 1)
-                        : null,
-              ),
-            );
-          },
-          errorBuilder: (context, error, stackTrace) {
-            return Image.asset(
-              'assets/gym.jpeg',
-              fit: BoxFit.fitWidth,
-              height: 200,
-              width: double.infinity,
-            );
-          },
+        background: ClipRRect(
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(20.0),
+            bottomRight: Radius.circular(20.0),
+            topLeft: useMobileLayout ? Radius.zero : Radius.circular(20.0),
+            topRight: useMobileLayout ? Radius.zero : Radius.circular(20.0),
+          ),
+          child: Image.network(
+            gym.imageUrl,
+            fit: BoxFit.fitWidth,
+            height: 200,
+            width: double.infinity,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) {
+                return child;
+              }
+              return Center(
+                child: LinearProgressIndicator(
+                  value:
+                      loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              (loadingProgress.expectedTotalBytes ?? 1)
+                          : null,
+                ),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return Image.asset(
+                'assets/gym.jpeg',
+                fit: BoxFit.fitWidth,
+                height: 200,
+                width: double.infinity,
+              );
+            },
+          ),
         ),
       ),
     );
@@ -214,7 +225,7 @@ class GymPage extends StatelessWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          _buildSliverAppBar(gym),
+          _buildSliverAppBar(context, gym),
           _buildHeader(gym),
           ..._buildActivityList(context, gym, user?.isAdmin ?? false),
           _buildInformationList(gym),

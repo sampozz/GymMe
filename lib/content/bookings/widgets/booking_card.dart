@@ -1,6 +1,7 @@
 import 'package:dima_project/content/bookings/booking_model.dart';
 import 'package:dima_project/content/bookings/bookings_provider.dart';
 import 'package:dima_project/content/bookings/widgets/booking_page.dart';
+import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -87,19 +88,32 @@ class BookingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Booking booking = context.watch<BookingsProvider>().bookings![bookingIndex];
+    bool useMobileLayout = context.watch<ScreenProvider>().useMobileLayout;
 
     return GestureDetector(
       onTap: () => _navigateToBookingPage(context),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [_buildLeftColumn(booking), _buildRightColumn(booking)],
+      child: Padding(
+        padding:
+            useMobileLayout
+                ? const EdgeInsets.all(0)
+                : const EdgeInsets.symmetric(horizontal: 60.0),
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildLeftColumn(booking),
+                  _buildRightColumn(booking),
+                ],
+              ),
+            ),
           ),
         ),
       ),

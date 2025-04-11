@@ -42,33 +42,36 @@ class ActivityCard extends StatelessWidget {
     Gym gym = context.watch<GymProvider>().gymList![gymIndex];
     Activity activity = gym.activities[activityIndex];
 
-    return GestureDetector(
-      onTap: () => _navigateToBookSlotPage(context, gym.id!, activity.id!),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border(
-              left: BorderSide(
-                color: Colors.blue, // You can change the color as needed
-                width: 4.0, // Adjust the width as desired
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () => _navigateToBookSlotPage(context, gym.id!, activity.id!),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(
+                  color: Colors.blue, // You can change the color as needed
+                  width: 4.0, // Adjust the width as desired
+                ),
               ),
             ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Icon(Icons.calendar_month_outlined),
-                  ),
-                  Text(activity.title!),
-                ],
-              ),
-              Icon(Icons.arrow_forward_ios_outlined, size: 8),
-            ],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Icon(Icons.calendar_month_outlined),
+                    ),
+                    Text(activity.title!),
+                  ],
+                ),
+                Icon(Icons.arrow_forward_ios_outlined, size: 8),
+              ],
+            ),
           ),
         ),
       ),
