@@ -1,5 +1,6 @@
 import 'package:dima_project/content/bookings/booking_model.dart';
 import 'package:dima_project/content/bookings/bookings_provider.dart';
+import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -94,9 +95,43 @@ class BookingPage extends StatelessWidget {
     );
   }
 
+  Widget _buildMobileTicket(Booking booking) {
+    return Column(
+      children: [
+        _buildHeader(booking),
+        _buildQRCode(booking),
+        _buildBookingDetails(booking),
+        _buildBookingActions(booking),
+      ],
+    );
+  }
+
+  Widget _buildDesktopTicket(Booking booking) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          flex: 2,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [_buildHeader(booking), _buildBookingDetails(booking)],
+          ),
+        ),
+        const SizedBox(width: 20),
+        Expanded(
+          flex: 1,
+          child: Column(
+            children: [_buildQRCode(booking), _buildBookingActions(booking)],
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Booking booking = context.watch<BookingsProvider>().bookings![bookingIndex];
+    bool useMobileLayout = context.watch<ScreenProvider>().useMobileLayout;
 
     return Scaffold(
       appBar: AppBar(),
@@ -104,19 +139,21 @@ class BookingPage extends StatelessWidget {
         child: SizedBox(
           width: double.infinity,
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding:
+                useMobileLayout
+                    ? const EdgeInsets.all(20.0)
+                    : const EdgeInsets.symmetric(
+                      horizontal: 60.0,
+                      vertical: 20.0,
+                    ),
             child: Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
               ),
-              child: Column(
-                children: [
-                  _buildHeader(booking),
-                  _buildQRCode(booking),
-                  _buildBookingDetails(booking),
-                  _buildBookingActions(booking),
-                ],
-              ),
+              child:
+                  useMobileLayout
+                      ? _buildMobileTicket(booking)
+                      : _buildDesktopTicket(booking),
             ),
           ),
         ),

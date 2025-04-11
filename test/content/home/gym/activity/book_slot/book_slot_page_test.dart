@@ -26,7 +26,7 @@ void main() {
 
   setUp(() {
     when(mockGymProvider.gymList).thenReturn([
-      Gym(name: 'Gym 1', activities: [Activity(name: 'Activity 1')]),
+      Gym(name: 'Gym 1', activities: [Activity(title: 'Activity 1')]),
     ]);
   });
 
@@ -105,7 +105,7 @@ void main() {
       // Stub the nextSlots to return fake data
       when(
         mockSlotProvider.nextSlots,
-      ).thenReturn([Slot(id: 's1', start: DateTime(10, 10))]);
+      ).thenReturn([Slot(id: 's1', startTime: DateTime(10, 10))]);
       when(mockUserProvider.user).thenReturn(user);
 
       // Build the widget

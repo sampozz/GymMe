@@ -1,4 +1,5 @@
 import 'package:dima_project/auth_gate/auth_gate.dart';
+import 'package:dima_project/content/instructors/instructor_provider.dart';
 import 'package:dima_project/content/bookings/bookings_provider.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
@@ -21,6 +22,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => UserProvider()),
         ChangeNotifierProvider(create: (context) => GymProvider()),
         ChangeNotifierProvider(create: (context) => BookingsProvider()),
+        ChangeNotifierProvider(create: (context) => InstructorProvider()),
       ],
       // Root app
       child: const App(),

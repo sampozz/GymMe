@@ -13,7 +13,7 @@ class SlotCard extends StatelessWidget {
       child: SizedBox(
         width: 400,
         height: 50,
-        child: Center(child: Text('Slot ${slot.start?.toLocal()}')),
+        child: Center(child: Text('Slot ${slot.startTime?.toLocal()}')),
       ),
     );
   }

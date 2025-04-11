@@ -43,6 +43,7 @@ class Bookings extends StatelessWidget {
           title: const Text('Bookings'),
           bottom: const TabBar(
             tabs: <Widget>[Tab(text: "Upcoming"), Tab(text: "Past")],
+            dividerHeight: 0,
           ),
         ),
         body: RefreshIndicator(
