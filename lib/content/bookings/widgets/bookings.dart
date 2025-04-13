@@ -56,7 +56,7 @@ class Bookings extends StatelessWidget {
                   child: _buildBookingsList(
                     context,
                     bookings
-                        ?.where((b) => b.endTime?.isBefore(now) ?? true)
+                        ?.where((b) => b.startTime?.isAfter(now) ?? true)
                         .toList(),
                   ),
                 ),
@@ -64,7 +64,7 @@ class Bookings extends StatelessWidget {
                   child: _buildBookingsList(
                     context,
                     bookings
-                        ?.where((b) => b.endTime?.isAfter(now) ?? false)
+                        ?.where((b) => b.startTime?.isBefore(now) ?? false)
                         .toList(),
                   ),
                 ),

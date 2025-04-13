@@ -49,8 +49,49 @@ class SlotProvider extends ChangeNotifier {
   }
 
   /// Create a new slot
-  Future<void> createSlot(Slot slot) async {
+  Future<void> createSlot(Slot slot, String recurrence, DateTime? until) async {
+    // Always create the initial slot first
     await _slotService.createSlot(slot);
+
+    if (recurrence != 'None' && until != null) {
+      DateTime currentDate = slot.startTime!;
+
+      while (true) {
+        // Update the date for the next occurrence
+        if (recurrence == 'Daily') {
+          currentDate = currentDate.add(Duration(days: 1));
+        } else if (recurrence == 'Weekly') {
+          currentDate = currentDate.add(Duration(days: 7));
+        } else if (recurrence == 'Monthly') {
+          currentDate = DateTime(
+            currentDate.year,
+            currentDate.month + 1,
+            currentDate.day,
+            currentDate.hour,
+            currentDate.minute,
+          );
+        }
+
+        // Check if we've gone past the end date
+        if (!currentDate.isBefore(until)) {
+          break;
+        }
+
+        // Create a new slot with the updated date
+        Slot newSlot = slot.copyWith(
+          startTime: currentDate,
+          endTime: currentDate.add(
+            Duration(
+              hours: slot.endTime!.hour - slot.startTime!.hour,
+              minutes: slot.endTime!.minute - slot.startTime!.minute,
+            ),
+          ),
+        );
+
+        await _slotService.createSlot(newSlot);
+      }
+    }
+
     _nextSlots = null;
     notifyListeners();
   }

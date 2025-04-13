@@ -1,6 +1,7 @@
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class NewSlot extends StatefulWidget {
@@ -15,34 +16,67 @@ class NewSlot extends StatefulWidget {
 
 class _NewSlotState extends State<NewSlot> {
   final _formKey = GlobalKey<FormState>();
-  final _slotTimeCtrl = TextEditingController();
+  final _slotDateCtrl = TextEditingController();
+  final _startTimeCtrl = TextEditingController();
+  final _endTimeCtrl = TextEditingController();
   final _maxUsersCtrl = TextEditingController();
+  final _roomCtrl = TextEditingController();
+  final _untilCtrl = TextEditingController();
+  DateTime? _selectedDate;
+  DateTime? _selectedStartTime;
+  DateTime? _selectedEndTime;
+  DateTime? _selectedUntilDate;
+  String _recurrence = 'None';
 
   @override
   void dispose() {
-    _slotTimeCtrl.dispose();
+    _slotDateCtrl.dispose();
+    _startTimeCtrl.dispose();
+    _endTimeCtrl.dispose();
     _maxUsersCtrl.dispose();
+    _roomCtrl.dispose();
+    _untilCtrl.dispose();
     super.dispose();
   }
 
   void _submitForm(BuildContext context) async {
-    if (_formKey.currentState!.validate()) {
-      Slot newSlot = Slot(
-        gymId: widget.gymId,
-        activityId: widget.activityId,
-        startTime: DateTime.parse(_slotTimeCtrl.text),
-        maxUsers: int.parse(_maxUsersCtrl.text),
-      );
-
-      await Provider.of<SlotProvider>(
-        context,
-        listen: false,
-      ).createSlot(newSlot);
-      Navigator.pop(context);
+    if (!_formKey.currentState!.validate()) {
+      return;
     }
+
+    Slot newSlot = Slot(
+      gymId: widget.gymId,
+      activityId: widget.activityId,
+      startTime: DateTime(
+        _selectedDate!.year,
+        _selectedDate!.month,
+        _selectedDate!.day,
+        _selectedStartTime!.hour,
+        _selectedStartTime!.minute,
+      ),
+      endTime: DateTime(
+        _selectedDate!.year,
+        _selectedDate!.month,
+        _selectedDate!.day,
+        _selectedEndTime!.hour,
+        _selectedEndTime!.minute,
+      ),
+      maxUsers: int.parse(_maxUsersCtrl.text),
+      room: _roomCtrl.text.isNotEmpty ? _roomCtrl.text : 'Room not available',
+      bookedUsers: [],
+    );
+
+    await Provider.of<SlotProvider>(
+      context,
+      listen: false,
+    ).createSlot(newSlot, _recurrence, _selectedUntilDate);
+    Navigator.pop(context);
   }
 
-  Future<void> _selectDateTime(BuildContext context) async {
+  Future<void> _selectDate(
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -51,24 +85,114 @@ class _NewSlotState extends State<NewSlot> {
     );
 
     if (context.mounted && pickedDate != null) {
-      final TimeOfDay? pickedTime = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.now(),
-      );
-
-      if (pickedTime != null) {
-        final DateTime fullDateTime = DateTime(
-          pickedDate.year,
-          pickedDate.month,
-          pickedDate.day,
-          pickedTime.hour,
-          pickedTime.minute,
-        );
-        setState(() {
-          _slotTimeCtrl.text = fullDateTime.toString();
-        });
-      }
+      setState(() {
+        if (controller == _slotDateCtrl) {
+          _selectedDate = pickedDate;
+        } else if (controller == _untilCtrl) {
+          _selectedUntilDate = pickedDate;
+        }
+        controller.text = DateFormat(
+          DateFormat.YEAR_MONTH_DAY,
+        ).format(pickedDate);
+      });
     }
+  }
+
+  String? _validateMandatory(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'This field is required';
+    }
+    return null;
+  }
+
+  Future<void> _selectTime(
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (context.mounted && pickedTime != null) {
+      setState(() {
+        if (controller == _startTimeCtrl) {
+          _selectedStartTime = DateTime(
+            _selectedDate!.year,
+            _selectedDate!.month,
+            _selectedDate!.day,
+            pickedTime.hour,
+            pickedTime.minute,
+          );
+        } else if (controller == _endTimeCtrl) {
+          _selectedEndTime = DateTime(
+            _selectedDate!.year,
+            _selectedDate!.month,
+            _selectedDate!.day,
+            pickedTime.hour,
+            pickedTime.minute,
+          );
+        }
+        controller.text = pickedTime.format(context);
+      });
+    }
+  }
+
+  Widget _buildRecurreceForm() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Text(
+              'Repeat',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(width: 20),
+            Expanded(
+              child: DropdownButtonFormField<String>(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                ),
+                hint: Text('Select Recurrence'),
+                value: 'None',
+                items:
+                    <String>[
+                      'None',
+                      'Daily',
+                      'Weekly',
+                      'Monthly',
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _recurrence = newValue!;
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 20),
+        TextFormField(
+          enabled: _recurrence != 'None',
+          controller: _untilCtrl,
+          decoration: InputDecoration(
+            labelText: 'Repeat until',
+            border: OutlineInputBorder(),
+          ),
+          readOnly: true,
+          onTap: () => _selectDate(context, _untilCtrl),
+          validator:
+              (value) =>
+                  _recurrence != 'None' ? _validateMandatory(value) : null,
+        ),
+      ],
+    );
   }
 
   @override
@@ -82,20 +206,44 @@ class _NewSlotState extends State<NewSlot> {
           child: Column(
             children: <Widget>[
               TextFormField(
-                controller: _slotTimeCtrl,
-                decoration: InputDecoration(labelText: 'Slot Time'),
+                controller: _slotDateCtrl,
+                decoration: InputDecoration(
+                  labelText: 'Date',
+                  border: OutlineInputBorder(),
+                ),
                 readOnly: true,
-                onTap: () => _selectDateTime(context),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'This field is required';
-                  }
-                  return null;
-                },
+                onTap: () => _selectDate(context, _slotDateCtrl),
+                validator: (value) => _validateMandatory(value),
               ),
+              SizedBox(height: 20),
+              TextFormField(
+                controller: _startTimeCtrl,
+                decoration: InputDecoration(
+                  labelText: 'Start Time',
+                  border: OutlineInputBorder(),
+                ),
+                readOnly: true,
+                onTap: () => _selectTime(context, _startTimeCtrl),
+                validator: (value) => _validateMandatory(value),
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                controller: _endTimeCtrl,
+                decoration: InputDecoration(
+                  labelText: 'End Time',
+                  border: OutlineInputBorder(),
+                ),
+                readOnly: true,
+                onTap: () => _selectTime(context, _endTimeCtrl),
+                validator: (value) => _validateMandatory(value),
+              ),
+              SizedBox(height: 20),
               TextFormField(
                 controller: _maxUsersCtrl,
-                decoration: InputDecoration(labelText: 'Max Reservations'),
+                decoration: InputDecoration(
+                  labelText: 'Max Reservations',
+                  border: OutlineInputBorder(),
+                ),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -107,6 +255,16 @@ class _NewSlotState extends State<NewSlot> {
                   return null;
                 },
               ),
+              SizedBox(height: 20),
+              TextFormField(
+                controller: _roomCtrl,
+                decoration: InputDecoration(
+                  labelText: 'Room',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 20),
+              _buildRecurreceForm(),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => _submitForm(context),

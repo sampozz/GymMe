@@ -46,7 +46,7 @@ class BookingsProvider extends ChangeNotifier {
       gymId: slot.gymId,
       activityId: slot.activityId,
       startTime: slot.startTime!,
-      duration: slot.duration,
+      duration: slot.endTime!.difference(slot.startTime!).inMinutes,
       description: activity.description ?? 'Description not available',
       endTime: slot.endTime!,
       gymName: gym.name,
