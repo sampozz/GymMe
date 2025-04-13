@@ -28,10 +28,15 @@ class SlotProvider extends ChangeNotifier {
   /// Fetches the next available slots for a given gym and activity.
   Future<List<Slot>> getUpcomingSlots() async {
     final currentDate = DateTime.now();
+    final startOfToday = DateTime(
+      currentDate.year,
+      currentDate.month,
+      currentDate.day,
+    );
     var slots = await _slotService.fetchUpcomingSlots(
       gymId,
       activityId,
-      currentDate,
+      startOfToday,
     );
     _nextSlots = slots;
     notifyListeners();
@@ -39,13 +44,21 @@ class SlotProvider extends ChangeNotifier {
   }
 
   /// Books a slot for the current user
-  Future<void> addUserToSlot(Slot slot) async {
-    // TODO: check if the user is already booked
-    // TODO: check if the number of booked users is less than the max number of users
+  Future<bool> addUserToSlot(Slot slot) async {
     auth.User user = auth.FirebaseAuth.instance.currentUser!;
+    // Check if the user is already booked for this slot
+    if (slot.bookedUsers.contains(user.uid)) {
+      return false; // User is already booked for this slot
+    }
+    // Check if the number of booked users is less than the max number of users
+    if (slot.bookedUsers.length >= slot.maxUsers) {
+      return false; // Slot is already fully booked
+    }
+    // Add the user to the booked users list
     slot.bookedUsers.add(user.uid);
     await _slotService.updateSlot(slot);
     notifyListeners();
+    return true; // Booking successful
   }
 
   /// Create a new slot
@@ -73,7 +86,7 @@ class SlotProvider extends ChangeNotifier {
         }
 
         // Check if we've gone past the end date
-        if (!currentDate.isBefore(until)) {
+        if (!currentDate.isBefore(until.add(Duration(days: 1)))) {
           break;
         }
 
@@ -93,6 +106,24 @@ class SlotProvider extends ChangeNotifier {
     }
 
     _nextSlots = null;
+    notifyListeners();
+  }
+
+  /// Removes a user from a slot
+  Future<void> removeUserFromSlot(String slotId) async {
+    auth.User user = auth.FirebaseAuth.instance.currentUser!;
+    if (_nextSlots == null) {
+      await getUpcomingSlots();
+    }
+    Slot? slot = _nextSlots!.firstWhere(
+      (s) => s.id == slotId,
+      orElse: () => Slot(id: '-1'),
+    );
+    if (slot.id == '-1') {
+      return;
+    }
+    slot.bookedUsers.remove(user.uid);
+    await _slotService.updateSlot(slot);
     notifyListeners();
   }
 }

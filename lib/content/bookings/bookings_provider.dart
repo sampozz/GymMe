@@ -57,11 +57,20 @@ class BookingsProvider extends ChangeNotifier {
       room: slot.room,
       title: activity.title ?? 'Activity not available',
     );
-    await _bookingsService.addBooking(booking);
-
+    String? bookinId = await _bookingsService.addBooking(booking);
+    booking.id = bookinId;
     // Update the bookings list
-    _bookings ??= [];
+    if (_bookings == null) {
+      await getBookings();
+    }
     _bookings!.add(booking);
+    notifyListeners();
+  }
+
+  /// Removes a booking for the current user
+  Future<void> removeBooking(Booking booking) async {
+    await _bookingsService.deleteBooking(booking.id!);
+    _bookings!.removeWhere((element) => element.id == booking.id);
     notifyListeners();
   }
 

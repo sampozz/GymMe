@@ -44,4 +44,19 @@ class BookingsService {
       rethrow;
     }
   }
+
+  /// Deletes a booking by ID
+  Future<bool> deleteBooking(String bookingId) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('bookings')
+          .doc(bookingId)
+          .delete();
+      return true;
+    } catch (e) {
+      // TODO: handle error
+      print(e);
+      return false;
+    }
+  }
 }

@@ -25,16 +25,24 @@ class ConfirmBookingModal extends StatefulWidget {
 class _ConfirmBookingModalState extends State<ConfirmBookingModal> {
   bool _isBookingConfirmed = false;
 
-  void _confirmBooking(BuildContext context) {
-    Provider.of<SlotProvider>(
+  void _confirmBooking() async {
+    bool success = await Provider.of<SlotProvider>(
       context,
       listen: false,
     ).addUserToSlot(widget.slot);
 
-    Provider.of<BookingsProvider>(
+    if (!success) {
+      return;
+    }
+
+    if (!mounted) return;
+
+    await Provider.of<BookingsProvider>(
       context,
       listen: false,
     ).createBooking(widget.gym, widget.activity, widget.slot);
+
+    if (!mounted) return;
 
     setState(() {
       _isBookingConfirmed = true;
@@ -69,7 +77,7 @@ class _ConfirmBookingModalState extends State<ConfirmBookingModal> {
                     const Text('Confirm booking'),
                     ElevatedButton(
                       child: const Text('Confirm'),
-                      onPressed: () => _confirmBooking(context),
+                      onPressed: () => _confirmBooking(),
                     ),
                   ],
                 ),

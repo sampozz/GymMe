@@ -1,4 +1,3 @@
-import 'package:dima_project/content/bookings/bookings_provider.dart';
 import 'package:dima_project/content/home/gym/activity/activity_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/confirm_booking_modal.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/new_slot.dart';
@@ -43,7 +42,8 @@ class _BookSlotPageState extends State<BookSlotPage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 30, vsync: this);
+    _tabController = TabController(length: 31, vsync: this);
+    selectedDate = DateTime.now(); // Initialize selected date to today
     _tabController.addListener(() {
       // Update the selected date when the tab changes
       setState(() {
@@ -59,12 +59,12 @@ class _BookSlotPageState extends State<BookSlotPage>
   }
 
   /// Refreshes the gym list by fetching it from the provider
-  Future<void> _onRefresh(BuildContext context) async {
+  Future<void> _onRefresh() async {
     await Provider.of<SlotProvider>(context, listen: false).getUpcomingSlots();
   }
 
   /// Deletes the activity from the database
-  void _deleteActivity(BuildContext context, Gym gym, Activity activity) {
+  void _deleteActivity(Gym gym, Activity activity) {
     Provider.of<GymProvider>(
       context,
       listen: false,
@@ -76,7 +76,7 @@ class _BookSlotPageState extends State<BookSlotPage>
   }
 
   /// Modify the activity
-  void _modifyActivity(BuildContext context, Gym gym, Activity activity) {
+  void _modifyActivity(Gym gym, Activity activity) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -86,7 +86,7 @@ class _BookSlotPageState extends State<BookSlotPage>
   }
 
   /// Navigate to the add slot page
-  void _addSlot(BuildContext context, Gym gym, Activity activity) {
+  void _addSlot(Gym gym, Activity activity) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -99,7 +99,7 @@ class _BookSlotPageState extends State<BookSlotPage>
     );
   }
 
-  void _showBookingModal(BuildContext context, Slot slot) {
+  void _showBookingModal(Slot slot) {
     // Check if the user is already booked for the slot
     if (slot.bookedUsers.contains(user?.uid)) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -129,7 +129,6 @@ class _BookSlotPageState extends State<BookSlotPage>
           (_) => MultiProvider(
             providers: [
               ChangeNotifierProvider.value(value: context.read<SlotProvider>()),
-              ChangeNotifierProvider(create: (_) => BookingsProvider()),
             ],
             child: ConfirmBookingModal(
               gym: gym!,
@@ -140,23 +139,23 @@ class _BookSlotPageState extends State<BookSlotPage>
     );
   }
 
-  Widget _buildAdminActions(BuildContext context) {
+  Widget _buildAdminActions() {
     return Center(
       child: Column(
         children: [
           ElevatedButton(
-            onPressed: () => _addSlot(context, gym!, activity!),
+            onPressed: () => _addSlot(gym!, activity!),
             child: Text('Add slot'),
           ),
           SizedBox(height: 10),
           ElevatedButton(
-            onPressed: () => _modifyActivity(context, gym!, activity!),
+            onPressed: () => _modifyActivity(gym!, activity!),
             child: Text('Modify activity'),
           ),
           SizedBox(height: 10),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            onPressed: () => _deleteActivity(context, gym!, activity!),
+            onPressed: () => _deleteActivity(gym!, activity!),
             child: Text(
               'Delete activity',
               style: TextStyle(color: Colors.white),
@@ -175,7 +174,7 @@ class _BookSlotPageState extends State<BookSlotPage>
       [] => Center(child: Text('No slots available')),
       // Display the slot list - remove Expanded
       _ => RefreshIndicator(
-        onRefresh: () => _onRefresh(context),
+        onRefresh: () => _onRefresh(),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Center(
@@ -184,13 +183,14 @@ class _BookSlotPageState extends State<BookSlotPage>
               children:
                   slotList!.map((slot) {
                     // Check if the slot date matches the selected date
-                    if (slot.startTime!.day != selectedDate?.day ||
-                        slot.startTime!.month != selectedDate?.month ||
-                        slot.startTime!.year != selectedDate?.year) {
+                    if (_tabController.index != 30 &&
+                        (slot.startTime!.day != selectedDate?.day ||
+                            slot.startTime!.month != selectedDate?.month ||
+                            slot.startTime!.year != selectedDate?.year)) {
                       return Container(); // Skip this slot
                     }
                     return GestureDetector(
-                      onTap: () => _showBookingModal(context, slot),
+                      onTap: () => _showBookingModal(slot),
                       child: SlotCard(
                         slot: slot,
                         alreadyBooked: slot.bookedUsers.contains(user?.uid),
@@ -259,28 +259,37 @@ class _BookSlotPageState extends State<BookSlotPage>
 
   List<Widget> _generateTabs() {
     return List.generate(30, (index) {
-      // Generate tabs for the next 30 days
-      final date = DateTime.now().add(Duration(days: index));
-      final day = DateFormat('d').format(date);
-      final month = DateFormat('MMMM').format(date);
-      final weekdayName = DateFormat('EEE').format(date);
-      return Tab(
-        height: 70,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(weekdayName, style: TextStyle(fontSize: 12)),
-            SizedBox(height: 2),
-            Text(
-              day,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          // Generate tabs for the next 30 days
+          final date = DateTime.now().add(Duration(days: index));
+          final day = DateFormat('d').format(date);
+          final month = DateFormat('MMMM').format(date);
+          final weekdayName = DateFormat('EEE').format(date);
+          return Tab(
+            height: 70,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(weekdayName, style: TextStyle(fontSize: 12)),
+                SizedBox(height: 2),
+                Text(
+                  day,
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 2),
+                Text(month, style: TextStyle(fontSize: 12)),
+              ],
             ),
-            SizedBox(height: 2),
-            Text(month, style: TextStyle(fontSize: 12)),
-          ],
-        ),
-      );
-    });
+          );
+        }) +
+        [
+          Tab(
+            height: 70,
+            child: Text(
+              'Show all',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ];
   }
 
   @override
@@ -316,13 +325,14 @@ class _BookSlotPageState extends State<BookSlotPage>
             if (slotList != null &&
                 slotList!.every(
                   (slot) =>
-                      slot.startTime!.day != selectedDate?.day ||
-                      slot.startTime!.month != selectedDate?.month ||
-                      slot.startTime!.year != selectedDate?.year,
+                      _tabController.index != 30 &&
+                      (slot.startTime!.day != selectedDate?.day ||
+                          slot.startTime!.month != selectedDate?.month ||
+                          slot.startTime!.year != selectedDate?.year),
                 ))
               Center(child: Text('No slots available for the selected date')),
             SizedBox(height: 20),
-            if (user != null && user!.isAdmin) _buildAdminActions(context),
+            if (user != null && user!.isAdmin) _buildAdminActions(),
           ],
         ),
       ),

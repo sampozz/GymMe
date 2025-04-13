@@ -39,7 +39,7 @@ class _NewSlotState extends State<NewSlot> {
     super.dispose();
   }
 
-  void _submitForm(BuildContext context) async {
+  void _submitForm() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -70,13 +70,12 @@ class _NewSlotState extends State<NewSlot> {
       context,
       listen: false,
     ).createSlot(newSlot, _recurrence, _selectedUntilDate);
-    Navigator.pop(context);
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 
-  Future<void> _selectDate(
-    BuildContext context,
-    TextEditingController controller,
-  ) async {
+  Future<void> _selectDate(TextEditingController controller) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -105,10 +104,7 @@ class _NewSlotState extends State<NewSlot> {
     return null;
   }
 
-  Future<void> _selectTime(
-    BuildContext context,
-    TextEditingController controller,
-  ) async {
+  Future<void> _selectTime(TextEditingController controller) async {
     final TimeOfDay? pickedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
@@ -186,7 +182,7 @@ class _NewSlotState extends State<NewSlot> {
             border: OutlineInputBorder(),
           ),
           readOnly: true,
-          onTap: () => _selectDate(context, _untilCtrl),
+          onTap: () => _selectDate(_untilCtrl),
           validator:
               (value) =>
                   _recurrence != 'None' ? _validateMandatory(value) : null,
@@ -199,78 +195,80 @@ class _NewSlotState extends State<NewSlot> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Create New Slot')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                controller: _slotDateCtrl,
-                decoration: InputDecoration(
-                  labelText: 'Date',
-                  border: OutlineInputBorder(),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  controller: _slotDateCtrl,
+                  decoration: InputDecoration(
+                    labelText: 'Date',
+                    border: OutlineInputBorder(),
+                  ),
+                  readOnly: true,
+                  onTap: () => _selectDate(_slotDateCtrl),
+                  validator: (value) => _validateMandatory(value),
                 ),
-                readOnly: true,
-                onTap: () => _selectDate(context, _slotDateCtrl),
-                validator: (value) => _validateMandatory(value),
-              ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: _startTimeCtrl,
-                decoration: InputDecoration(
-                  labelText: 'Start Time',
-                  border: OutlineInputBorder(),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _startTimeCtrl,
+                  decoration: InputDecoration(
+                    labelText: 'Start Time',
+                    border: OutlineInputBorder(),
+                  ),
+                  readOnly: true,
+                  onTap: () => _selectTime(_startTimeCtrl),
+                  validator: (value) => _validateMandatory(value),
                 ),
-                readOnly: true,
-                onTap: () => _selectTime(context, _startTimeCtrl),
-                validator: (value) => _validateMandatory(value),
-              ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: _endTimeCtrl,
-                decoration: InputDecoration(
-                  labelText: 'End Time',
-                  border: OutlineInputBorder(),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _endTimeCtrl,
+                  decoration: InputDecoration(
+                    labelText: 'End Time',
+                    border: OutlineInputBorder(),
+                  ),
+                  readOnly: true,
+                  onTap: () => _selectTime(_endTimeCtrl),
+                  validator: (value) => _validateMandatory(value),
                 ),
-                readOnly: true,
-                onTap: () => _selectTime(context, _endTimeCtrl),
-                validator: (value) => _validateMandatory(value),
-              ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: _maxUsersCtrl,
-                decoration: InputDecoration(
-                  labelText: 'Max Reservations',
-                  border: OutlineInputBorder(),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _maxUsersCtrl,
+                  decoration: InputDecoration(
+                    labelText: 'Max Reservations',
+                    border: OutlineInputBorder(),
+                  ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'This field is required';
+                    }
+                    if (int.tryParse(value) == null) {
+                      return 'Please enter a valid number';
+                    }
+                    return null;
+                  },
                 ),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'This field is required';
-                  }
-                  if (int.tryParse(value) == null) {
-                    return 'Please enter a valid number';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: _roomCtrl,
-                decoration: InputDecoration(
-                  labelText: 'Room',
-                  border: OutlineInputBorder(),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _roomCtrl,
+                  decoration: InputDecoration(
+                    labelText: 'Room',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
-              ),
-              SizedBox(height: 20),
-              _buildRecurreceForm(),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () => _submitForm(context),
-                child: Text('Create Slot'),
-              ),
-            ],
+                SizedBox(height: 20),
+                _buildRecurreceForm(),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () => _submitForm(),
+                  child: Text('Create Slot'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
