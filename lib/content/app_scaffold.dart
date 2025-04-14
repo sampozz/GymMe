@@ -1,5 +1,4 @@
 import 'package:dima_project/content/bookings/widgets/bookings.dart';
-import 'package:dima_project/content/custom_appbar.dart';
 import 'package:dima_project/content/custom_bottomnavbar.dart';
 import 'package:dima_project/content/custom_sidebar.dart';
 import 'package:dima_project/content/favourites/favourites.dart';
@@ -80,13 +79,7 @@ class _AppScaffoldState extends State<AppScaffold> {
     _createPagesList();
 
     return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.white, Theme.of(context).colorScheme.primary],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-      ),
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
       child: Row(
         children: [
           // Sidebar only if the screen is not mobile
@@ -124,16 +117,6 @@ class _AppScaffoldState extends State<AppScaffold> {
                                 : Container(),
                           ],
                         ),
-
-                        // // Create bottom navigation bar only if the screen is mobile
-                        // bottomNavigationBar:
-                        //     screenProvider.useMobileLayout
-                        //         ? CustomBottomNavBar(
-                        //           pages: _pages,
-                        //           currentIndex: _currentIndex,
-                        //           onTapCallback: _navigateTab,
-                        //         )
-                        //         : null,
                       ),
                 );
               },

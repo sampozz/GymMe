@@ -19,7 +19,7 @@ void main() {
 
       // Stub the gym list to return a gym
       when(mockGymProvider.gymList).thenReturn([
-        Gym(name: 'Gym 1', activities: [Activity(name: 'Activity 1')]),
+        Gym(name: 'Gym 1', activities: [Activity(title: 'Activity 1')]),
       ]);
 
       // Build the widget

@@ -24,8 +24,8 @@ void main() {
       );
 
       var slotList = [
-        Slot(start: DateTime(10, 10)),
-        Slot(start: DateTime(11, 10)),
+        Slot(startTime: DateTime(10, 10)),
+        Slot(startTime: DateTime(11, 10)),
       ];
 
       when(

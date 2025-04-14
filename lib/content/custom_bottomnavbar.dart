@@ -24,12 +24,12 @@ class CustomBottomNavBar extends StatelessWidget {
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
           child: Container(
-            height: 80,
+            height: 70,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(200)),
               color: Theme.of(
                 context,
-              ).colorScheme.surface.withValues(alpha: 50),
+              ).colorScheme.primaryContainer.withValues(alpha: 50),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -72,7 +72,7 @@ class NavBarItem extends StatefulWidget {
   });
 
   @override
-  _NavBarItemState createState() => _NavBarItemState();
+  State<NavBarItem> createState() => _NavBarItemState();
 }
 
 class _NavBarItemState extends State<NavBarItem> {
@@ -94,16 +94,13 @@ class _NavBarItemState extends State<NavBarItem> {
               color:
                   widget.isSelected || _isHovered
                       ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.tertiary,
+                      : Theme.of(context).colorScheme.onSecondary,
             ),
             widget.isSelected
                 ? Text(
                   widget.title,
                   style: TextStyle(
-                    color:
-                        widget.isSelected || _isHovered
-                            ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context).colorScheme.tertiary,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 )
                 : Container(),

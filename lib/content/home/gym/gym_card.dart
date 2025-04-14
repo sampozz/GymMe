@@ -1,5 +1,4 @@
 import 'package:dima_project/content/home/gym/gym_model.dart';
-import 'package:dima_project/content/home/gym/gym_page.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -8,16 +7,14 @@ import 'package:provider/provider.dart';
 class GymCard extends StatelessWidget {
   final int gymIndex;
   final bool isFavourite;
+  final bool isSelected;
 
-  const GymCard({super.key, required this.gymIndex, required this.isFavourite});
-
-  /// Navigates to the gym page when a gym card is tapped
-  void _onGymCardTap(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => GymPage(gymIndex: gymIndex)),
-    );
-  }
+  const GymCard({
+    super.key,
+    required this.gymIndex,
+    required this.isFavourite,
+    this.isSelected = false,
+  });
 
   /// Navigates to the gym page when a gym card is tapped
   void _onFavoriteIconTap(BuildContext context, String gymId) {
@@ -51,14 +48,21 @@ class GymCard extends StatelessWidget {
   Widget build(BuildContext context) {
     Gym gym = context.watch<GymProvider>().gymList![gymIndex];
 
-    // TODO: Customize the card with more information
-    return GestureDetector(
-      onTap: () => _onGymCardTap(context),
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 10.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Card(
+          elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
+            side: BorderSide(
+              color:
+                  isSelected
+                      ? Theme.of(context).colorScheme.primary
+                      : Colors.transparent,
+              width: 2.0,
+            ),
           ),
           child: Column(
             children: [
@@ -72,28 +76,13 @@ class GymCard extends StatelessWidget {
                     child: Image.network(
                       gym.imageUrl,
                       fit: BoxFit.fitWidth,
-                      height: 150,
+                      height: 175,
                       width: double.infinity,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        }
-                        return Center(
-                          child: LinearProgressIndicator(
-                            value:
-                                loadingProgress.expectedTotalBytes != null
-                                    ? loadingProgress.cumulativeBytesLoaded /
-                                        (loadingProgress.expectedTotalBytes ??
-                                            1)
-                                    : null,
-                          ),
-                        );
-                      },
                       errorBuilder: (context, error, stackTrace) {
                         return Image.asset(
                           'assets/gym.jpeg',
                           fit: BoxFit.fitWidth,
-                          height: 150,
+                          height: 175,
                           width: double.infinity,
                         );
                       },

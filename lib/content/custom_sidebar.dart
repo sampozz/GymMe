@@ -59,11 +59,10 @@ class CustomSidebar extends StatelessWidget {
       child: Row(
         children: [
           CircleAvatar(
-            backgroundImage: AssetImage(
-              (user == null || user.photoURL.isEmpty)
-                  ? 'assets/avatar.png'
-                  : user.photoURL,
-            ),
+            backgroundImage:
+                user?.photoURL.isEmpty ?? true
+                    ? AssetImage('assets/avatar.png')
+                    : NetworkImage(user?.photoURL ?? ''),
             radius: 20,
           ),
           SizedBox(width: 10),
@@ -154,7 +153,7 @@ class SidebarItem extends StatefulWidget {
   });
 
   @override
-  _SidebarItemState createState() => _SidebarItemState();
+  State<SidebarItem> createState() => _SidebarItemState();
 }
 
 class _SidebarItemState extends State<SidebarItem> {

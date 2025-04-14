@@ -4,13 +4,14 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
-import 'dart:ui' as _i6;
+import 'dart:ui' as _i7;
 
 import 'package:dima_project/content/home/gym/activity/activity_model.dart'
     as _i5;
 import 'package:dima_project/content/home/gym/gym_model.dart' as _i4;
 import 'package:dima_project/global_providers/gym_provider.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i6;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -110,13 +111,26 @@ class MockGymProvider extends _i1.Mock implements _i2.GymProvider {
           as int);
 
   @override
-  void addListener(_i6.VoidCallback? listener) => super.noSuchMethod(
+  _i3.Future<String> uploadImage(String? base64Image) =>
+      (super.noSuchMethod(
+            Invocation.method(#uploadImage, [base64Image]),
+            returnValue: _i3.Future<String>.value(
+              _i6.dummyValue<String>(
+                this,
+                Invocation.method(#uploadImage, [base64Image]),
+              ),
+            ),
+          )
+          as _i3.Future<String>);
+
+  @override
+  void addListener(_i7.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#addListener, [listener]),
     returnValueForMissingStub: null,
   );
 
   @override
-  void removeListener(_i6.VoidCallback? listener) => super.noSuchMethod(
+  void removeListener(_i7.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#removeListener, [listener]),
     returnValueForMissingStub: null,
   );
