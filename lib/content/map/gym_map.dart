@@ -42,9 +42,7 @@ class _GymAppState extends State<GymMap> {
 
   @override
   void dispose() {
-    // Rimuovi il listener prima di distruggere il widget
     searchBarController.removeListener(_searchList);
-    // Rilascia il controller
     searchBarController.dispose();
     
     mapProvider?.saveMapState(_currentPosition, _currentZoom);
@@ -172,7 +170,7 @@ class _GymAppState extends State<GymMap> {
           minMaxZoomPreference: const MinMaxZoomPreference(11, 20),
         ),
         
-        // Location Button (Mantieni questa posizione)
+        // Location Button
         Positioned(
           right: 16,
           bottom: 100,
@@ -195,6 +193,7 @@ class _GymAppState extends State<GymMap> {
           ),
         ),
         
+        // Search Bar
         if (isDesktop)
           Positioned(
             top: 16,
@@ -209,10 +208,7 @@ class _GymAppState extends State<GymMap> {
             top: 48,
             left: 16,
             right: 16,
-            child: _buildSearchBar(), /*SizedBox(
-              width: double.infinity,
-              child: _buildSearchBar(),
-            ),*/
+            child: _buildSearchBar(),
           ),
       ],
     );
