@@ -43,10 +43,7 @@ class MapProvider with ChangeNotifier {
         final marker = Marker(
           markerId: MarkerId(gym.id),
           position: LatLng(gym.lat, gym.lng),
-          infoWindow: InfoWindow(
-            title: gym.name,
-            snippet: gym.address,
-          ),
+          infoWindow: InfoWindow(title: gym.name, snippet: gym.address),
         );
         _markers[gym.id] = marker;
       }

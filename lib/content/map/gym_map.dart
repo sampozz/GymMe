@@ -1,3 +1,4 @@
+import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
@@ -44,9 +45,9 @@ class _GymAppState extends State<GymMap> {
   void dispose() {
     searchBarController.removeListener(_searchList);
     searchBarController.dispose();
-    
+
     mapProvider?.saveMapState(_currentPosition, _currentZoom);
-    
+
     super.dispose();
   }
 
@@ -72,7 +73,6 @@ class _GymAppState extends State<GymMap> {
       }
 
       _updateCameraPosition();
-      
     } catch (e) {
       setState(() {
         _locationGranted = false;
@@ -92,14 +92,15 @@ class _GymAppState extends State<GymMap> {
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
     mapController = controller;
+
     if (_locationGranted) {
       _updateCameraPosition();
     }
-    
+
     try {
       if (mapProvider != null) {
         final gyms = await mapProvider!.getGymLocations(gymList);
-        
+
         if (mounted) {
           setState(() {
             _markers = mapProvider!.getMarkers(gyms);
@@ -108,40 +109,43 @@ class _GymAppState extends State<GymMap> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Unable to load gym locations')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Unable to load gym locations')));
       }
     }
   }
 
   void _onCameraMove(CameraPosition position) {
-      setState(() {
-        _currentPosition = position.target;
-        _currentZoom = position.zoom;
-      });
+    setState(() {
+      _currentPosition = position.target;
+      _currentZoom = position.zoom;
+    });
   }
-  
+
   void _updateCameraPosition() {
     if (mapController != null) {
-      mapController!.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: _currentPosition,
-          zoom: _currentZoom,
+      mapController!.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(target: _currentPosition, zoom: _currentZoom),
         ),
-      ));
+      );
     }
   }
 
   void _searchList() {
     final String query = searchBarController.text.toLowerCase();
-    
-    if(query.isNotEmpty) {
+
+    if (query.isNotEmpty) {
       setState(() {
-        searchList = gymList?.where((gym) =>
-          gym.name.toLowerCase().contains(query) ||
-          gym.address.toLowerCase().contains(query)
-        ).toList(); 
+        searchList =
+            gymList
+                ?.where(
+                  (gym) =>
+                      gym.name.toLowerCase().contains(query) ||
+                      gym.address.toLowerCase().contains(query),
+                )
+                .toList();
       });
     } else {
       setState(() {
@@ -152,8 +156,9 @@ class _GymAppState extends State<GymMap> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDesktop = MediaQuery.of(context).size.width > 600;
-    
+    final bool useMobileLayout =
+        context.watch<ScreenProvider>().useMobileLayout;
+
     return Stack(
       children: [
         GoogleMap(
@@ -167,48 +172,49 @@ class _GymAppState extends State<GymMap> {
           markers: _markers.values.toSet(),
           myLocationEnabled: _locationGranted,
           zoomControlsEnabled: false,
+          mapToolbarEnabled: false,
           minMaxZoomPreference: const MinMaxZoomPreference(11, 20),
         ),
-        
+
         // Location Button
         Positioned(
           right: 16,
           bottom: 100,
           child: FloatingActionButton(
-            onPressed: _locationGranted ? () async {
-              final position = await mapProvider?.getUserLocation();
-              if (position != null) {
-                setState(() {
-                  _currentPosition = LatLng(position.latitude, position.longitude);
-                });
-              }
-              _updateCameraPosition();
-            } : null,
+            onPressed:
+                _locationGranted
+                    ? () async {
+                      final position = await mapProvider?.getUserLocation();
+                      if (position != null) {
+                        setState(() {
+                          _currentPosition = LatLng(
+                            position.latitude,
+                            position.longitude,
+                          );
+                        });
+                      }
+                      _updateCameraPosition();
+                    }
+                    : null,
             backgroundColor: _locationGranted ? Colors.blue : Colors.grey,
-            foregroundColor: _locationGranted ? Colors.white : Colors.grey.shade300,
-            tooltip: _locationGranted 
-                ? 'Go to user location'
-                : 'Access to user location denied',
+            foregroundColor:
+                _locationGranted ? Colors.white : Colors.grey.shade300,
+            tooltip:
+                _locationGranted
+                    ? 'Go to user location'
+                    : 'Access to user location denied',
             child: const Icon(Icons.my_location),
           ),
         ),
-        
+
         // Search Bar
-        if (isDesktop)
+        if (useMobileLayout)
+          Positioned(top: 48, left: 16, right: 16, child: _buildSearchBar())
+        else
           Positioned(
             top: 16,
             left: 16,
-            child: SizedBox(
-              width: 400,
-              child: _buildSearchBar(),
-            ),
-          )
-        else
-          Positioned(
-            top: 48,
-            left: 16,
-            right: 16,
-            child: _buildSearchBar(),
+            child: SizedBox(width: 400, child: _buildSearchBar()),
           ),
       ],
     );
@@ -226,17 +232,18 @@ class _GymAppState extends State<GymMap> {
             controller.openView();
             _searchList();
           },
-          trailing: controller.text.isNotEmpty
-                    ? [
-                        IconButton(
-                          icon: Icon(Icons.clear),
-                          onPressed: () {
-                            controller.clear();
-                            searchBarController.clear();
-                          },
-                        ),
-                      ]
-                    : null,
+          trailing:
+              controller.text.isNotEmpty
+                  ? [
+                    IconButton(
+                      icon: Icon(Icons.clear),
+                      onPressed: () {
+                        controller.clear();
+                        searchBarController.clear();
+                      },
+                    ),
+                  ]
+                  : null,
           padding: const WidgetStatePropertyAll<EdgeInsets>(
             EdgeInsets.symmetric(horizontal: 16.0),
           ),
@@ -246,31 +253,31 @@ class _GymAppState extends State<GymMap> {
       },
       suggestionsBuilder: (BuildContext context, SearchController controller) {
         if (searchList == null || searchList!.isEmpty) {
-          return [
-            const ListTile(
-              title: Text('No results found'),
-            ),
-          ];
+          return [const ListTile(title: Text('No results found'))];
         }
-        
-        return searchList!.map((gym) => ListTile(
-          title: Text(gym.name),
-          subtitle: Text(gym.address),
-          onTap: () {
-            setState(() {
-              if(_markers.isNotEmpty && _markers.containsKey(gym.id)) {
-                _currentPosition = _markers[gym.id]!.position;
-              }
-            });
-            _updateCameraPosition();
-            Future.delayed(const Duration(milliseconds: 500), () {
-              if (gym.id != null) {
-                mapController?.showMarkerInfoWindow(MarkerId(gym.id!));
-              }
-            });
-            controller.closeView(gym.name);
-          },
-        )).toList();
+
+        return searchList!
+            .map(
+              (gym) => ListTile(
+                title: Text(gym.name),
+                subtitle: Text(gym.address),
+                onTap: () {
+                  setState(() {
+                    if (_markers.isNotEmpty && _markers.containsKey(gym.id)) {
+                      _currentPosition = _markers[gym.id]!.position;
+                    }
+                  });
+                  _updateCameraPosition();
+                  Future.delayed(const Duration(milliseconds: 500), () {
+                    if (gym.id != null) {
+                      mapController?.showMarkerInfoWindow(MarkerId(gym.id!));
+                    }
+                  });
+                  controller.closeView(gym.name);
+                },
+              ),
+            )
+            .toList();
       },
     );
   }

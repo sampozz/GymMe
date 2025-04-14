@@ -28,9 +28,12 @@ class MapService {
 
       if (permission == LocationPermission.deniedForever) {
         return null;
-      } else if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
+      } else if (permission == LocationPermission.whileInUse ||
+          permission == LocationPermission.always) {
         return await Geolocator.getCurrentPosition(
-          locationSettings: const LocationSettings(accuracy: LocationAccuracy.high)
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.high,
+          ),
         );
       } else {
         return null;
@@ -43,19 +46,19 @@ class MapService {
 
   //Fetches gym locations with coordinates
   Future<Locations> fetchGymLocations(List<Gym>? gymList) async {
-    try {      
+    try {
       List<GymLocation> gymLocationsList = [];
-      
+
       // Process each gym
       for (var gym in gymList ?? []) {
         final String id = gym.id;
         final String name = gym.name;
         final String address = gym.address;
         //final String imageUrl = gym.imageUrl;
-        
+
         // Get coordinates from address using geocoding
         final coordinates = await _getCoordinatesFromAddress(address);
-        
+
         // Create GymLocation object with all data
         final gymLocation = GymLocation(
           id: id,
@@ -65,14 +68,13 @@ class MapService {
           lat: coordinates['lat'] ?? 0,
           lng: coordinates['lng'] ?? 0,
         );
-        
+
         gymLocationsList.add(gymLocation);
       }
-      
+
       // Create a Locations object
       return Locations(gyms: gymLocationsList);
-
-      } catch (e) {
+    } catch (e) {
       print('Error getting gym locations: $e');
       // Return empty locations if error occurs
       return Locations(gyms: []);
@@ -89,16 +91,15 @@ class MapService {
   }
 
   // Helper function to get coordinates from address on mobile
-  Future<Map<String, double>> _getCoordinatesFromAddressMobile(String address) async {
+  Future<Map<String, double>> _getCoordinatesFromAddressMobile(
+    String address,
+  ) async {
     try {
       List<Location> locations = await locationFromAddress(address);
-      
+
       if (locations.isNotEmpty) {
         Location location = locations.first;
-        return {
-          'lat': location.latitude,
-          'lng': location.longitude,
-        };
+        return {'lat': location.latitude, 'lng': location.longitude};
       }
       return {'lat': 0, 'lng': 0}; // Default coordinates if geocoding fails
     } catch (e) {
@@ -108,23 +109,23 @@ class MapService {
   }
 
   // Helper function to get coordinates from address on web
-  Future<Map<String, double>> _getCoordinatesFromAddressWeb(String address) async {
+  Future<Map<String, double>> _getCoordinatesFromAddressWeb(
+    String address,
+  ) async {
     final apiKey = 'AIzaSyA78dAdSxee-z3tu89roFSfuihVVTjMGHY';
     final url = Uri.parse(
-        'https://maps.googleapis.com/maps/api/geocode/json?address=${Uri.encodeComponent(address)}&key=$apiKey');
+      'https://maps.googleapis.com/maps/api/geocode/json?address=${Uri.encodeComponent(address)}&key=$apiKey',
+    );
 
     try {
       final response = await http.get(url);
-      
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        
+
         if (data['status'] == 'OK' && data['results'].isNotEmpty) {
           final location = data['results'][0]['geometry']['location'];
-          return {
-            'lat': location['lat'],
-            'lng': location['lng'],
-          };
+          return {'lat': location['lat'], 'lng': location['lng']};
         }
       }
 

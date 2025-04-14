@@ -12,24 +12,20 @@ import 'package:mockito/annotations.dart';
 import 'user_location_test.mocks.dart'; // Generated file
 
 // Mocks
-@GenerateMocks([
-  MapProvider,
-  GymProvider,
-])
-
+@GenerateMocks([MapProvider, GymProvider])
 void main() {
   late MockMapProvider mockMapProvider;
   late MockGymProvider mockGymProvider;
-  
+
   setUp(() {
     mockMapProvider = MockMapProvider();
     mockGymProvider = MockGymProvider();
-    
+
     when(mockGymProvider.getGymList()).thenAnswer((_) async => <Gym>[]);
-    
+
     // Configure mock responses for MapProvider
-    when(mockMapProvider.getUserLocation()).thenAnswer((_) async => 
-      Position(
+    when(mockMapProvider.getUserLocation()).thenAnswer(
+      (_) async => Position(
         latitude: 45.46427,
         longitude: 9.18951,
         timestamp: DateTime.now(),
@@ -40,10 +36,10 @@ void main() {
         speedAccuracy: 1.0,
         altitudeAccuracy: 1.0,
         headingAccuracy: 1.0,
-      )
+      ),
     );
   });
-  
+
   // Helper function to build the widget with providers
   Widget createTestWidget() {
     return MultiProvider(
@@ -51,14 +47,14 @@ void main() {
         ChangeNotifierProvider<MapProvider>.value(value: mockMapProvider),
         ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
       ],
-      child: const MaterialApp(
-        home: Scaffold(body: GymMap()),
-      ),
+      child: const MaterialApp(home: Scaffold(body: GymMap())),
     );
   }
-  
+
   // Test that verifies if location permissions are properly requested
-  testWidgets('GymMap requests location permissions on initialization', (WidgetTester tester) async {
+  testWidgets('GymMap requests location permissions on initialization', (
+    WidgetTester tester,
+  ) async {
     return;
     /*await tester.pumpWidget(createTestWidget());
     
@@ -69,9 +65,11 @@ void main() {
     // Verify that the MapProvider's getUserLocation was called
     verify(mockMapProvider.getUserLocation()).called(1);*/
   });
-  
+
   // Test that verifies if location is updated when permission is granted
-  testWidgets('GymMap updates location when permission is granted', (WidgetTester tester) async {
+  testWidgets('GymMap updates location when permission is granted', (
+    WidgetTester tester,
+  ) async {
     return;
     /*// Setup test
     when(mockMapProvider.getUserLocation()).thenAnswer((_) async => 
@@ -99,10 +97,12 @@ void main() {
     // Verify that MapProvider was called
     verify(mockMapProvider.getUserLocation()).called(1);*/
   });
-  
-  testWidgets('GymMap contains a GoogleMap widget with correct initial position', (WidgetTester tester) async {
-    return;
-    /*await tester.pumpWidget(createTestWidget());
+
+  testWidgets(
+    'GymMap contains a GoogleMap widget with correct initial position',
+    (WidgetTester tester) async {
+      return;
+      /*await tester.pumpWidget(createTestWidget());
     
     await tester.pumpAndSettle();
     
@@ -112,10 +112,13 @@ void main() {
     expect(googleMapWidget.initialCameraPosition.target.latitude, 45.46427);
     expect(googleMapWidget.initialCameraPosition.target.longitude, 9.18951);
     expect(googleMapWidget.initialCameraPosition.zoom, 14);*/
-  });
-  
+    },
+  );
+
   // Test when location permission is denied
-  testWidgets('GymMap handles denied location permission correctly', (WidgetTester tester) async {
+  testWidgets('GymMap handles denied location permission correctly', (
+    WidgetTester tester,
+  ) async {
     return;
     /*// Setup for denied permission scenario
     when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);

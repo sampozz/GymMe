@@ -18,27 +18,24 @@ abstract class CameraUpdateProvider {
 }
 
 // Mocks
-@GenerateMocks([
-  GoogleMapController,
-  GymProvider,
-  MapProvider,
-  http.Client,
-], customMocks: [MockSpec<http.Response>(as: #MockHttpResponse)])
-
+@GenerateMocks(
+  [GoogleMapController, GymProvider, MapProvider, http.Client],
+  customMocks: [MockSpec<http.Response>(as: #MockHttpResponse)],
+)
 void main() {
   late MockGymProvider mockGymProvider;
   late MockMapProvider mockMapProvider;
-  
+
   setUp(() {
     mockGymProvider = MockGymProvider();
     mockMapProvider = MockMapProvider();
-    
+
     // Setup default responses for GymProvider
     when(mockGymProvider.getGymList()).thenAnswer((_) async => <Gym>[]);
-    
+
     // Setup default responses for MapProvider
-    when(mockMapProvider.getUserLocation()).thenAnswer((_) async => 
-      Position(
+    when(mockMapProvider.getUserLocation()).thenAnswer(
+      (_) async => Position(
         latitude: 45.46427,
         longitude: 9.18951,
         timestamp: DateTime.now(),
@@ -49,12 +46,12 @@ void main() {
         speedAccuracy: 1.0,
         altitudeAccuracy: 1.0,
         headingAccuracy: 1.0,
-      )
+      ),
     );
-    
-    when(mockMapProvider.getGymLocations(any)).thenAnswer((_) async => 
-      Locations(gyms: [])
-    );
+
+    when(
+      mockMapProvider.getGymLocations(any),
+    ).thenAnswer((_) async => Locations(gyms: []));
   });
 
   // Helper function to create the widget with providers
@@ -64,11 +61,7 @@ void main() {
         ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
         ChangeNotifierProvider<MapProvider>.value(value: mockMapProvider),
       ],
-      child: MaterialApp(
-        home: Scaffold(
-          body: child ?? const GymMap(),
-        ),
-      ),
+      child: MaterialApp(home: Scaffold(body: child ?? const GymMap())),
     );
   }
 
@@ -81,7 +74,9 @@ void main() {
   });
 
   // Test that verifies if GymMap contains a GoogleMap widget
-  testWidgets('GymMap contains a GoogleMap widget', (WidgetTester tester) async {
+  testWidgets('GymMap contains a GoogleMap widget', (
+    WidgetTester tester,
+  ) async {
     return;
     /*await tester.pumpWidget(createWidgetWithProviders());
     
@@ -89,7 +84,9 @@ void main() {
   });
 
   // Test that verifies the initial map position (center of Milan)
-  testWidgets('GymMap has initial position set to Milan', (WidgetTester tester) async {
+  testWidgets('GymMap has initial position set to Milan', (
+    WidgetTester tester,
+  ) async {
     return;
     /* tester.pumpWidget(createWidgetWithProviders());
     
@@ -101,14 +98,16 @@ void main() {
   });
 
   // Test that verifies if the onMapCreated function is called when the map is created
-  testWidgets('GymMap calls onMapCreated when the map is created', (WidgetTester tester) async {
+  testWidgets('GymMap calls onMapCreated when the map is created', (
+    WidgetTester tester,
+  ) async {
     return;
     /*await tester.pumpWidget(createWidgetWithProviders());
     
     final googleMapWidget = tester.widget<GoogleMap>(find.byType(GoogleMap));
     expect(googleMapWidget.onMapCreated, isNotNull);*/
   });
-  
+
   // Test that verifies if gym loading works correctly
   testWidgets('GymMap loads gym list correctly', (WidgetTester tester) async {
     return;
@@ -125,9 +124,11 @@ void main() {
     
     verify(mockGymProvider.getGymList()).called(1);*/
   });
-  
+
   // Test that verifies if the map provider is called to get user location
-  testWidgets('GymMap calls MapProvider to get user location', (WidgetTester tester) async {
+  testWidgets('GymMap calls MapProvider to get user location', (
+    WidgetTester tester,
+  ) async {
     return;
     /*await tester.pumpWidget(createWidgetWithProviders());
     
@@ -135,9 +136,11 @@ void main() {
     
     verify(mockMapProvider.getUserLocation()).called(1);*/
   });
-  
+
   // Test that verifies if the map provider is called to get gym locations
-  testWidgets('GymMap calls MapProvider to get gym locations', (WidgetTester tester) async {
+  testWidgets('GymMap calls MapProvider to get gym locations', (
+    WidgetTester tester,
+  ) async {
     return;
     /*final testGyms = [
       Gym(id: '1', name: 'Test Gym 1', address: 'Corso Como, 15, 20154 Milano MI'),
@@ -167,7 +170,7 @@ void main() {
 
     verify(mockMapProvider.getGymLocations(any)).called(1);*/
   });
-  
+
   // Test that verifies map settings
   testWidgets('GymMap uses correct map settings', (WidgetTester tester) async {
     return;
@@ -181,11 +184,13 @@ void main() {
     // Commenta questa verifica se cloudMapId non è più utilizzato
     // expect(googleMapWidget.cloudMapId, '7a4015798822680c');*/
   });
-  
+
   // Test that verifies if the initial map position is correct when location permissions are not granted
-  testWidgets('GymMap initializes with Milan position when location permission is denied', (WidgetTester tester) async {
-    return;
-    /*when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+  testWidgets(
+    'GymMap initializes with Milan position when location permission is denied',
+    (WidgetTester tester) async {
+      return;
+      /*when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
     
     await tester.pumpWidget(createWidgetWithProviders());
   
@@ -195,10 +200,13 @@ void main() {
 
     expect(googleMapWidget.initialCameraPosition.target.latitude, 45.46427);
     expect(googleMapWidget.initialCameraPosition.target.longitude, 9.18951);*/
-  });
-  
+    },
+  );
+
   // Test that verifies if the camera is updated when the user location is granted
-  testWidgets('GymMap updates camera when user location is granted', (WidgetTester tester) async {
+  testWidgets('GymMap updates camera when user location is granted', (
+    WidgetTester tester,
+  ) async {
     return;
     /*final userPosition = Position(
       latitude: 45.50,
