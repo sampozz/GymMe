@@ -15,6 +15,8 @@ import 'firebase_options.dart';
 // TODO: customize modal to confirm booking with all the data
 // TODO: add options in the confirm modal for the admin to modify the slot
 // TODO: add options in the confirm modal for the admin to delete the slot
+// TODO: in the calendar tabs show a flag if a slot is available
+// TODO: when an activity is removed, cosa facciamo??
 
 void main() async {
   // Initialize Firebase

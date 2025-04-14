@@ -54,14 +54,14 @@ class _NewActivityState extends State<NewActivity> {
           id: widget.activity?.id ?? '',
           title: titleCtrl.text,
           description: descrCtrl.text,
-          price: double.tryParse(priceCtrl.text) ?? 0,
+          price: double.tryParse(priceCtrl.text) ?? 0.0,
           instructorId: instructorId,
         ) ??
         Activity(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
           title: titleCtrl.text,
           description: descrCtrl.text,
-          price: double.tryParse(priceCtrl.text) ?? 0,
+          price: double.tryParse(priceCtrl.text) ?? 0.0,
           instructorId: instructorId,
         );
 

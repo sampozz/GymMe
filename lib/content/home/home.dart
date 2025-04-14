@@ -36,19 +36,21 @@ class _HomeState extends State<Home> {
     } else {
       _filteredGymList = _gymProvider.gymList;
     }
-    _gymProvider.addListener(() {
-      setState(() {
-        _filteredGymList = _gymProvider.gymList;
-        // TODO: call function to sort _filteredGymList by distance
-      });
-    });
+    _gymProvider.addListener(_initFilter);
     _controller.addListener(_filterGymList);
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _gymProvider.removeListener(_initFilter);
     super.dispose();
+  }
+
+  void _initFilter() {
+    setState(() {
+      _filteredGymList = _gymList;
+    });
   }
 
   void _filterGymList() {
