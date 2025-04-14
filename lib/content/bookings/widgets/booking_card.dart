@@ -1,7 +1,6 @@
 import 'package:dima_project/content/bookings/booking_model.dart';
 import 'package:dima_project/content/bookings/bookings_provider.dart';
 import 'package:dima_project/content/bookings/widgets/booking_page.dart';
-import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -16,15 +15,7 @@ class BookingCard extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder:
-            (_) => ChangeNotifierProvider<SlotProvider>(
-              create:
-                  (_) => SlotProvider(
-                    gymId: booking.gymId,
-                    activityId: booking.activityId,
-                  ),
-              child: BookingPage(bookingIndex: bookingIndex),
-            ),
+        builder: (_) => BookingPage(bookingIndex: bookingIndex),
       ),
     );
   }
@@ -96,8 +87,14 @@ class BookingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Booking booking = context.watch<BookingsProvider>().bookings![bookingIndex];
+    Booking? booking = context
+        .watch<BookingsProvider>()
+        .bookings!
+        .elementAtOrNull(bookingIndex);
     bool useMobileLayout = context.watch<ScreenProvider>().useMobileLayout;
+    if (booking == null) {
+      return Container(); // Return an empty widget if booking is null
+    }
 
     return GestureDetector(
       onTap: () => _navigateToBookingPage(context, booking),

@@ -126,16 +126,8 @@ class _BookSlotPageState extends State<BookSlotPage>
       context: context,
       useRootNavigator: true,
       builder:
-          (_) => MultiProvider(
-            providers: [
-              ChangeNotifierProvider.value(value: context.read<SlotProvider>()),
-            ],
-            child: ConfirmBookingModal(
-              gym: gym!,
-              activity: activity!,
-              slot: slot,
-            ),
-          ),
+          (_) =>
+              ConfirmBookingModal(gym: gym!, activity: activity!, slot: slot),
     );
   }
 

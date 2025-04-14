@@ -34,8 +34,13 @@ class BookingsProvider extends ChangeNotifier {
   }
 
   /// Books a slot for the current user
-  Future<void> createBooking(Gym gym, Activity activity, Slot slot) async {
+  Future<bool> createBooking(Gym gym, Activity activity, Slot slot) async {
     auth.User user = auth.FirebaseAuth.instance.currentUser!;
+    if (slot.bookedUsers.contains(user.uid) ||
+        slot.bookedUsers.length >= slot.maxUsers) {
+      return false;
+    }
+
     Instructor? instructor = await _instructorService.fetchInstructorById(
       activity.instructorId!,
     );
@@ -57,7 +62,7 @@ class BookingsProvider extends ChangeNotifier {
       room: slot.room,
       title: activity.title ?? 'Activity not available',
     );
-    String? bookinId = await _bookingsService.addBooking(booking);
+    String? bookinId = await _bookingsService.addBooking(booking, slot);
     booking.id = bookinId;
     // Update the bookings list
     if (_bookings == null) {
@@ -65,11 +70,12 @@ class BookingsProvider extends ChangeNotifier {
     }
     _bookings!.add(booking);
     notifyListeners();
+    return true;
   }
 
   /// Removes a booking for the current user
   Future<void> removeBooking(Booking booking) async {
-    await _bookingsService.deleteBooking(booking.id!);
+    await _bookingsService.deleteBooking(booking);
     _bookings!.removeWhere((element) => element.id == booking.id);
     notifyListeners();
   }

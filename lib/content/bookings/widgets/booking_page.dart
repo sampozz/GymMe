@@ -1,6 +1,5 @@
 import 'package:dima_project/content/bookings/booking_model.dart';
 import 'package:dima_project/content/bookings/bookings_provider.dart';
-import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -77,51 +76,41 @@ class _BookingPageState extends State<BookingPage> {
       useRootNavigator: true,
       context: context,
       builder:
-          (ctx) => MultiProvider(
-            providers: [
-              ChangeNotifierProvider.value(value: context.read<SlotProvider>()),
-            ],
-            child: SizedBox(
-              height: 200,
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      "Are you sure you want to cancel this booking?",
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton.icon(
-                      onPressed: () async {
-                        await context.read<SlotProvider>().removeUserFromSlot(
-                          booking.slotId,
+          (ctx) => SizedBox(
+            height: 200,
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    "Are you sure you want to cancel this booking?",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      if (mounted) {
+                        context.read<BookingsProvider>().removeBooking(booking);
+                      }
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Booking cancelled successfully"),
+                            duration: Duration(seconds: 2),
+                          ),
                         );
-                        if (mounted) {
-                          context.read<BookingsProvider>().removeBooking(
-                            booking,
-                          );
-                        }
-                        if (mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Booking cancelled successfully"),
-                              duration: Duration(seconds: 2),
-                            ),
-                          );
-                        }
-                        if (ctx.mounted) {
-                          Navigator.of(ctx).pop();
-                        }
-                        if (mounted) {
-                          Navigator.of(context).pop();
-                        }
-                      },
-                      icon: const Icon(Icons.cancel),
-                      label: const Text("Cancel Booking"),
-                    ),
-                  ],
-                ),
+                      }
+                      if (ctx.mounted) {
+                        Navigator.of(ctx).pop();
+                      }
+                      if (mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    icon: const Icon(Icons.cancel),
+                    label: const Text("Cancel Booking"),
+                  ),
+                ],
               ),
             ),
           ),
@@ -190,9 +179,15 @@ class _BookingPageState extends State<BookingPage> {
 
   @override
   Widget build(BuildContext context) {
-    Booking booking =
-        context.watch<BookingsProvider>().bookings![widget.bookingIndex];
+    Booking? booking = context
+        .watch<BookingsProvider>()
+        .bookings!
+        .elementAtOrNull(widget.bookingIndex);
     bool useMobileLayout = context.watch<ScreenProvider>().useMobileLayout;
+
+    if (booking == null) {
+      return Container();
+    }
 
     return Scaffold(
       appBar: AppBar(),

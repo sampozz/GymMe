@@ -1,6 +1,5 @@
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_service.dart';
-import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 
 class SlotProvider extends ChangeNotifier {
@@ -41,24 +40,6 @@ class SlotProvider extends ChangeNotifier {
     _nextSlots = slots;
     notifyListeners();
     return slots;
-  }
-
-  /// Books a slot for the current user
-  Future<bool> addUserToSlot(Slot slot) async {
-    auth.User user = auth.FirebaseAuth.instance.currentUser!;
-    // Check if the user is already booked for this slot
-    if (slot.bookedUsers.contains(user.uid)) {
-      return false; // User is already booked for this slot
-    }
-    // Check if the number of booked users is less than the max number of users
-    if (slot.bookedUsers.length >= slot.maxUsers) {
-      return false; // Slot is already fully booked
-    }
-    // Add the user to the booked users list
-    slot.bookedUsers.add(user.uid);
-    await _slotService.updateSlot(slot);
-    notifyListeners();
-    return true; // Booking successful
   }
 
   /// Create a new slot
@@ -106,24 +87,6 @@ class SlotProvider extends ChangeNotifier {
     }
 
     _nextSlots = null;
-    notifyListeners();
-  }
-
-  /// Removes a user from a slot
-  Future<void> removeUserFromSlot(String slotId) async {
-    auth.User user = auth.FirebaseAuth.instance.currentUser!;
-    if (_nextSlots == null) {
-      await getUpcomingSlots();
-    }
-    Slot? slot = _nextSlots!.firstWhere(
-      (s) => s.id == slotId,
-      orElse: () => Slot(id: '-1'),
-    );
-    if (slot.id == '-1') {
-      return;
-    }
-    slot.bookedUsers.remove(user.uid);
-    await _slotService.updateSlot(slot);
     notifyListeners();
   }
 }
