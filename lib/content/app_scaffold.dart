@@ -4,6 +4,7 @@ import 'package:dima_project/content/custom_sidebar.dart';
 import 'package:dima_project/content/favourites/favourites.dart';
 import 'package:dima_project/content/home/home.dart';
 import 'package:dima_project/content/profile/profile.dart';
+import 'package:dima_project/content/map/gym_map.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -44,7 +45,7 @@ class _AppScaffoldState extends State<AppScaffold> {
         "title": "Map",
         "description": "Map page",
         "icon": Icons.map_outlined,
-        "widget": null, // TODO: implement map page
+        "widget": GymMap(),
       },
       {
         "title": "Bookings",
