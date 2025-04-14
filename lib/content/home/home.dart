@@ -103,28 +103,26 @@ class _HomeState extends State<Home> {
   }
 
   Widget _buildSearchBar() {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: SearchBar(
-          controller: _controller,
-          trailing:
-              _controller.text.isNotEmpty
-                  ? [
-                    IconButton(
-                      icon: Icon(Icons.clear),
-                      onPressed: () {
-                        _controller.clear();
-                      },
-                    ),
-                  ]
-                  : null,
-          padding: const WidgetStatePropertyAll<EdgeInsets>(
-            EdgeInsets.symmetric(horizontal: 16.0),
-          ),
-          leading: const Icon(Icons.search),
-          elevation: WidgetStateProperty.all(0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: SearchBar(
+        controller: _controller,
+        trailing:
+            _controller.text.isNotEmpty
+                ? [
+                  IconButton(
+                    icon: Icon(Icons.clear),
+                    onPressed: () {
+                      _controller.clear();
+                    },
+                  ),
+                ]
+                : null,
+        padding: const WidgetStatePropertyAll<EdgeInsets>(
+          EdgeInsets.symmetric(horizontal: 16.0),
         ),
+        leading: const Icon(Icons.search),
+        elevation: WidgetStateProperty.all(0),
       ),
     );
   }
@@ -225,7 +223,7 @@ class _HomeState extends State<Home> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [_buildSearchBar(), _buildNewGymButton()],
+          children: [Expanded(child: _buildSearchBar()), _buildNewGymButton()],
         ),
         SizedBox(height: 20.0),
         Expanded(

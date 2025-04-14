@@ -126,9 +126,17 @@ class _BookSlotPageState extends State<BookSlotPage>
       context: context,
       useRootNavigator: true,
       builder:
-          (_) =>
-              ConfirmBookingModal(gym: gym!, activity: activity!, slot: slot),
+          (_) => ConfirmBookingModal(
+            gym: gym!,
+            activity: activity!,
+            slot: slot,
+            onBookingConfirmed: _onBookingConfirmed,
+          ),
     );
+  }
+
+  void _onBookingConfirmed(String slotId) {
+    Provider.of<SlotProvider>(context, listen: false).addUserToSlot(slotId);
   }
 
   Widget _buildAdminActions() {

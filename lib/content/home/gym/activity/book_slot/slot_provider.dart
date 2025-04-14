@@ -1,5 +1,6 @@
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_service.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 
 class SlotProvider extends ChangeNotifier {
@@ -87,6 +88,18 @@ class SlotProvider extends ChangeNotifier {
     }
 
     _nextSlots = null;
+    notifyListeners();
+  }
+
+  /// Add the user to the booked users list of a slot
+  Future<void> addUserToSlot(String slotId) async {
+    auth.User user = auth.FirebaseAuth.instance.currentUser!;
+    // Get the slot from the list of next slots
+    int index = _nextSlots!.indexWhere((slot) => slot.id == slotId);
+    if (index == -1) {
+      return;
+    }
+    _nextSlots![index].bookedUsers.add(user.uid);
     notifyListeners();
   }
 }

@@ -65,10 +65,9 @@ class BookingsProvider extends ChangeNotifier {
     String? bookinId = await _bookingsService.addBooking(booking, slot);
     booking.id = bookinId;
     // Update the bookings list
-    if (_bookings == null) {
-      await getBookings();
+    if (_bookings != null) {
+      _bookings!.add(booking);
     }
-    _bookings!.add(booking);
     notifyListeners();
     return true;
   }

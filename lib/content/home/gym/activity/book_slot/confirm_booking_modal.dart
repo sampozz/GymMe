@@ -9,12 +9,14 @@ class ConfirmBookingModal extends StatefulWidget {
   final Gym gym;
   final Activity activity;
   final Slot slot;
+  final Function onBookingConfirmed;
 
   const ConfirmBookingModal({
     super.key,
     required this.gym,
     required this.activity,
     required this.slot,
+    required this.onBookingConfirmed,
   });
 
   @override
@@ -29,6 +31,10 @@ class _ConfirmBookingModalState extends State<ConfirmBookingModal> {
       context,
       listen: false,
     ).createBooking(widget.gym, widget.activity, widget.slot);
+
+    if (res) {
+      widget.onBookingConfirmed(widget.slot.id);
+    }
 
     setState(() {
       _isBookingConfirmed = res;
