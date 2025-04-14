@@ -9,6 +9,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
+// TODO: add to calendar
+// TODO: favourites page
+// TODO?? add activities to favourites
+// TODO: customize modal to confirm booking with all the data
+// TODO: add options in the confirm modal for the admin to modify the slot
+// TODO: add options in the confirm modal for the admin to delete the slot
+
 void main() async {
   // Initialize Firebase
   WidgetsFlutterBinding.ensureInitialized();

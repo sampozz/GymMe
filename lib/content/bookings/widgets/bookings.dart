@@ -33,6 +33,7 @@ class Bookings extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Booking>? bookings = context.watch<BookingsProvider>().bookings;
     DateTime now = DateTime.now();
+    DateTime startOfDay = DateTime(now.year, now.month, now.day);
 
     return DefaultTabController(
       length: 2,
@@ -56,7 +57,7 @@ class Bookings extends StatelessWidget {
                   child: _buildBookingsList(
                     context,
                     bookings
-                        ?.where((b) => b.endTime?.isBefore(now) ?? true)
+                        ?.where((b) => b.startTime?.isAfter(startOfDay) ?? true)
                         .toList(),
                   ),
                 ),
@@ -64,7 +65,9 @@ class Bookings extends StatelessWidget {
                   child: _buildBookingsList(
                     context,
                     bookings
-                        ?.where((b) => b.endTime?.isAfter(now) ?? false)
+                        ?.where(
+                          (b) => b.startTime?.isBefore(startOfDay) ?? false,
+                        )
                         .toList(),
                   ),
                 ),

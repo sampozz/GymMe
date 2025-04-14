@@ -44,7 +44,7 @@ class _NewActivityState extends State<NewActivity> {
   }
 
   /// Create a new gym and add it to the gym list
-  void _createOrUpdateActivity(BuildContext context) async {
+  void _createOrUpdateActivity() async {
     if (_formKey.currentState?.validate() != true) {
       return;
     }
@@ -163,7 +163,7 @@ class _NewActivityState extends State<NewActivity> {
     );
   }
 
-  void _navigateToInstructors(BuildContext context) {
+  void _navigateToInstructors() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => InstructorsPage()),
@@ -225,12 +225,12 @@ class _NewActivityState extends State<NewActivity> {
               _buildDropDownMenu(instructors),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () => _navigateToInstructors(context),
+                onPressed: () => _navigateToInstructors(),
                 child: Text('Edit instructors'),
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () => _createOrUpdateActivity(context),
+                onPressed: () => _createOrUpdateActivity(),
                 child:
                     widget.activity == null
                         ? Text('Add activity')

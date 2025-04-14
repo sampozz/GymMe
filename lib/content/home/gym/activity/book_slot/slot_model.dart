@@ -6,7 +6,6 @@ class Slot {
   final String activityId;
   final DateTime? startTime;
   final DateTime? endTime;
-  final int duration;
   final int maxUsers;
   final String room;
   final List<String> bookedUsers;
@@ -17,7 +16,6 @@ class Slot {
     this.activityId = '',
     this.startTime,
     this.endTime,
-    this.duration = 0,
     this.maxUsers = 0,
     this.room = 'Room not available',
     this.bookedUsers = const [],
@@ -34,7 +32,6 @@ class Slot {
       activityId: data['activityId'] ?? Slot().activityId,
       startTime: data['startTime']?.toDate() ?? DateTime(1971, 1, 1),
       endTime: data['endTime']?.toDate() ?? DateTime(1971, 1, 1),
-      duration: data['duration'] ?? Slot().duration,
       maxUsers: data['maxUsers'] ?? Slot().maxUsers,
       room: data['room'] ?? Slot().room,
       bookedUsers: List<String>.from(data['bookedUsers'] ?? []),
@@ -47,10 +44,31 @@ class Slot {
       'endTime': endTime,
       'gymId': gymId,
       'activityId': activityId,
-      'duration': duration,
       'maxUsers': maxUsers,
       'room': room,
       'bookedUsers': bookedUsers,
     };
+  }
+
+  Slot copyWith({
+    String? id,
+    String? gymId,
+    String? activityId,
+    DateTime? startTime,
+    DateTime? endTime,
+    int? maxUsers,
+    String? room,
+    List<String>? bookedUsers,
+  }) {
+    return Slot(
+      id: id ?? this.id,
+      gymId: gymId ?? this.gymId,
+      activityId: activityId ?? this.activityId,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      maxUsers: maxUsers ?? this.maxUsers,
+      room: room ?? this.room,
+      bookedUsers: bookedUsers ?? this.bookedUsers,
+    );
   }
 }

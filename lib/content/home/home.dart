@@ -71,13 +71,13 @@ class _HomeState extends State<Home> {
   }
 
   /// Refreshes the gym list by fetching it from the provider
-  Future<void> _onRefresh(BuildContext context) async {
+  Future<void> _onRefresh() async {
     await Provider.of<GymProvider>(context, listen: false).getGymList();
     _filterGymList();
   }
 
   /// Navigate to the add gym page
-  void _navigateToAddGym(BuildContext context) {
+  void _navigateToAddGym() {
     // If the screen is desktop, use the desktop navigator
     if (!_useMobileLayout) {
       desktopNavKey.currentState?.push(
@@ -92,7 +92,7 @@ class _HomeState extends State<Home> {
     return _user?.favouriteGyms.contains(gym.id) ?? false;
   }
 
-  Widget _buildTopBar(BuildContext context) {
+  Widget _buildTopBar() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: Text(
@@ -102,7 +102,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget _buildSearchBar(BuildContext context) {
+  Widget _buildSearchBar() {
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -129,12 +129,12 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget _buildNewGymButton(BuildContext context) {
+  Widget _buildNewGymButton() {
     return (_user != null && _user!.isAdmin)
         ? Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: ElevatedButton(
-            onPressed: () => _navigateToAddGym(context),
+            onPressed: () => _navigateToAddGym(),
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(
                 horizontal: 20.0,
@@ -154,7 +154,7 @@ class _HomeState extends State<Home> {
         : Container();
   }
 
-  Widget _buildGymSliverList(BuildContext context) {
+  Widget _buildGymSliverList() {
     return (_filteredGymList == null || _user == null)
         // If the gym list is null, show a loading indicator
         ? SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()))
@@ -167,7 +167,7 @@ class _HomeState extends State<Home> {
             // If the gym is not in the list, return an empty container
             return gymIndex != -1
                 ? GestureDetector(
-                  onTap: () => _onGymCardTap(context, gymIndex),
+                  onTap: () => _onGymCardTap(gymIndex),
                   child: GymCard(
                     gymIndex: gymIndex,
                     isFavourite: _isFavourite(gym),
@@ -179,7 +179,7 @@ class _HomeState extends State<Home> {
   }
 
   /// Navigates to the gym page when a gym card is tapped
-  void _onGymCardTap(BuildContext context, int gymIndex) {
+  void _onGymCardTap(int gymIndex) {
     // If the screen is desktop, use the desktop navigator
     if (!_useMobileLayout) {
       setState(() {
@@ -197,35 +197,35 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget _buildMobileHome(BuildContext context) {
+  Widget _buildMobileHome() {
     return CustomScrollView(
       slivers: [
         SliverAppBar(
           backgroundColor: Colors.transparent,
           expandedHeight: 50.0,
-          flexibleSpace: _buildTopBar(context),
+          flexibleSpace: _buildTopBar(),
         ),
         SliverAppBar(
           backgroundColor: Colors.transparent,
           expandedHeight: 75.0,
-          flexibleSpace: _buildSearchBar(context),
+          flexibleSpace: _buildSearchBar(),
         ),
-        SliverToBoxAdapter(child: _buildNewGymButton(context)),
+        SliverToBoxAdapter(child: _buildNewGymButton()),
         SliverToBoxAdapter(child: SizedBox(height: 20.0)),
-        _buildGymSliverList(context),
+        _buildGymSliverList(),
         SliverToBoxAdapter(child: SizedBox(height: 100.0)),
       ],
     );
   }
 
-  Widget _buildDesktopHome(BuildContext context) {
+  Widget _buildDesktopHome() {
     return Column(
       children: [
         SizedBox(height: 20.0),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [_buildSearchBar(context), _buildNewGymButton(context)],
+          children: [_buildSearchBar(), _buildNewGymButton()],
         ),
         SizedBox(height: 20.0),
         Expanded(
@@ -239,7 +239,7 @@ class _HomeState extends State<Home> {
                     int gymIndex = _gymProvider.getGymIndex(gym);
                     return gymIndex != -1
                         ? GestureDetector(
-                          onTap: () => _onGymCardTap(context, gymIndex),
+                          onTap: () => _onGymCardTap(gymIndex),
                           child: GymCard(
                             gymIndex: gymIndex,
                             isFavourite: _isFavourite(gym),
@@ -288,11 +288,8 @@ class _HomeState extends State<Home> {
       body: RefreshIndicator(
         backgroundColor: Theme.of(context).colorScheme.primary,
         color: Theme.of(context).colorScheme.onPrimary,
-        onRefresh: () => _onRefresh(context),
-        child:
-            _useMobileLayout
-                ? _buildMobileHome(context)
-                : _buildDesktopHome(context),
+        onRefresh: () => _onRefresh(),
+        child: _useMobileLayout ? _buildMobileHome() : _buildDesktopHome(),
       ),
     );
   }

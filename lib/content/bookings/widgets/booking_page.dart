@@ -6,11 +6,16 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-class BookingPage extends StatelessWidget {
+class BookingPage extends StatefulWidget {
   final int bookingIndex;
 
   const BookingPage({super.key, required this.bookingIndex});
 
+  @override
+  State<BookingPage> createState() => _BookingPageState();
+}
+
+class _BookingPageState extends State<BookingPage> {
   Widget _buildHeader(Booking booking) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -66,6 +71,52 @@ class BookingPage extends StatelessWidget {
     );
   }
 
+  void _cancelBooking(Booking booking) {
+    showModalBottomSheet(
+      useRootNavigator: true,
+      context: context,
+      builder:
+          (ctx) => SizedBox(
+            height: 200,
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    "Are you sure you want to cancel this booking?",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      if (mounted) {
+                        context.read<BookingsProvider>().removeBooking(booking);
+                      }
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Booking cancelled successfully"),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      }
+                      if (ctx.mounted) {
+                        Navigator.of(ctx).pop();
+                      }
+                      if (mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    icon: const Icon(Icons.cancel),
+                    label: const Text("Cancel Booking"),
+                  ),
+                ],
+              ),
+            ),
+          ),
+    );
+  }
+
   Widget _buildBookingActions(Booking booking) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
@@ -80,9 +131,7 @@ class BookingPage extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           ElevatedButton.icon(
-            onPressed: () {
-              // Logic to cancel the booking
-            },
+            onPressed: () => _cancelBooking(booking),
             icon: const Icon(Icons.cancel, color: Colors.white),
             label: const Text(
               "Cancel Booking",
@@ -130,8 +179,15 @@ class BookingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Booking booking = context.watch<BookingsProvider>().bookings![bookingIndex];
+    Booking? booking = context
+        .watch<BookingsProvider>()
+        .bookings!
+        .elementAtOrNull(widget.bookingIndex);
     bool useMobileLayout = context.watch<ScreenProvider>().useMobileLayout;
+
+    if (booking == null) {
+      return Container();
+    }
 
     return Scaffold(
       appBar: AppBar(),

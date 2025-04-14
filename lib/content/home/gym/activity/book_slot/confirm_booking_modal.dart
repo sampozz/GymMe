@@ -1,7 +1,6 @@
 import 'package:dima_project/content/bookings/bookings_provider.dart';
 import 'package:dima_project/content/home/gym/activity/activity_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
-import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart';
 import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,19 +24,14 @@ class ConfirmBookingModal extends StatefulWidget {
 class _ConfirmBookingModalState extends State<ConfirmBookingModal> {
   bool _isBookingConfirmed = false;
 
-  void _confirmBooking(BuildContext context) {
-    Provider.of<SlotProvider>(
-      context,
-      listen: false,
-    ).addUserToSlot(widget.slot);
-
-    Provider.of<BookingsProvider>(
+  void _confirmBooking() async {
+    bool res = await Provider.of<BookingsProvider>(
       context,
       listen: false,
     ).createBooking(widget.gym, widget.activity, widget.slot);
 
     setState(() {
-      _isBookingConfirmed = true;
+      _isBookingConfirmed = res;
     });
   }
 
@@ -69,7 +63,7 @@ class _ConfirmBookingModalState extends State<ConfirmBookingModal> {
                     const Text('Confirm booking'),
                     ElevatedButton(
                       child: const Text('Confirm'),
-                      onPressed: () => _confirmBooking(context),
+                      onPressed: () => _confirmBooking(),
                     ),
                   ],
                 ),

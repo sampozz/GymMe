@@ -11,7 +11,7 @@ class BookingCard extends StatelessWidget {
 
   const BookingCard({super.key, required this.bookingIndex});
 
-  void _navigateToBookingPage(BuildContext context) {
+  void _navigateToBookingPage(BuildContext context, Booking booking) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -87,11 +87,17 @@ class BookingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Booking booking = context.watch<BookingsProvider>().bookings![bookingIndex];
+    Booking? booking = context
+        .watch<BookingsProvider>()
+        .bookings!
+        .elementAtOrNull(bookingIndex);
     bool useMobileLayout = context.watch<ScreenProvider>().useMobileLayout;
+    if (booking == null) {
+      return Container(); // Return an empty widget if booking is null
+    }
 
     return GestureDetector(
-      onTap: () => _navigateToBookingPage(context),
+      onTap: () => _navigateToBookingPage(context, booking),
       child: Padding(
         padding:
             useMobileLayout

@@ -59,7 +59,7 @@ class _NewGymState extends State<NewGym> {
     super.dispose();
   }
 
-  void _createOrUpdateGym(BuildContext context) async {
+  void _createOrUpdateGym() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -120,7 +120,7 @@ class _NewGymState extends State<NewGym> {
     return null;
   }
 
-  void _showTimePicker(BuildContext context, bool openTime) async {
+  void _showTimePicker(bool openTime) async {
     final TimeOfDay? time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
@@ -212,7 +212,7 @@ class _NewGymState extends State<NewGym> {
                     border: OutlineInputBorder(),
                   ),
                   readOnly: true,
-                  onTap: () => _showTimePicker(context, true),
+                  onTap: () => _showTimePicker(true),
                 ),
                 SizedBox(height: 20),
                 TextFormField(
@@ -222,7 +222,7 @@ class _NewGymState extends State<NewGym> {
                     border: OutlineInputBorder(),
                   ),
                   readOnly: true,
-                  onTap: () => _showTimePicker(context, false),
+                  onTap: () => _showTimePicker(false),
                 ),
                 SizedBox(height: 20),
                 ElevatedButton.icon(
@@ -241,7 +241,7 @@ class _NewGymState extends State<NewGym> {
                     : Text(widget.gym?.imageUrl ?? 'No image selected'),
                 SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () => _createOrUpdateGym(context),
+                  onPressed: () => _createOrUpdateGym(),
                   child:
                       widget.gym == null ? Text('Add Gym') : Text('Update Gym'),
                 ),
