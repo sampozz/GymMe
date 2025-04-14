@@ -4,7 +4,6 @@ import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/global_providers/map_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:dima_project/content/home/gym/gym_model.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 class GymMap extends StatefulWidget {
   const GymMap({super.key});
@@ -110,7 +109,6 @@ class _GymAppState extends State<GymMap> {
         }
       }
     } catch (e) {
-      print('Error loading gym locations: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Unable to load gym locations')),
@@ -211,10 +209,10 @@ class _GymAppState extends State<GymMap> {
             top: 48,
             left: 16,
             right: 16,
-            child: SizedBox(
-              width: double.infinity, //TODO FIX sto cazzo di robo
+            child: _buildSearchBar(), /*SizedBox(
+              width: double.infinity,
               child: _buildSearchBar(),
-            ),
+            ),*/
           ),
       ],
     );
