@@ -212,9 +212,15 @@ class _GymAppState extends State<GymMap> {
           Positioned(top: 48, left: 16, right: 16, child: _buildSearchBar())
         else
           Positioned(
-            top: 16,
-            left: 16,
-            child: SizedBox(width: 400, child: _buildSearchBar()),
+            top: 20,
+            left: 20,
+            child: SizedBox(
+              width:
+                  MediaQuery.of(context).size.width < 700
+                      ? MediaQuery.of(context).size.width - 306
+                      : 400,
+              child: _buildSearchBar(),
+            ),
           ),
       ],
     );
@@ -249,6 +255,10 @@ class _GymAppState extends State<GymMap> {
           ),
           leading: const Icon(Icons.search),
           elevation: WidgetStateProperty.all(0),
+          hintText: 'Search for gyms or locations...',
+          hintStyle: WidgetStatePropertyAll<TextStyle>(
+            TextStyle(color: Colors.grey.shade400, fontStyle: FontStyle.italic),
+          ),
         );
       },
       suggestionsBuilder: (BuildContext context, SearchController controller) {
