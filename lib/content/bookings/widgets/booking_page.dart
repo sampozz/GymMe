@@ -130,15 +130,16 @@ class _BookingPageState extends State<BookingPage> {
             label: const Text("Add to Calendar"),
           ),
           const SizedBox(height: 10),
-          ElevatedButton.icon(
-            onPressed: () => _cancelBooking(booking),
-            icon: const Icon(Icons.cancel, color: Colors.white),
-            label: const Text(
-              "Cancel Booking",
-              style: TextStyle(color: Colors.white),
+          if (booking.endTime!.isAfter(DateTime.now()))
+            ElevatedButton.icon(
+              onPressed: () => _cancelBooking(booking),
+              icon: const Icon(Icons.cancel, color: Colors.white),
+              label: const Text(
+                "Cancel Booking",
+                style: TextStyle(color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             ),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-          ),
         ],
       ),
     );

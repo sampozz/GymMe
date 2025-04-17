@@ -35,11 +35,33 @@ class GymPage extends StatelessWidget {
 
   /// Delete the gym from the database
   Future<void> _deleteGym(BuildContext context, Gym gym) async {
-    if (context.mounted) {
-      Navigator.pop(context);
+    // Show confirmation dialog
+    bool? confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Gym'),
+          content: const Text('Are you sure you want to delete this gym?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+    // If the user confirmed, delete the gym
+    if (confirm == true) {
+      await Provider.of<GymProvider>(context, listen: false).removeGym(gym);
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
     }
-    // TODO: add confirmation dialog
-    await Provider.of<GymProvider>(context, listen: false).removeGym(gym);
   }
 
   Widget _buildSliverAppBar(BuildContext context, Gym gym) {

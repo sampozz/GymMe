@@ -26,6 +26,20 @@ class BookingsProvider extends ChangeNotifier {
     return _bookings;
   }
 
+  Future<List<Booking>> getTodaysBookings() async {
+    if (_bookings == null) {
+      await getBookings();
+    }
+    DateTime today = DateTime.now();
+    DateTime startOfDay = DateTime(today.year, today.month, today.day);
+    DateTime endOfDay = DateTime(today.year, today.month, today.day + 1);
+    return _bookings?.where((booking) {
+          return booking.startTime!.isAfter(startOfDay) &&
+              booking.startTime!.isBefore(endOfDay);
+        }).toList() ??
+        [];
+  }
+
   /// Fetches the bookings for the current user
   Future<List<Booking>?> getBookings() async {
     _bookings = await _bookingsService.fetchBookings();
