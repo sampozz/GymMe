@@ -1,3 +1,6 @@
+import 'package:dima_project/content/bookings/booking_model.dart';
+import 'package:dima_project/content/bookings/bookings_provider.dart';
+import 'package:dima_project/content/bookings/widgets/booking_card.dart';
 import 'package:dima_project/content/custom_appbar.dart';
 import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:dima_project/content/home/gym/gym_page.dart';
@@ -26,20 +29,18 @@ class _HomeState extends State<Home> {
   User? _user;
   List<Gym>? _gymList;
   List<Gym>? _filteredGymList;
+  List<Booking> _todaysBookings = [];
+  bool _isFetchingBookings = true;
 
   @override
   void initState() {
     super.initState();
     _gymProvider = context.read<GymProvider>();
-    if (_gymProvider.gymList == null) {
-      _gymProvider.getGymList().then((list) => _filteredGymList = list);
-    } else {
-      _filteredGymList = _gymProvider.gymList;
-    }
-    _gymProvider.addListener(() {
+    _gymProvider.getGymList().then((list) => _filteredGymList = list);
+    context.read<BookingsProvider>().getTodaysBookings().then((value) {
       setState(() {
-        _filteredGymList = _gymProvider.gymList;
-        // TODO: call function to sort _filteredGymList by distance
+        _todaysBookings = value;
+        _isFetchingBookings = false;
       });
     });
     _controller.addListener(_filterGymList);
@@ -72,8 +73,25 @@ class _HomeState extends State<Home> {
 
   /// Refreshes the gym list by fetching it from the provider
   Future<void> _onRefresh() async {
-    await Provider.of<GymProvider>(context, listen: false).getGymList();
-    _filterGymList();
+    setState(() {
+      _isFetchingBookings = true;
+    });
+    await Provider.of<GymProvider>(context, listen: false).getGymList().then((
+      list,
+    ) {
+      setState(() {
+        _filteredGymList = list;
+      });
+    });
+    await Provider.of<BookingsProvider>(
+      context,
+      listen: false,
+    ).getTodaysBookings().then((value) {
+      setState(() {
+        _todaysBookings = value;
+        _isFetchingBookings = false;
+      });
+    });
   }
 
   /// Navigate to the add gym page
@@ -92,12 +110,19 @@ class _HomeState extends State<Home> {
     return _user?.favouriteGyms.contains(gym.id) ?? false;
   }
 
-  Widget _buildTopBar() {
+  Widget _buildTopBar(String title) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
-      child: Text(
-        'Discover new activities',
-        style: TextStyle(color: Colors.black, fontSize: 28.0),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          title,
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 24.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }
@@ -195,13 +220,38 @@ class _HomeState extends State<Home> {
     );
   }
 
+  Widget _buildTodaysBookings() {
+    var bookingsProvider = context.read<BookingsProvider>();
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((context, index) {
+        Booking booking = _todaysBookings[index];
+        int bookingIndex = bookingsProvider.getBookingIndex(booking.id!);
+        if (bookingIndex == -1) {
+          return Container();
+        }
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: BookingCard(bookingIndex: bookingIndex),
+        );
+      }, childCount: _todaysBookings.length),
+    );
+  }
+
   Widget _buildMobileHome() {
     return CustomScrollView(
       slivers: [
+        if (!_isFetchingBookings && _todaysBookings.isNotEmpty)
+          SliverAppBar(
+            backgroundColor: Colors.transparent,
+            expandedHeight: 50.0,
+            flexibleSpace: _buildTopBar('Upcoming bookings'),
+          ),
+        if (!_isFetchingBookings && _todaysBookings.isNotEmpty)
+          _buildTodaysBookings(),
         SliverAppBar(
           backgroundColor: Colors.transparent,
           expandedHeight: 50.0,
-          flexibleSpace: _buildTopBar(),
+          flexibleSpace: _buildTopBar('Discover new activities'),
         ),
         SliverAppBar(
           backgroundColor: Colors.transparent,
@@ -209,7 +259,6 @@ class _HomeState extends State<Home> {
           flexibleSpace: _buildSearchBar(),
         ),
         SliverToBoxAdapter(child: _buildNewGymButton()),
-        SliverToBoxAdapter(child: SizedBox(height: 20.0)),
         _buildGymSliverList(),
         SliverToBoxAdapter(child: SizedBox(height: 100.0)),
       ],
@@ -276,6 +325,11 @@ class _HomeState extends State<Home> {
     _gymList = context.watch<GymProvider>().gymList;
     _user = context.watch<UserProvider>().user;
     _useMobileLayout = context.watch<ScreenProvider>().useMobileLayout;
+    context.watch<BookingsProvider>().getTodaysBookings().then((value) {
+      setState(() {
+        _todaysBookings = value;
+      });
+    });
 
     // TODO: sort the gym list by distance
     // TODO: show next bookings if any

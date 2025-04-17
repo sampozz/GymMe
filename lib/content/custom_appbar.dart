@@ -56,15 +56,20 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        _buildProfileSummary(context),
-        _buildNotificationsButton(context),
-      ],
+    return SafeArea(
+      child: SizedBox(
+        height: kToolbarHeight + 30,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildProfileSummary(context),
+            _buildNotificationsButton(context),
+          ],
+        ),
+      ),
     );
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(200);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + 30);
 }

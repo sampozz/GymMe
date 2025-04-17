@@ -65,14 +65,38 @@ class _BookSlotPageState extends State<BookSlotPage>
 
   /// Deletes the activity from the database
   void _deleteActivity(Gym gym, Activity activity) {
-    Provider.of<GymProvider>(
-      context,
-      listen: false,
-    ).removeActivity(gym, activity);
+    // Show confirmation dialog
+    showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Activity'),
+          content: const Text('Are you sure you want to delete this activity?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    ).then((confirm) {
+      // If the user confirmed, delete the activity
+      if (confirm == true) {
+        Provider.of<GymProvider>(
+          context,
+          listen: false,
+        ).removeActivity(gym, activity);
 
-    if (context.mounted) {
-      Navigator.pop(context);
-    }
+        if (context.mounted) {
+          Navigator.pop(context);
+        }
+      }
+    });
   }
 
   /// Modify the activity
