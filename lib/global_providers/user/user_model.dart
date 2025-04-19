@@ -6,6 +6,10 @@ class User {
   String email;
   String photoURL;
   String phoneNumber;
+  DateTime? birthDate;
+  String birthPlace;
+  String address;
+  String taxCode;
   bool isAdmin;
   List<String> favouriteGyms;
 
@@ -15,6 +19,10 @@ class User {
     this.email = '',
     this.photoURL = 'assets/avatar.png',
     this.phoneNumber = '',
+    this.birthDate,
+    this.birthPlace = '',
+    this.address = '',
+    this.taxCode = '',
     this.isAdmin = false,
     this.favouriteGyms = const [],
   });
@@ -30,6 +38,10 @@ class User {
       email: data['email'] ?? User().email,
       photoURL: data['photoURL'] ?? User().photoURL,
       phoneNumber: data['phoneNumber'] ?? User().phoneNumber,
+      birthDate: data['birthDate'] ?? User().birthDate,
+      birthPlace: data['birthPlace'] ?? User().birthPlace,
+      address: data['address'] ?? User().address,
+      taxCode: data['taxCode'] ?? User().taxCode,
       isAdmin: data['isAdmin'] ?? User().isAdmin,
       favouriteGyms: List<String>.from(data['favouriteGyms'] ?? []),
     );
@@ -42,6 +54,10 @@ class User {
       'email': email,
       'photoURL': photoURL,
       'phoneNumber': phoneNumber,
+      'birthDate': birthDate,
+      'birthPlace': birthPlace,
+      'address': address,
+      'taxCode': taxCode,
       'isAdmin': isAdmin,
       'favouriteGyms': favouriteGyms,
     };
