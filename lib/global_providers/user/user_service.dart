@@ -62,4 +62,24 @@ class UserService {
       print('Error updating favourite gyms');
     }
   }
+
+  Future<List<User>> fetchUsers() async {
+    List<User> users = [];
+    try {
+      var usersRef =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .withConverter(
+                fromFirestore: User.fromFirestore,
+                toFirestore: (user, options) => user.toFirestore(),
+              )
+              .get();
+      users = usersRef.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      // TODO: Handle error
+      print('Error fetching users: $e');
+      rethrow;
+    }
+    return users;
+  }
 }

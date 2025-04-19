@@ -1,4 +1,5 @@
 import 'package:dima_project/content/home/gym/activity/activity_model.dart';
+import 'package:dima_project/content/home/gym/activity/book_slot/admin_slot_modal.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/confirm_booking_modal.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/new_slot.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_card.dart';
@@ -38,6 +39,7 @@ class _BookSlotPageState extends State<BookSlotPage>
   User? user;
   Instructor? instructor;
   DateTime? selectedDate;
+  bool fetchingUsers = true;
 
   @override
   void initState() {
@@ -124,6 +126,24 @@ class _BookSlotPageState extends State<BookSlotPage>
   }
 
   void _showBookingModal(Slot slot) {
+    User? user = context.read<UserProvider>().user;
+    if (user?.isAdmin ?? false) {
+      setState(() {
+        fetchingUsers = true;
+      });
+      showModalBottomSheet<void>(
+        isScrollControlled: true,
+        context: context,
+        useRootNavigator: true,
+        builder:
+            (_) => ChangeNotifierProvider.value(
+              value: context.read<SlotProvider>(),
+              child: AdminSlotModal(slot: slot),
+            ),
+      );
+      return;
+    }
+
     // Check if the user is already booked for the slot
     if (slot.bookedUsers.contains(user?.uid)) {
       ScaffoldMessenger.of(context).showSnackBar(

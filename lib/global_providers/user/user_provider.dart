@@ -71,6 +71,13 @@ class UserProvider extends ChangeNotifier {
     return _user;
   }
 
+  Future<List<User>> getUsersByIds(List<String> ids) async {
+    // Fetch the user data from Firestore
+    List<User> users = await _userService.fetchUsers();
+    users = users.where((user) => ids.contains(user.uid)).toList();
+    return users;
+  }
+
   /// This method will add a gym to the favourite gyms list of the user
   Future<void> addFavouriteGym(String gymId) async {
     if (_user != null) {
