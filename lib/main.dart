@@ -10,12 +10,16 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
-// TODO: add to calendar
 // TODO: favourites page
-// TODO?? add activities to favourites
-// TODO: customize modal to confirm booking with all the data
+// TODO?? add activities to favourites -> create new activity card that can be shown in the home
+// -- > make it a horizontal list of cards in the gym page
 // TODO: add options in the confirm modal for the admin to modify the slot
 // TODO: add options in the confirm modal for the admin to delete the slot
+// TODO: in the calendar tabs show a flag if a slot is available
+// TODO: when an activity is removed, cosa facciamo??
+// TODO: notifications
+// TODO: login and register
+// TODO: introduction screen
 
 void main() async {
   // Initialize Firebase

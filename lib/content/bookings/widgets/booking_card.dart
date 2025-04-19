@@ -106,6 +106,7 @@ class BookingCard extends StatelessWidget {
         child: MouseRegion(
           cursor: SystemMouseCursors.click,
           child: Card(
+            elevation: 0,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
             ),

@@ -11,7 +11,7 @@ class Activity {
     this.id = '',
     this.title = '',
     this.description = 'Description not available',
-    this.price = 0,
+    this.price = 0.0,
     this.instructorId = '',
   });
 
@@ -20,7 +20,7 @@ class Activity {
       id: data['id'],
       title: data['title'] ?? Activity().title,
       description: data['description'] ?? Activity().description,
-      price: data['price'] ?? Activity().price,
+      price: double.tryParse(['price'].toString()) ?? Activity().price,
       instructorId: data['instructorId'] ?? Instructor().id,
     );
   }

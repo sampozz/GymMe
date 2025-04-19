@@ -117,28 +117,37 @@ class _BookingPageState extends State<BookingPage> {
     );
   }
 
+  void _addToCalendar(Booking booking) {
+    context.read<BookingsProvider>().addToCalendar(booking);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Booking added to calendar successfully"),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
   Widget _buildBookingActions(Booking booking) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
           ElevatedButton.icon(
-            onPressed: () {
-              // Logic to add the booking to the calendar
-            },
+            onPressed: () => _addToCalendar(booking),
             icon: const Icon(Icons.calendar_today),
             label: const Text("Add to Calendar"),
           ),
           const SizedBox(height: 10),
-          ElevatedButton.icon(
-            onPressed: () => _cancelBooking(booking),
-            icon: const Icon(Icons.cancel, color: Colors.white),
-            label: const Text(
-              "Cancel Booking",
-              style: TextStyle(color: Colors.white),
+          if (booking.endTime!.isAfter(DateTime.now()))
+            ElevatedButton.icon(
+              onPressed: () => _cancelBooking(booking),
+              icon: const Icon(Icons.cancel, color: Colors.white),
+              label: const Text(
+                "Cancel Booking",
+                style: TextStyle(color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             ),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-          ),
         ],
       ),
     );

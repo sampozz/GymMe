@@ -15,7 +15,7 @@ void main() {
     mockGymService = MockGymService();
   });
 
-  group('GymProvider tests', () {
+  group('GymProvider', () {
     test('should return a list of gyms', () async {
       var gymProvider = GymProvider(gymService: mockGymService);
       var gymList = [
@@ -44,7 +44,7 @@ void main() {
       await gymProvider.addGym(newGym);
 
       // Verify that the gym was added to the gym list
-      expect(gymProvider.gymList!.last, newGym);
+      expect(gymProvider.gymList!.first, newGym);
     });
 
     test('should update a gym in the gym list', () async {
