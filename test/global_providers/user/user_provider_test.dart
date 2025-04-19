@@ -3,11 +3,11 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:dima_project/global_providers/user/user_service.dart';
-import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:dima_project/global_providers/user/user_model.dart';
+import '../../firestore_test.mocks.dart';
 import './user_provider_test.mocks.dart';
 
-@GenerateMocks([UserService, auth.User, auth.FirebaseAuth, auth.UserCredential])
+@GenerateMocks([UserService])
 void main() {
   late MockUserService mockUserService;
   late MockFirebaseAuth mockFirebaseAuth;

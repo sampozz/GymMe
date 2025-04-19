@@ -36,7 +36,11 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     _gymProvider = context.read<GymProvider>();
-    _gymProvider.getGymList().then((list) => _filteredGymList = list);
+    if (_gymProvider.gymList == null) {
+      _gymProvider.getGymList().then((list) => _filteredGymList = list);
+    } else {
+      _filteredGymList = _gymProvider.gymList;
+    }
     context.read<BookingsProvider>().getTodaysBookings().then((value) {
       setState(() {
         _todaysBookings = value;
@@ -103,7 +107,10 @@ class _HomeState extends State<Home> {
       );
       return;
     }
-    Navigator.push(context, MaterialPageRoute(builder: (context) => NewGym()));
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => NewGym()),
+    ).then((_) => _filterGymList());
   }
 
   bool _isFavourite(Gym gym) {
@@ -131,6 +138,7 @@ class _HomeState extends State<Home> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: SearchBar(
+        hintText: 'Search for a gym',
         controller: _controller,
         trailing:
             _controller.text.isNotEmpty

@@ -147,6 +147,7 @@ class _BookSlotPageState extends State<BookSlotPage>
     }
 
     showModalBottomSheet<void>(
+      isScrollControlled: true,
       context: context,
       useRootNavigator: true,
       builder:

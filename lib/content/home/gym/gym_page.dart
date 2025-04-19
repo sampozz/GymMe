@@ -70,7 +70,33 @@ class GymPage extends StatelessWidget {
     return SliverAppBar(
       pinned: true,
       expandedHeight: 200,
-      title: useMobileLayout ? Text(gym.name) : null,
+      leading: Container(
+        margin: const EdgeInsets.all(6.0),
+        decoration: BoxDecoration(
+          color: Colors.white.withAlpha(200),
+          borderRadius: BorderRadius.circular(50.0),
+        ),
+        child: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      title:
+          useMobileLayout
+              ? Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14.0,
+                  vertical: 7.0,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white.withAlpha(200),
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: Text(gym.name),
+              )
+              : null,
       flexibleSpace: FlexibleSpaceBar(
         background: ClipRRect(
           borderRadius: BorderRadius.only(

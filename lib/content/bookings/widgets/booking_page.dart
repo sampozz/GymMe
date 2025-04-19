@@ -117,15 +117,23 @@ class _BookingPageState extends State<BookingPage> {
     );
   }
 
+  void _addToCalendar(Booking booking) {
+    context.read<BookingsProvider>().addToCalendar(booking);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Booking added to calendar successfully"),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
   Widget _buildBookingActions(Booking booking) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
           ElevatedButton.icon(
-            onPressed: () {
-              // Logic to add the booking to the calendar
-            },
+            onPressed: () => _addToCalendar(booking),
             icon: const Icon(Icons.calendar_today),
             label: const Text("Add to Calendar"),
           ),

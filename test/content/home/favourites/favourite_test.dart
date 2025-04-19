@@ -15,35 +15,35 @@ import '../../../global_providers/user/user_provider_test.mocks.dart';
 class MockUserProvider extends Mock implements UserProvider {}
 
 void main() {
-  late User testUser;
-  late MockUserService mockUserService;
-  late UserProvider userProvider;
-  late MockFirebaseAuth mockFirebaseAuth;
-  late MockUser mockFirebaseUser;
-  late MockUserCredential mockUserCredential;
+  // late User testUser;
+  // late MockUserService mockUserService;
+  // late UserProvider userProvider;
+  // late MockFirebaseAuth mockFirebaseAuth;
+  // late MockUser mockFirebaseUser;
+  // late MockUserCredential mockUserCredential;
 
-  // Initializes mockUserProvider and testUser before each test is run
-  setUp(() {
-    testUser = User(uid: 'testUid', favouriteGyms: []);
-    mockUserService = MockUserService();
-    mockFirebaseUser = MockUser();
-    mockUserCredential = MockUserCredential();
-    when(
-      mockUserService.updateUserFavourites(any),
-    ).thenAnswer((_) async => null);
-    when(
-      mockUserService.fetchUser(mockFirebaseUser),
-    ).thenAnswer((_) async => testUser);
-    when(
-      mockUserService.signInWithEmailAndPassword('', ''),
-    ).thenAnswer((_) async => mockUserCredential);
-    mockFirebaseAuth = MockFirebaseAuth();
-    when(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser);
-    userProvider = UserProvider(
-      userService: mockUserService,
-      authInstance: mockFirebaseAuth,
-    );
-  });
+  // // Initializes mockUserProvider and testUser before each test is run
+  // setUp(() {
+  //   testUser = User(uid: 'testUid', favouriteGyms: []);
+  //   mockUserService = MockUserService();
+  //   mockFirebaseUser = MockUser();
+  //   mockUserCredential = MockUserCredential();
+  //   when(
+  //     mockUserService.updateUserFavourites(any),
+  //   ).thenAnswer((_) async => null);
+  //   when(
+  //     mockUserService.fetchUser(mockFirebaseUser),
+  //   ).thenAnswer((_) async => testUser);
+  //   when(
+  //     mockUserService.signInWithEmailAndPassword('', ''),
+  //   ).thenAnswer((_) async => mockUserCredential);
+  //   mockFirebaseAuth = MockFirebaseAuth();
+  //   when(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser);
+  //   userProvider = UserProvider(
+  //     userService: mockUserService,
+  //     authInstance: mockFirebaseAuth,
+  //   );
+  // });
   /*
   group('Favourite tests', () {
     test('should add gym to favourites', () {
