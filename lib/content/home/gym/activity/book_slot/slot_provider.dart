@@ -91,6 +91,12 @@ class SlotProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateSlot(Slot slot) async {
+    await _slotService.updateSlot(slot);
+    _nextSlots = null;
+    notifyListeners();
+  }
+
   /// Add the user to the booked users list of a slot
   Future<void> addUserToSlot(String slotId) async {
     auth.User user = auth.FirebaseAuth.instance.currentUser!;
@@ -100,6 +106,12 @@ class SlotProvider extends ChangeNotifier {
       return;
     }
     _nextSlots![index].bookedUsers.add(user.uid);
+    notifyListeners();
+  }
+
+  Future<void> deleteSlot(String slotId) async {
+    await _slotService.deleteSlot(slotId);
+    _nextSlots = null;
     notifyListeners();
   }
 }

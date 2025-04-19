@@ -101,14 +101,7 @@ class _NewGymState extends State<NewGym> {
       await Provider.of<GymProvider>(context, listen: false).updateGym(newGym);
     }
 
-    nameCtrl.clear();
-    descrCtrl.clear();
-    addressCtrl.clear();
-    phoneCtrl.clear();
-    openTimeCtrl.clear();
-    closeTimeCtrl.clear();
-
-    if (context.mounted) {
+    if (mounted) {
       Navigator.pop(context);
     }
   }
@@ -122,6 +115,17 @@ class _NewGymState extends State<NewGym> {
 
   void _showTimePicker(bool openTime) async {
     final TimeOfDay? time = await showTimePicker(
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            timePickerTheme: TimePickerThemeData(
+              hourMinuteTextColor: Colors.black,
+              entryModeIconColor: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
       context: context,
       initialTime: TimeOfDay.now(),
     );

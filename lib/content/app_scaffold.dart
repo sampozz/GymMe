@@ -78,51 +78,63 @@ class _AppScaffoldState extends State<AppScaffold> {
 
     _createPagesList();
 
-    return Container(
-      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
-      child: Row(
-        children: [
-          // Sidebar only if the screen is not mobile
-          !(screenProvider.useMobileLayout)
-              ? CustomSidebar(
-                pages: _pages,
-                currentIndex: _currentIndex,
-                onTapCallback: _navigateTab,
-                navigatorKey: navigatorKey,
-              )
-              : Container(),
-          Expanded(
-            child: Navigator(
-              key: navigatorKey,
-              onGenerateRoute: (settings) {
-                return MaterialPageRoute(
-                  builder:
-                      (context) => Scaffold(
-                        backgroundColor: Colors.transparent,
-                        // Widget selected in the navigation bar
-                        body: Stack(
-                          children: [
-                            _pages[_currentIndex]["widget"],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          return;
+        }
+        // Check if the current Navigator can pop
+        if (navigatorKey.currentState?.canPop() ?? false) {
+          navigatorKey.currentState?.pop();
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
+        child: Row(
+          children: [
+            // Sidebar only if the screen is not mobile
+            !(screenProvider.useMobileLayout)
+                ? CustomSidebar(
+                  pages: _pages,
+                  currentIndex: _currentIndex,
+                  onTapCallback: _navigateTab,
+                  navigatorKey: navigatorKey,
+                )
+                : Container(),
+            Expanded(
+              child: Navigator(
+                key: navigatorKey,
+                onGenerateRoute: (settings) {
+                  return MaterialPageRoute(
+                    builder:
+                        (context) => Scaffold(
+                          backgroundColor: Colors.transparent,
+                          // Widget selected in the navigation bar
+                          body: Stack(
+                            children: [
+                              _pages[_currentIndex]["widget"],
 
-                            screenProvider.useMobileLayout
-                                ? Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: CustomBottomNavBar(
-                                    pages: _pages,
-                                    currentIndex: _currentIndex,
-                                    onTapCallback: _navigateTab,
-                                    navigatorKey: navigatorKey,
-                                  ),
-                                )
-                                : Container(),
-                          ],
+                              screenProvider.useMobileLayout
+                                  ? Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: CustomBottomNavBar(
+                                      pages: _pages,
+                                      currentIndex: _currentIndex,
+                                      onTapCallback: _navigateTab,
+                                      navigatorKey: navigatorKey,
+                                    ),
+                                  )
+                                  : Container(),
+                            ],
+                          ),
                         ),
-                      ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

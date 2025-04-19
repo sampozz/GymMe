@@ -138,7 +138,7 @@ class _HomeState extends State<Home> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: SearchBar(
-        hintText: 'Search for a gym',
+        hintText: 'Search for a gym...',
         controller: _controller,
         trailing:
             _controller.text.isNotEmpty
@@ -156,6 +156,9 @@ class _HomeState extends State<Home> {
         ),
         leading: const Icon(Icons.search),
         elevation: WidgetStateProperty.all(0),
+        hintStyle: WidgetStatePropertyAll<TextStyle>(
+          TextStyle(color: Colors.grey.shade400, fontStyle: FontStyle.italic),
+        ),
       ),
     );
   }

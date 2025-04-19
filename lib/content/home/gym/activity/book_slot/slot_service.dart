@@ -47,4 +47,28 @@ class SlotService {
       rethrow;
     }
   }
+
+  Future<void> updateSlot(Slot slot) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('slot')
+          .doc(slot.id)
+          .set(slot.toFirestore(), SetOptions(merge: true));
+    } catch (e) {
+      // TODO: handle error
+      print(e);
+      rethrow;
+    }
+  }
+
+  /// Deletes a slot from the Firestore 'slots' collection.
+  Future<void> deleteSlot(String slotId) async {
+    try {
+      await FirebaseFirestore.instance.collection('slot').doc(slotId).delete();
+    } catch (e) {
+      // TODO: handle error
+      print(e);
+      rethrow;
+    }
+  }
 }
