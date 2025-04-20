@@ -22,7 +22,7 @@ class Bookings extends StatelessWidget {
         itemBuilder: (context, index) {
           Booking booking = bookings[index];
           return BookingCard(
-            bookingIndex: bookingsProvider.getBookingIndex(booking.id!),
+            bookingIndex: bookingsProvider.getBookingIndex(booking.id),
           );
         },
       ),
@@ -57,7 +57,7 @@ class Bookings extends StatelessWidget {
                   child: _buildBookingsList(
                     context,
                     bookings
-                        ?.where((b) => b.startTime?.isAfter(startOfDay) ?? true)
+                        ?.where((b) => b.startTime.isAfter(startOfDay))
                         .toList(),
                   ),
                 ),
@@ -65,9 +65,7 @@ class Bookings extends StatelessWidget {
                   child: _buildBookingsList(
                     context,
                     bookings
-                        ?.where(
-                          (b) => b.startTime?.isBefore(startOfDay) ?? false,
-                        )
+                        ?.where((b) => b.startTime.isBefore(startOfDay))
                         .toList(),
                   ),
                 ),

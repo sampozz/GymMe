@@ -42,14 +42,14 @@ class _BookingPageState extends State<BookingPage> {
           leading: const Icon(Icons.calendar_today),
           title: const Text("Date"),
           subtitle: Text(
-            DateFormat.MMMMEEEEd().format(booking.startTime!).toString(),
+            DateFormat.MMMMEEEEd().format(booking.startTime).toString(),
           ),
         ),
         ListTile(
           leading: const Icon(Icons.access_time),
           title: const Text("Time"),
           subtitle: Text(
-            "${DateFormat.jm().format(booking.startTime!)} - ${DateFormat.jm().format(booking.endTime!)}",
+            "${DateFormat.jm().format(booking.startTime)} - ${DateFormat.jm().format(booking.endTime)}",
           ),
         ),
         ListTile(
@@ -138,7 +138,7 @@ class _BookingPageState extends State<BookingPage> {
             label: const Text("Add to Calendar"),
           ),
           const SizedBox(height: 10),
-          if (booking.endTime!.isAfter(DateTime.now()))
+          if (booking.endTime.isAfter(DateTime.now()))
             ElevatedButton.icon(
               onPressed: () => _cancelBooking(booking),
               icon: const Icon(Icons.cancel, color: Colors.white),

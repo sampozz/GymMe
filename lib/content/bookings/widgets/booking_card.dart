@@ -30,7 +30,7 @@ class BookingCard extends StatelessWidget {
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         Text(
-          DateFormat.jm().format(booking.startTime!),
+          DateFormat.jm().format(booking.startTime),
           style: const TextStyle(fontSize: 16),
         ),
         Text(booking.gymName, style: const TextStyle(fontSize: 16)),
@@ -70,15 +70,15 @@ class BookingCard extends StatelessWidget {
         Text(
           DateFormat(
             DateFormat.ABBR_WEEKDAY,
-          ).format(booking.startTime!).toUpperCase(),
+          ).format(booking.startTime).toUpperCase(),
           style: const TextStyle(fontSize: 16),
         ),
         Text(
-          booking.startTime!.day.toString(),
+          booking.startTime.day.toString(),
           style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         Text(
-          DateFormat.MMMM().format(booking.startTime!),
+          DateFormat.MMMM().format(booking.startTime),
           style: const TextStyle(fontSize: 12),
         ),
       ],

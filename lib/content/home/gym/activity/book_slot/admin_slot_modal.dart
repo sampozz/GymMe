@@ -17,7 +17,7 @@ class AdminSlotModal extends StatefulWidget {
 
 class _AdminSlotModalState extends State<AdminSlotModal> {
   bool _isFetchingUsers = true;
-  List<User> bookedUsers = [];
+  List<User> _bookedUsers = [];
 
   @override
   void initState() {
@@ -27,7 +27,7 @@ class _AdminSlotModalState extends State<AdminSlotModal> {
       users,
     ) {
       setState(() {
-        bookedUsers = users;
+        _bookedUsers = users;
         _isFetchingUsers = false;
       });
     });
@@ -47,7 +47,7 @@ class _AdminSlotModalState extends State<AdminSlotModal> {
               ),
             ),
       ),
-    );
+    ).then((_) => Navigator.pop(context));
   }
 
   void _deleteSlot() {
@@ -86,26 +86,26 @@ class _AdminSlotModalState extends State<AdminSlotModal> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (_isFetchingUsers) CircularProgressIndicator(),
-        if (!_isFetchingUsers && bookedUsers.isNotEmpty)
+        if (!_isFetchingUsers && _bookedUsers.isNotEmpty)
           Text(
             'Users booked this slot:',
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-        if (!_isFetchingUsers && bookedUsers.isEmpty)
+        if (!_isFetchingUsers && _bookedUsers.isEmpty)
           Center(child: Text('No users booked this slot')),
         Expanded(
           child: ListView.builder(
-            itemCount: bookedUsers.length,
+            itemCount: _bookedUsers.length,
             itemBuilder: (context, index) {
               return ListTile(
                 leading: CircleAvatar(
                   backgroundImage:
-                      bookedUsers[index].photoURL.isEmpty
+                      _bookedUsers[index].photoURL.isEmpty
                           ? AssetImage('assets/avatar.png')
-                          : NetworkImage(bookedUsers[index].photoURL),
+                          : NetworkImage(_bookedUsers[index].photoURL),
                 ),
-                title: Text(bookedUsers[index].displayName),
-                subtitle: Text(bookedUsers[index].email),
+                title: Text(_bookedUsers[index].displayName),
+                subtitle: Text(_bookedUsers[index].email),
               );
             },
           ),

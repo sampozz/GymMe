@@ -33,6 +33,7 @@ class _NewSlotState extends State<NewSlot> {
   DateTime? _selectedEndTime;
   DateTime? _selectedUntilDate;
   String _recurrence = 'None';
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -40,13 +41,13 @@ class _NewSlotState extends State<NewSlot> {
     if (widget.oldSlot != null) {
       _slotDateCtrl.text = DateFormat(
         DateFormat.YEAR_MONTH_DAY,
-      ).format(widget.oldSlot!.startTime!);
+      ).format(widget.oldSlot!.startTime);
       _startTimeCtrl.text = DateFormat(
         DateFormat.HOUR24_MINUTE,
-      ).format(widget.oldSlot!.startTime!);
+      ).format(widget.oldSlot!.startTime);
       _endTimeCtrl.text = DateFormat(
         DateFormat.HOUR24_MINUTE,
-      ).format(widget.oldSlot!.endTime!);
+      ).format(widget.oldSlot!.endTime);
       _maxUsersCtrl.text = widget.oldSlot!.maxUsers.toString();
       _roomCtrl.text = widget.oldSlot!.room;
       _selectedDate = widget.oldSlot!.startTime;
@@ -69,10 +70,14 @@ class _NewSlotState extends State<NewSlot> {
     super.dispose();
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
+
+    setState(() {
+      _isLoading = true;
+    });
 
     DateTime startTime = DateTime(
       _selectedDate!.year,
@@ -106,13 +111,15 @@ class _NewSlotState extends State<NewSlot> {
           maxUsers: int.parse(_maxUsersCtrl.text),
           room:
               _roomCtrl.text.isNotEmpty ? _roomCtrl.text : 'Room not available',
-          bookedUsers: [],
         );
 
     if (widget.oldSlot != null) {
-      Provider.of<SlotProvider>(context, listen: false).updateSlot(newSlot);
+      await Provider.of<SlotProvider>(
+        context,
+        listen: false,
+      ).updateSlot(newSlot);
     } else {
-      Provider.of<SlotProvider>(
+      await Provider.of<SlotProvider>(
         context,
         listen: false,
       ).createSlot(newSlot, _recurrence, _selectedUntilDate);
@@ -324,12 +331,14 @@ class _NewSlotState extends State<NewSlot> {
                 SizedBox(height: 20),
                 if (widget.oldSlot == null) _buildRecurreceForm(),
                 SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () => _submitForm(),
-                  child: Text(
-                    widget.oldSlot == null ? 'Create Slot' : 'Update Slot',
-                  ),
-                ),
+                _isLoading
+                    ? CircularProgressIndicator()
+                    : ElevatedButton(
+                      onPressed: () => _submitForm(),
+                      child: Text(
+                        widget.oldSlot == null ? 'Create Slot' : 'Update Slot',
+                      ),
+                    ),
               ],
             ),
           ),

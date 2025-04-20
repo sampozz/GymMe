@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dima_project/content/bookings/booking_update_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 
 class SlotService {
@@ -49,16 +50,45 @@ class SlotService {
   }
 
   Future<void> updateSlot(Slot slot) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('slot')
-          .doc(slot.id)
-          .set(slot.toFirestore(), SetOptions(merge: true));
-    } catch (e) {
-      // TODO: handle error
-      print(e);
-      rethrow;
-    }
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      try {
+        final slotRef = FirebaseFirestore.instance
+            .collection('slot')
+            .doc(slot.id);
+        final bookingsRef = FirebaseFirestore.instance
+            .collection('booking')
+            .where('slotId', isEqualTo: slot.id);
+
+        final slotDoc = await transaction.get(slotRef);
+        final bookingsSnapshot = await bookingsRef.get();
+
+        if (slotDoc.exists) {
+          // Update the slot
+          transaction.update(slotRef, slot.toFirestore());
+
+          // Update the bookings
+          for (var bookingDoc in bookingsSnapshot.docs) {
+            transaction.update(bookingDoc.reference, {
+              'startTime': slot.startTime,
+              'endTime': slot.endTime,
+              'room': slot.room,
+              'bookingUpdate':
+                  BookingUpdate(
+                    updatedAt: DateTime.now(),
+                    message: 'Your booking has been updated',
+                    read: false,
+                  ).toFirestore(),
+            });
+          }
+        } else {
+          throw Exception("Slot does not exist");
+        }
+      } catch (e) {
+        // TODO: handle error
+        print(e);
+        rethrow;
+      }
+    });
   }
 
   /// Deletes a slot from the Firestore 'slots' collection.

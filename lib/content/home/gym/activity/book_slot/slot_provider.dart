@@ -49,7 +49,7 @@ class SlotProvider extends ChangeNotifier {
     await _slotService.createSlot(slot);
 
     if (recurrence != 'None' && until != null) {
-      DateTime currentDate = slot.startTime!;
+      DateTime currentDate = slot.startTime;
 
       while (true) {
         // Update the date for the next occurrence
@@ -77,8 +77,8 @@ class SlotProvider extends ChangeNotifier {
           startTime: currentDate,
           endTime: currentDate.add(
             Duration(
-              hours: slot.endTime!.hour - slot.startTime!.hour,
-              minutes: slot.endTime!.minute - slot.startTime!.minute,
+              hours: slot.endTime.hour - slot.startTime.hour,
+              minutes: slot.endTime.minute - slot.startTime.minute,
             ),
           ),
         );

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima_project/content/bookings/booking_model.dart';
+import 'package:dima_project/content/bookings/booking_update_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 
@@ -18,11 +19,11 @@ class BookingsService {
   Future<List<Booking>> fetchBookings() async {
     List<Booking> bookings = [];
     try {
-      auth.User user = firebaseAuth.currentUser!;
+      String uid = firebaseAuth.currentUser!.uid;
       var snapshot =
           await firestore
               .collection('booking')
-              .where('userId', isEqualTo: user.uid)
+              .where('userId', isEqualTo: uid)
               .withConverter(
                 fromFirestore: Booking.fromFirestore,
                 toFirestore: (booking, options) => booking.toFirestore(),
@@ -93,5 +94,17 @@ class BookingsService {
         rethrow;
       }
     });
+  }
+
+  Future<void> markUpdateAsRead(BookingUpdate bookingUpdate) async {
+    try {
+      firestore.collection('booking').doc(bookingUpdate.bookingId).update({
+        'bookingUpdate': bookingUpdate.toFirestore(),
+      });
+    } catch (e) {
+      // TODO: handle error
+      print(e);
+      rethrow;
+    }
   }
 }
