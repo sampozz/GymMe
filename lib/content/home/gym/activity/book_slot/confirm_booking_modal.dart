@@ -51,9 +51,9 @@ class _ConfirmBookingModalState extends State<ConfirmBookingModal> {
   Widget _buildBookingDetails() {
     String date = DateFormat(
       DateFormat.ABBR_MONTH_WEEKDAY_DAY,
-    ).format(widget.slot.startTime!);
-    String startTime = DateFormat('jm').format(widget.slot.startTime!);
-    String endTime = DateFormat('jm').format(widget.slot.endTime!);
+    ).format(widget.slot.startTime);
+    String startTime = DateFormat('jm').format(widget.slot.startTime);
+    String endTime = DateFormat('jm').format(widget.slot.endTime);
 
     return Padding(
       padding: const EdgeInsets.all(20.0),
@@ -63,7 +63,7 @@ class _ConfirmBookingModalState extends State<ConfirmBookingModal> {
         children: <Widget>[
           SizedBox(width: double.infinity),
           Text(
-            widget.activity.title ?? '',
+            widget.activity.title,
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,

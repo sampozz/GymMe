@@ -1,4 +1,5 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
+import 'package:dima_project/content/bookings/booking_update_model.dart';
 import 'package:dima_project/content/instructors/instructor_model.dart';
 import 'package:dima_project/content/instructors/instructor_service.dart';
 import 'package:dima_project/content/bookings/booking_model.dart';
@@ -8,7 +9,6 @@ import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart
 import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BookingsProvider extends ChangeNotifier {
@@ -37,8 +37,8 @@ class BookingsProvider extends ChangeNotifier {
     DateTime startOfDay = DateTime(today.year, today.month, today.day);
     DateTime endOfDay = DateTime(today.year, today.month, today.day + 1);
     return _bookings?.where((booking) {
-          return booking.startTime!.isAfter(startOfDay) &&
-              booking.startTime!.isBefore(endOfDay);
+          return booking.startTime.isAfter(startOfDay) &&
+              booking.startTime.isBefore(endOfDay);
         }).toList() ??
         [];
   }
@@ -59,30 +59,36 @@ class BookingsProvider extends ChangeNotifier {
     }
 
     Instructor? instructor = await _instructorService.fetchInstructorById(
-      activity.instructorId!,
+      activity.instructorId,
     );
 
-    Booking booking = Booking(
+    Booking? booking = Booking(
       userId: user.uid,
       slotId: slot.id,
       gymId: slot.gymId,
       activityId: slot.activityId,
-      startTime: slot.startTime!,
-      duration: slot.endTime!.difference(slot.startTime!).inMinutes,
-      description: activity.description ?? 'Description not available',
-      endTime: slot.endTime!,
+      startTime: slot.startTime,
+      duration: slot.endTime.difference(slot.startTime).inMinutes,
+      description: activity.description,
+      endTime: slot.endTime,
       gymName: gym.name,
       instructorName: instructor?.name ?? 'Instructor not available',
       instructorPhoto: instructor?.photo ?? '',
       instructorTitle: instructor?.title ?? '',
-      price: activity.price ?? 0.0,
+      price: activity.price,
       room: slot.room,
-      title: activity.title ?? 'Activity not available',
+      title: activity.title,
     );
-    String? bookinId = await _bookingsService.addBooking(booking, slot);
-    booking.id = bookinId;
+
+    final bookingId = await _bookingsService.addBooking(booking, slot);
+
+    if (bookingId == null) {
+      return false;
+    }
+
     // Update the bookings list
     if (_bookings != null) {
+      booking.id = bookingId;
       _bookings!.add(booking);
     }
     notifyListeners();
@@ -103,7 +109,7 @@ class BookingsProvider extends ChangeNotifier {
   void addToCalendar(Booking booking) {
     if (kIsWeb) {
       final startUtc =
-          booking.startTime!
+          booking.startTime
               .toUtc()
               .toIso8601String()
               .replaceAll(':', '')
@@ -111,7 +117,7 @@ class BookingsProvider extends ChangeNotifier {
               .split('.')
               .first;
       final endUtc =
-          booking.endTime!
+          booking.endTime
               .toUtc()
               .toIso8601String()
               .replaceAll(':', '')
@@ -133,10 +139,30 @@ class BookingsProvider extends ChangeNotifier {
       title: booking.title,
       description: booking.description,
       location: booking.gymName,
-      startDate: booking.startTime!,
-      endDate: booking.endTime!,
+      startDate: booking.startTime,
+      endDate: booking.endTime,
       allDay: false,
     );
     Add2Calendar.addEvent2Cal(event);
+  }
+
+  /// Fetches all booking updates from the user's bookings
+  Future<List<BookingUpdate>> getBookingUpdates() async {
+    final bookings = await getBookings() ?? [];
+    return bookings
+        .where((booking) => booking.bookingUpdate != null)
+        .map((booking) => booking.bookingUpdate!)
+        .toList();
+  }
+
+  Future<void> markUpdateAsRead(BookingUpdate bookingUpdate) async {
+    _bookings?.forEach((booking) {
+      if (booking.bookingUpdate != null &&
+          booking.bookingUpdate!.bookingId == bookingUpdate.bookingId) {
+        booking.bookingUpdate!.read = true;
+      }
+    });
+    await _bookingsService.markUpdateAsRead(bookingUpdate);
+    notifyListeners();
   }
 }

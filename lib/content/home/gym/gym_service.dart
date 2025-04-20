@@ -107,6 +107,7 @@ class GymService {
       await FirebaseFirestore.instance.collection('gym').doc(gym.id).update({
         'activities': FieldValue.arrayRemove([activity.toFirestore()]),
       });
+      print('Activity deleted: ${activity.toFirestore()}');
       return activity.id;
     } catch (e) {
       // TODO: Handle error

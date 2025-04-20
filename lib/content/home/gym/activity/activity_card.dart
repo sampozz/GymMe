@@ -45,7 +45,7 @@ class ActivityCard extends StatelessWidget {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () => _navigateToBookSlotPage(context, gym.id!, activity.id!),
+        onTap: () => _navigateToBookSlotPage(context, gym.id!, activity.id),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Container(
@@ -66,7 +66,7 @@ class ActivityCard extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Icon(Icons.calendar_month_outlined),
                     ),
-                    Text(activity.title!),
+                    Text(activity.title),
                   ],
                 ),
                 Icon(Icons.arrow_forward_ios_outlined, size: 8),

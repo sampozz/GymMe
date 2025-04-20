@@ -39,7 +39,6 @@ class _BookSlotPageState extends State<BookSlotPage>
   User? user;
   Instructor? instructor;
   DateTime? selectedDate;
-  bool fetchingUsers = true;
 
   @override
   void initState() {
@@ -119,7 +118,7 @@ class _BookSlotPageState extends State<BookSlotPage>
         builder:
             (_) => ChangeNotifierProvider.value(
               value: context.read<SlotProvider>(),
-              child: NewSlot(gymId: gym.id!, activityId: activity.id!),
+              child: NewSlot(gymId: gym.id!, activityId: activity.id),
             ),
       ),
     );
@@ -128,9 +127,6 @@ class _BookSlotPageState extends State<BookSlotPage>
   void _showBookingModal(Slot slot) {
     User? user = context.read<UserProvider>().user;
     if (user?.isAdmin ?? false) {
-      setState(() {
-        fetchingUsers = true;
-      });
       showModalBottomSheet<void>(
         isScrollControlled: true,
         context: context,
@@ -169,7 +165,6 @@ class _BookSlotPageState extends State<BookSlotPage>
     showModalBottomSheet<void>(
       isScrollControlled: true,
       context: context,
-      useRootNavigator: true,
       builder:
           (_) => ConfirmBookingModal(
             gym: gym!,
@@ -229,9 +224,9 @@ class _BookSlotPageState extends State<BookSlotPage>
                   slotList!.map((slot) {
                     // Check if the slot date matches the selected date
                     if (_tabController.index != 30 &&
-                        (slot.startTime!.day != selectedDate?.day ||
-                            slot.startTime!.month != selectedDate?.month ||
-                            slot.startTime!.year != selectedDate?.year)) {
+                        (slot.startTime.day != selectedDate?.day ||
+                            slot.startTime.month != selectedDate?.month ||
+                            slot.startTime.year != selectedDate?.year)) {
                       return Container(); // Skip this slot
                     }
                     return GestureDetector(
@@ -255,7 +250,7 @@ class _BookSlotPageState extends State<BookSlotPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(activity!.description!, style: TextStyle(fontSize: 16)),
+          Text(activity!.description, style: TextStyle(fontSize: 16)),
           SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -352,7 +347,7 @@ class _BookSlotPageState extends State<BookSlotPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(activity!.title!),
+        title: Text(activity!.title),
         bottom: TabBar(
           controller: _tabController,
           isScrollable: true,
@@ -371,9 +366,9 @@ class _BookSlotPageState extends State<BookSlotPage>
                 slotList!.every(
                   (slot) =>
                       _tabController.index != 30 &&
-                      (slot.startTime!.day != selectedDate?.day ||
-                          slot.startTime!.month != selectedDate?.month ||
-                          slot.startTime!.year != selectedDate?.year),
+                      (slot.startTime.day != selectedDate?.day ||
+                          slot.startTime.month != selectedDate?.month ||
+                          slot.startTime.year != selectedDate?.year),
                 ))
               Center(child: Text('No slots available for the selected date')),
             SizedBox(height: 20),

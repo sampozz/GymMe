@@ -4,22 +4,21 @@ class Slot {
   final String id;
   final String gymId;
   final String activityId;
-  final DateTime? startTime;
-  final DateTime? endTime;
+  final DateTime startTime;
+  final DateTime endTime;
   final int maxUsers;
   final String room;
   final List<String> bookedUsers;
 
-  Slot({
-    this.id = '',
-    this.gymId = '',
-    this.activityId = '',
-    this.startTime,
-    this.endTime,
-    this.maxUsers = 0,
-    this.room = 'Room not available',
-    this.bookedUsers = const [],
-  });
+  Slot({id, gymId, activityId, startTime, endTime, maxUsers, room, bookedUsers})
+    : id = id ?? '',
+      gymId = gymId ?? 'Gym ID',
+      activityId = activityId ?? 'Activity ID',
+      startTime = startTime ?? DateTime.now(),
+      endTime = endTime ?? DateTime.now(),
+      maxUsers = maxUsers ?? 0,
+      room = room ?? 'Room',
+      bookedUsers = bookedUsers ?? [];
 
   factory Slot.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -28,12 +27,12 @@ class Slot {
     var data = snapshot.data()!;
     return Slot(
       id: snapshot.id,
-      gymId: data['gymId'] ?? Slot().gymId,
-      activityId: data['activityId'] ?? Slot().activityId,
-      startTime: data['startTime']?.toDate() ?? DateTime(1971, 1, 1),
-      endTime: data['endTime']?.toDate() ?? DateTime(1971, 1, 1),
-      maxUsers: data['maxUsers'] ?? Slot().maxUsers,
-      room: data['room'] ?? Slot().room,
+      gymId: data['gymId'],
+      activityId: data['activityId'],
+      startTime: data['startTime']?.toDate(),
+      endTime: data['endTime']?.toDate(),
+      maxUsers: data['maxUsers'],
+      room: data['room'],
       bookedUsers: List<String>.from(data['bookedUsers'] ?? []),
     );
   }

@@ -1,41 +1,59 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dima_project/content/bookings/booking_update_model.dart';
 
 class Booking {
-  String? id;
-  String title;
-  String description;
-  DateTime? startTime;
-  DateTime? endTime;
-  int duration;
-  double price;
-  String gymName;
-  String room;
-  String instructorName;
-  String instructorPhoto;
-  String instructorTitle;
-  String userId;
-  String gymId;
-  String slotId;
-  String activityId;
+  String id;
+  final String title;
+  final String description;
+  final DateTime startTime;
+  final DateTime endTime;
+  final int duration;
+  final double price;
+  final String gymName;
+  final String room;
+  final String instructorName;
+  final String instructorPhoto;
+  final String instructorTitle;
+  final String userId;
+  final String gymId;
+  final String slotId;
+  final String activityId;
+  final BookingUpdate? bookingUpdate;
 
   Booking({
-    this.id,
-    this.title = '',
-    this.description = '',
-    this.startTime,
-    this.endTime,
-    this.duration = 0,
-    this.price = 0.0,
-    this.gymName = '',
-    this.room = '',
-    this.instructorName = '',
-    this.instructorPhoto = '',
-    this.instructorTitle = '',
-    this.userId = '',
-    this.gymId = '',
-    this.slotId = '',
-    this.activityId = '',
-  });
+    id,
+    title,
+    description,
+    startTime,
+    endTime,
+    duration,
+    price,
+    gymName,
+    room,
+    instructorName,
+    instructorPhoto,
+    instructorTitle,
+    userId,
+    gymId,
+    slotId,
+    activityId,
+    this.bookingUpdate,
+  }) : id = id ?? '',
+       title = title ?? 'Booking',
+       description = description ?? 'Description',
+       startTime = startTime ?? DateTime.now(),
+       endTime = endTime ?? DateTime.now(),
+       duration = duration ?? 60,
+       price = price ?? 0.0,
+       gymName = gymName ?? 'Gym Name',
+       room = room ?? 'Room',
+       instructorName = instructorName ?? 'Instructor Name',
+       instructorPhoto = instructorPhoto ?? 'Instructor Photo',
+       instructorTitle = instructorTitle ?? 'Instructor Title',
+       userId = userId ?? 'User ID',
+       gymId = gymId ?? 'Gym ID',
+       slotId = slotId ?? 'Slot ID',
+       activityId = activityId ?? 'Activity ID';
 
   factory Booking.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -44,21 +62,25 @@ class Booking {
     var data = snapshot.data()!;
     return Booking(
       id: snapshot.id,
-      title: data['title'] ?? Booking().title,
-      description: data['description'] ?? Booking().description,
-      startTime: data['startTime']?.toDate() ?? DateTime(0),
-      endTime: data['endTime']?.toDate() ?? DateTime(0),
-      duration: data['duration'] ?? Booking().duration,
-      price: double.tryParse(data['price'].toString()) ?? Booking().price,
-      gymName: data['gymName'] ?? Booking().gymName,
-      room: data['room'] ?? Booking().room,
-      instructorName: data['instructorName'] ?? Booking().instructorName,
-      instructorPhoto: data['instructorPhoto'] ?? Booking().instructorPhoto,
-      instructorTitle: data['instructorTitle'] ?? Booking().instructorTitle,
-      userId: data['userId'] ?? Booking().userId,
-      gymId: data['gymId'] ?? Booking().gymId,
-      slotId: data['slotId'] ?? Booking().slotId,
-      activityId: data['activityId'] ?? Booking().activityId,
+      title: data['title'],
+      description: data['description'],
+      startTime: data['startTime']?.toDate(),
+      endTime: data['endTime']?.toDate(),
+      duration: data['duration'],
+      price: double.tryParse(data['price'].toString()),
+      gymName: data['gymName'],
+      room: data['room'],
+      instructorName: data['instructorName'],
+      instructorPhoto: data['instructorPhoto'],
+      instructorTitle: data['instructorTitle'],
+      userId: data['userId'],
+      gymId: data['gymId'],
+      slotId: data['slotId'],
+      activityId: data['activityId'],
+      bookingUpdate:
+          data['bookingUpdate'] != null
+              ? BookingUpdate.fromFirestore(data['bookingUpdate'], snapshot.id)
+              : null,
     );
   }
 
@@ -79,6 +101,7 @@ class Booking {
       'gymId': gymId,
       'slotId': slotId,
       'activityId': activityId,
+      if (bookingUpdate != null) 'bookingUpdate': bookingUpdate!.toFirestore(),
     };
   }
 }

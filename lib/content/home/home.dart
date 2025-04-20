@@ -236,7 +236,7 @@ class _HomeState extends State<Home> {
     return SliverList(
       delegate: SliverChildBuilderDelegate((context, index) {
         Booking booking = _todaysBookings[index];
-        int bookingIndex = bookingsProvider.getBookingIndex(booking.id!);
+        int bookingIndex = bookingsProvider.getBookingIndex(booking.id);
         if (bookingIndex == -1) {
           return Container();
         }
