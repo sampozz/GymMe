@@ -7,7 +7,6 @@ import 'package:mockito/mockito.dart';
 
 import 'gym_provider_test.mocks.dart';
 
-@GenerateMocks([GymService])
 void main() {
   late MockGymService mockGymService;
 

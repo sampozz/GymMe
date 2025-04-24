@@ -68,4 +68,12 @@ class MockUserService extends _i1.Mock implements _i2.UserService {
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
           as _i3.Future<void>);
+
+  @override
+  _i3.Future<List<_i5.User>> fetchUsers() =>
+      (super.noSuchMethod(
+            Invocation.method(#fetchUsers, []),
+            returnValue: _i3.Future<List<_i5.User>>.value(<_i5.User>[]),
+          )
+          as _i3.Future<List<_i5.User>>);
 }

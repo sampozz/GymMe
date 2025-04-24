@@ -48,7 +48,7 @@ class Booking {
        gymName = gymName ?? 'Gym Name',
        room = room ?? 'Room',
        instructorName = instructorName ?? 'Instructor Name',
-       instructorPhoto = instructorPhoto ?? 'Instructor Photo',
+       instructorPhoto = instructorPhoto ?? 'assets/avatar.png',
        instructorTitle = instructorTitle ?? 'Instructor Title',
        userId = userId ?? 'User ID',
        gymId = gymId ?? 'Gym ID',

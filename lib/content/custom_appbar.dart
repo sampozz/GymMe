@@ -16,11 +16,16 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: Row(
         children: [
           CircleAvatar(
-            backgroundImage:
-                user?.photoURL.isEmpty ?? true
-                    ? AssetImage('assets/avatar.png')
-                    : NetworkImage(user?.photoURL ?? ''),
             radius: 20,
+            child: ClipOval(
+              child: Image.network(
+                user?.photoURL ?? '',
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) {
+                  return Image.asset('assets/avatar.png', fit: BoxFit.cover);
+                },
+              ),
+            ),
           ),
           SizedBox(width: 10),
           Column(

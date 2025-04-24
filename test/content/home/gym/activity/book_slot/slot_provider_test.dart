@@ -7,7 +7,6 @@ import 'package:mockito/mockito.dart';
 
 import 'slot_provider_test.mocks.dart';
 
-@GenerateMocks([SlotService])
 void main() {
   group('SlotProvider tests', () {
     late MockSlotService mockSlotService;

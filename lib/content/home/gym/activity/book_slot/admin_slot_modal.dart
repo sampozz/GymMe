@@ -99,10 +99,19 @@ class _AdminSlotModalState extends State<AdminSlotModal> {
             itemBuilder: (context, index) {
               return ListTile(
                 leading: CircleAvatar(
-                  backgroundImage:
-                      _bookedUsers[index].photoURL.isEmpty
-                          ? AssetImage('assets/avatar.png')
-                          : NetworkImage(_bookedUsers[index].photoURL),
+                  radius: 20,
+                  child: ClipOval(
+                    child: Image.network(
+                      _bookedUsers[index].photoURL,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) {
+                        return Image.asset(
+                          'assets/avatar.png',
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                  ),
                 ),
                 title: Text(_bookedUsers[index].displayName),
                 subtitle: Text(_bookedUsers[index].email),
