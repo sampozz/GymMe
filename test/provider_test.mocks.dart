@@ -14,9 +14,13 @@ import 'package:dima_project/content/home/gym/activity/activity_model.dart'
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart'
     as _i8;
 import 'package:dima_project/content/home/gym/gym_model.dart' as _i6;
+import 'package:dima_project/global_providers/gym_provider.dart' as _i14;
 import 'package:dima_project/global_providers/screen_provider.dart' as _i11;
+import 'package:dima_project/global_providers/user/user_model.dart' as _i13;
+import 'package:dima_project/global_providers/user/user_provider.dart' as _i12;
 import 'package:flutter/material.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:mockito/src/dummies.dart' as _i15;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -198,6 +202,249 @@ class MockScreenProvider extends _i1.Mock implements _i11.ScreenProvider {
             returnValueForMissingStub: false,
           )
           as bool);
+
+  @override
+  void addListener(_i10.VoidCallback? listener) => super.noSuchMethod(
+    Invocation.method(#addListener, [listener]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void removeListener(_i10.VoidCallback? listener) => super.noSuchMethod(
+    Invocation.method(#removeListener, [listener]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void dispose() => super.noSuchMethod(
+    Invocation.method(#dispose, []),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void notifyListeners() => super.noSuchMethod(
+    Invocation.method(#notifyListeners, []),
+    returnValueForMissingStub: null,
+  );
+}
+
+/// A class which mocks [UserProvider].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockUserProvider extends _i1.Mock implements _i12.UserProvider {
+  @override
+  bool get isLoggedIn =>
+      (super.noSuchMethod(
+            Invocation.getter(#isLoggedIn),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
+
+  @override
+  bool get isAdmin =>
+      (super.noSuchMethod(
+            Invocation.getter(#isAdmin),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
+
+  @override
+  bool get hasListeners =>
+      (super.noSuchMethod(
+            Invocation.getter(#hasListeners),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
+
+  @override
+  _i4.Future<_i13.User?> signIn(String? email, String? password) =>
+      (super.noSuchMethod(
+            Invocation.method(#signIn, [email, password]),
+            returnValue: _i4.Future<_i13.User?>.value(),
+            returnValueForMissingStub: _i4.Future<_i13.User?>.value(),
+          )
+          as _i4.Future<_i13.User?>);
+
+  @override
+  _i4.Future<void> signOut() =>
+      (super.noSuchMethod(
+            Invocation.method(#signOut, []),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<_i13.User?> fetchUser() =>
+      (super.noSuchMethod(
+            Invocation.method(#fetchUser, []),
+            returnValue: _i4.Future<_i13.User?>.value(),
+            returnValueForMissingStub: _i4.Future<_i13.User?>.value(),
+          )
+          as _i4.Future<_i13.User?>);
+
+  @override
+  _i4.Future<List<_i13.User>> getUsersByIds(List<String>? ids) =>
+      (super.noSuchMethod(
+            Invocation.method(#getUsersByIds, [ids]),
+            returnValue: _i4.Future<List<_i13.User>>.value(<_i13.User>[]),
+            returnValueForMissingStub: _i4.Future<List<_i13.User>>.value(
+              <_i13.User>[],
+            ),
+          )
+          as _i4.Future<List<_i13.User>>);
+
+  @override
+  _i4.Future<void> addFavouriteGym(String? gymId) =>
+      (super.noSuchMethod(
+            Invocation.method(#addFavouriteGym, [gymId]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> removeFavouriteGym(String? gymId) =>
+      (super.noSuchMethod(
+            Invocation.method(#removeFavouriteGym, [gymId]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  void addListener(_i10.VoidCallback? listener) => super.noSuchMethod(
+    Invocation.method(#addListener, [listener]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void removeListener(_i10.VoidCallback? listener) => super.noSuchMethod(
+    Invocation.method(#removeListener, [listener]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void dispose() => super.noSuchMethod(
+    Invocation.method(#dispose, []),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void notifyListeners() => super.noSuchMethod(
+    Invocation.method(#notifyListeners, []),
+    returnValueForMissingStub: null,
+  );
+}
+
+/// A class which mocks [GymProvider].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockGymProvider extends _i1.Mock implements _i14.GymProvider {
+  @override
+  bool get hasListeners =>
+      (super.noSuchMethod(
+            Invocation.getter(#hasListeners),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
+
+  @override
+  _i4.Future<List<_i6.Gym>> getGymList() =>
+      (super.noSuchMethod(
+            Invocation.method(#getGymList, []),
+            returnValue: _i4.Future<List<_i6.Gym>>.value(<_i6.Gym>[]),
+            returnValueForMissingStub: _i4.Future<List<_i6.Gym>>.value(
+              <_i6.Gym>[],
+            ),
+          )
+          as _i4.Future<List<_i6.Gym>>);
+
+  @override
+  _i4.Future<void> addGym(_i6.Gym? gym) =>
+      (super.noSuchMethod(
+            Invocation.method(#addGym, [gym]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> updateGym(_i6.Gym? gym) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateGym, [gym]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> removeGym(_i6.Gym? gym) =>
+      (super.noSuchMethod(
+            Invocation.method(#removeGym, [gym]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> addActivity(_i6.Gym? gym, _i7.Activity? activity) =>
+      (super.noSuchMethod(
+            Invocation.method(#addActivity, [gym, activity]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> updateActivity(_i6.Gym? gym, _i7.Activity? activity) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateActivity, [gym, activity]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> removeActivity(_i6.Gym? gym, _i7.Activity? activity) =>
+      (super.noSuchMethod(
+            Invocation.method(#removeActivity, [gym, activity]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  int getGymIndex(_i6.Gym? gym) =>
+      (super.noSuchMethod(
+            Invocation.method(#getGymIndex, [gym]),
+            returnValue: 0,
+            returnValueForMissingStub: 0,
+          )
+          as int);
+
+  @override
+  _i4.Future<String> uploadImage(String? base64Image) =>
+      (super.noSuchMethod(
+            Invocation.method(#uploadImage, [base64Image]),
+            returnValue: _i4.Future<String>.value(
+              _i15.dummyValue<String>(
+                this,
+                Invocation.method(#uploadImage, [base64Image]),
+              ),
+            ),
+            returnValueForMissingStub: _i4.Future<String>.value(
+              _i15.dummyValue<String>(
+                this,
+                Invocation.method(#uploadImage, [base64Image]),
+              ),
+            ),
+          )
+          as _i4.Future<String>);
 
   @override
   void addListener(_i10.VoidCallback? listener) => super.noSuchMethod(
