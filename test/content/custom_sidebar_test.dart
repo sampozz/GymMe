@@ -1,4 +1,5 @@
 import 'package:dima_project/content/custom_sidebar.dart';
+import 'package:dima_project/content/home/home.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -6,17 +7,25 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
-class MockUserProvider extends Mock implements UserProvider {}
+import '../provider_test.mocks.dart';
 
 void main() {
   group('Custom sidebar', () {
     testWidgets('should display the sidebar', (WidgetTester tester) async {
-      return;
+      final user = User(email: 'mail');
       final mockUserProvider = MockUserProvider();
+      when(mockUserProvider.user).thenReturn(user);
+      when(mockUserProvider.signIn('any', 'any')).thenAnswer((_) async => user);
 
-      when(mockUserProvider.user).thenReturn(User());
+      final pages = [
+        {
+          "title": "Home",
+          "description": "Home page",
+          "icon": Icons.home_outlined,
+          "widget": Home(),
+        },
+      ];
 
-      // Build the widget
       await tester.pumpWidget(
         MultiProvider(
           providers: [
@@ -24,28 +33,15 @@ void main() {
           ],
           child: MaterialApp(
             home: CustomSidebar(
-              pages: [
-                {'title': 'Page 1', 'icon': Icons.home, 'page': Container()},
-              ],
+              pages: pages,
               currentIndex: 0,
-              navigatorKey: null,
-              onTapCallback: (p0) => {},
+              onTapCallback: (index) {},
             ),
           ),
         ),
       );
 
-      // Find the sidebar
-      final sidebarFinder = find.byType(CustomSidebar);
-
-      // Find the title of the first page
-      final titleFinder = find.text('Page 1');
-
-      // Expect the sidebar to be displayed
-      expect(sidebarFinder, findsOneWidget);
-
-      // Expect the title of the first page to be displayed
-      expect(titleFinder, findsOneWidget);
+      expect(find.byType(CustomSidebar), findsOneWidget);
     });
   });
 }

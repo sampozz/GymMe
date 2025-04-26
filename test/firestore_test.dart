@@ -10,6 +10,7 @@ import 'package:mockito/annotations.dart';
   MockSpec<QuerySnapshot>(),
   MockSpec<QueryDocumentSnapshot>(),
   MockSpec<DocumentSnapshot>(),
+  MockSpec<Transaction>(),
 
   MockSpec<auth.User>(),
   MockSpec<auth.FirebaseAuth>(),

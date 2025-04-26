@@ -104,11 +104,19 @@ class _NewActivityState extends State<NewActivity> {
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundImage:
-                      instructor.photo.isEmpty
-                          ? AssetImage('assets/avatar.png')
-                          : NetworkImage(instructor.photo),
                   radius: 20,
+                  child: ClipOval(
+                    child: Image.network(
+                      instructor.photo,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) {
+                        return Image.asset(
+                          'assets/avatar.png',
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                  ),
                 ),
                 SizedBox(width: 10),
                 Column(

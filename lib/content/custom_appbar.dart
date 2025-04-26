@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:dima_project/content/bookings/booking_model.dart';
 import 'package:dima_project/content/bookings/bookings_provider.dart';
 import 'package:dima_project/content/notifications/notifications.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,11 +19,25 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: Row(
         children: [
           CircleAvatar(
-            backgroundImage:
-                user?.photoURL.isEmpty ?? true
-                    ? AssetImage('assets/avatar.png')
-                    : NetworkImage(user?.photoURL ?? ''),
             radius: 20,
+            child:
+                !kIsWeb && !Platform.isAndroid && !Platform.isIOS
+                    ? Image.asset(
+                      'assets/avatar.png',
+                      fit: BoxFit.cover,
+                    ) // For tests
+                    : ClipOval(
+                      child: Image.network(
+                        user?.photoURL ?? '',
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, _, _) {
+                          return Image.asset(
+                            'assets/avatar.png',
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
+                    ),
           ),
           SizedBox(width: 10),
           Column(

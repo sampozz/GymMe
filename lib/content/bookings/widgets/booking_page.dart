@@ -108,7 +108,7 @@ class _BookingPageState extends State<BookingPage> {
                       }
                     },
                     icon: const Icon(Icons.cancel),
-                    label: const Text("Cancel Booking"),
+                    label: const Text("Confirm Cancellation"),
                   ),
                 ],
               ),

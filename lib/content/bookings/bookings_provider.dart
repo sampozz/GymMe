@@ -14,12 +14,17 @@ import 'package:url_launcher/url_launcher.dart';
 class BookingsProvider extends ChangeNotifier {
   final BookingsService _bookingsService;
   final InstructorService _instructorService;
+  final auth.FirebaseAuth _firebaseAuth;
   List<Booking>? _bookings;
 
   // Dependency injection, needed for unit testing
-  BookingsProvider({BookingsService? bookingsService})
-    : _bookingsService = bookingsService ?? BookingsService(),
-      _instructorService = InstructorService();
+  BookingsProvider({
+    BookingsService? bookingsService,
+    InstructorService? instructorService,
+    auth.FirebaseAuth? firebaseAuth,
+  }) : _bookingsService = bookingsService ?? BookingsService(),
+       _instructorService = instructorService ?? InstructorService(),
+       _firebaseAuth = firebaseAuth ?? auth.FirebaseAuth.instance;
 
   /// Getter for the bookings. If the list is empty, fetch it from the service.
   List<Booking>? get bookings {
@@ -52,7 +57,7 @@ class BookingsProvider extends ChangeNotifier {
 
   /// Books a slot for the current user
   Future<bool> createBooking(Gym gym, Activity activity, Slot slot) async {
-    auth.User user = auth.FirebaseAuth.instance.currentUser!;
+    auth.User user = _firebaseAuth.currentUser!;
     if (slot.bookedUsers.contains(user.uid) ||
         slot.bookedUsers.length >= slot.maxUsers) {
       return false;

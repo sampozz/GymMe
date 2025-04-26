@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:dima_project/content/bookings/booking_model.dart';
 import 'package:dima_project/content/bookings/bookings_provider.dart';
 import 'package:dima_project/content/bookings/widgets/booking_page.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -38,11 +41,25 @@ class BookingCard extends StatelessWidget {
         Row(
           children: [
             CircleAvatar(
-              backgroundImage:
-                  booking.instructorPhoto.isEmpty
-                      ? AssetImage('assets/avatar.png')
-                      : NetworkImage(booking.instructorPhoto),
               radius: 20,
+              child:
+                  !kIsWeb && !Platform.isAndroid && !Platform.isIOS
+                      ? Image.asset(
+                        'assets/avatar.png',
+                        fit: BoxFit.cover,
+                      ) // For tests
+                      : ClipOval(
+                        child: Image.network(
+                          booking.instructorPhoto,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) {
+                            return Image.asset(
+                              'assets/avatar.png',
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        ),
+                      ),
             ),
             SizedBox(width: 10),
             Column(

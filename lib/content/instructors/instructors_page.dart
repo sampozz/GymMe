@@ -34,11 +34,16 @@ class _InstructorsPageState extends State<InstructorsPage> {
     return instructors?.map((instructor) {
           return ListTile(
             leading: CircleAvatar(
-              backgroundImage:
-                  instructor.photo.isEmpty
-                      ? AssetImage('assets/avatar.png')
-                      : NetworkImage(instructor.photo),
               radius: 20,
+              child: ClipOval(
+                child: Image.network(
+                  instructor.photo,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, _, _) {
+                    return Image.asset('assets/avatar.png', fit: BoxFit.cover);
+                  },
+                ),
+              ),
             ),
             title: Text(instructor.title),
             subtitle: Text(instructor.name),

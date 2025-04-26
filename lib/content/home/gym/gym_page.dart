@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dima_project/content/home/gym/activity/activity_card.dart';
 import 'package:dima_project/content/home/gym/activity/new_activity.dart';
 import 'package:dima_project/content/home/gym/gym_model.dart';
@@ -6,6 +8,7 @@ import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -105,34 +108,40 @@ class GymPage extends StatelessWidget {
             topLeft: useMobileLayout ? Radius.zero : Radius.circular(20.0),
             topRight: useMobileLayout ? Radius.zero : Radius.circular(20.0),
           ),
-          child: Image.network(
-            gym.imageUrl,
-            fit: BoxFit.fitWidth,
-            height: 200,
-            width: double.infinity,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) {
-                return child;
-              }
-              return Center(
-                child: LinearProgressIndicator(
-                  value:
-                      loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              (loadingProgress.expectedTotalBytes ?? 1)
-                          : null,
-                ),
-              );
-            },
-            errorBuilder: (context, error, stackTrace) {
-              return Image.asset(
-                'assets/gym.jpeg',
-                fit: BoxFit.fitWidth,
-                height: 200,
-                width: double.infinity,
-              );
-            },
-          ),
+          child:
+              !kIsWeb && !Platform.isAndroid && !Platform.isIOS
+                  ? Image.asset(
+                    'assets/avatar.png',
+                    fit: BoxFit.cover,
+                  ) // For tests
+                  : Image.network(
+                    gym.imageUrl,
+                    fit: BoxFit.fitWidth,
+                    height: 200,
+                    width: double.infinity,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      }
+                      return Center(
+                        child: LinearProgressIndicator(
+                          value:
+                              loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      (loadingProgress.expectedTotalBytes ?? 1)
+                                  : null,
+                        ),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return Image.asset(
+                        'assets/gym.jpeg',
+                        fit: BoxFit.fitWidth,
+                        height: 200,
+                        width: double.infinity,
+                      );
+                    },
+                  ),
         ),
       ),
     );

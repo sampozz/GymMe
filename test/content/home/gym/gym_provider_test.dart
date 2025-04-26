@@ -1,13 +1,10 @@
 import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
-import 'package:dima_project/content/home/gym/gym_service.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import 'gym_provider_test.mocks.dart';
+import '../../../service_test.mocks.dart';
 
-@GenerateMocks([GymService])
 void main() {
   late MockGymService mockGymService;
 
