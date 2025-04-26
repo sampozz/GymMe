@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
-class MockGymProvider extends Mock implements GymProvider {}
+import '../../../../provider_test.mocks.dart';
 
 void main() {
   group('ActivityCard tests', () {
