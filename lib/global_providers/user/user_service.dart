@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class UserService {
@@ -21,30 +22,29 @@ class UserService {
   }
 
   Future<auth.UserCredential?> signInWithGoogle() async {
-    // Trigger authentication flow
-    final GoogleSignIn _googleSignIn = GoogleSignIn(
-      clientId:
-          '686682370976-n05g9q99kefvahhkgnkh13ps5ta87ikv.apps.googleusercontent.com',
-      scopes: ['email'],
-    );
-    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+    if (kIsWeb) {
+      // Web sign-in
+      final auth.GoogleAuthProvider googleProvider = auth.GoogleAuthProvider();
+      googleProvider.addScope('email');
+      return await auth.FirebaseAuth.instance.signInWithPopup(googleProvider);
+    } else {
+      // Mobile sign-in
+      final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email']);
 
-    if (googleUser == null) {
-      throw Exception('User cancelled the sign-in');
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) {
+        throw Exception('User cancelled the sign-in');
+      }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final credential = auth.GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      return await auth.FirebaseAuth.instance.signInWithCredential(credential);
     }
-
-    // Get authentication details
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser.authentication;
-
-    // Create new credentials
-    final credential = auth.GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-
-    // Sign in to Firebase with the Google credentials
-    return await auth.FirebaseAuth.instance.signInWithCredential(credential);
   }
 
   Future<auth.UserCredential?> signUpWithEmailAndPassword(
