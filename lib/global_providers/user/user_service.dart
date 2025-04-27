@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class UserService {
   /// This method will sign in the user with the provided email and password
@@ -15,6 +16,48 @@ class UserService {
           .signInWithEmailAndPassword(email: email, password: password);
     } catch (e) {
       // TODO: Handle authentication error
+    }
+    return userCredential;
+  }
+
+  Future<auth.UserCredential?> signInWithGoogle() async {
+    // Trigger authentication flow
+    final GoogleSignIn _googleSignIn = GoogleSignIn(
+      clientId:
+          '686682370976-n05g9q99kefvahhkgnkh13ps5ta87ikv.apps.googleusercontent.com',
+      scopes: ['email'],
+    );
+    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+    if (googleUser == null) {
+      throw Exception('User cancelled the sign-in');
+    }
+
+    // Get authentication details
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+
+    // Create new credentials
+    final credential = auth.GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    // Sign in to Firebase with the Google credentials
+    return await auth.FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
+  Future<auth.UserCredential?> signUpWithEmailAndPassword(
+    String email,
+    String password,
+  ) async {
+    auth.UserCredential? userCredential;
+    try {
+      userCredential = await auth.FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+    } catch (e) {
+      print('Error signing up: $e');
+      rethrow;
     }
     return userCredential;
   }
@@ -48,6 +91,33 @@ class UserService {
 
     // Create and return User object
     return userDoc.data();
+  }
+
+  Future<void> createUser(User user) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    try {
+      await firestore
+          .collection('users')
+          .doc(user.uid)
+          .withConverter(
+            fromFirestore: User.fromFirestore,
+            toFirestore: (user, options) => user.toFirestore(),
+          )
+          .set(user);
+    } catch (e) {
+      print('Error creating user: $e');
+      rethrow;
+    }
+  }
+
+  /// This method will reset the password for the user with the provided email
+  Future<void> resetPassword(String email) async {
+    try {
+      await auth.FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
   }
 
   /// This method will update the user favourite gyms in Firestore
