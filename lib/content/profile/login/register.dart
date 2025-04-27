@@ -1,26 +1,24 @@
-import 'package:dima_project/content/profile/login/forgot_pwd.dart';
-import 'package:dima_project/content/profile/login/register.dart';
-import 'package:dima_project/global_providers/user/user_model.dart';
+import 'package:dima_project/content/profile/login/login.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class Register extends StatefulWidget {
+  const Register({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<Register> createState() => _RegisterState();
 }
 
-class _LoginState extends State<Login> {
+class _RegisterState extends State<Register> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _invalidUser = false;
+  final _fullNameController = TextEditingController();
+  String _errorMessage = '';
   bool _isLoading = false;
-  bool _isGoogleLoading = false;
 
-  void _signIn() async {
+  void _signUp() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -29,76 +27,33 @@ class _LoginState extends State<Login> {
       _isLoading = true;
     });
 
-    User? res = await Provider.of<UserProvider>(
-      context,
-      listen: false,
-    ).signIn(_emailController.text, _passwordController.text);
-
-    if (res == null) {
-      setState(() {
-        _isLoading = false;
-        _invalidUser = true;
-      });
-    } else {
-      if (mounted) {
-        Navigator.of(
-          context,
-        ).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
-      }
-    }
-  }
-
-  void _signInWithGoogle() async {
-    setState(() {
-      _isGoogleLoading = true;
-    });
-
-    final res = await context.read<UserProvider>().signInWithGoogle();
-
-    if (res == null) {
-      setState(() {
-        _isGoogleLoading = false;
-      });
-    } else {
-      if (mounted) {
-        Navigator.of(
-          context,
-        ).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
-      }
-    }
-  }
-
-  void _navigateToSignUp() {
-    Navigator.pushReplacement(
-      context,
-      PageRouteBuilder(
-        pageBuilder:
-            (context, animation, secondaryAnimation) => const Register(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(1.0, 0.0);
-          const end = Offset.zero;
-          const curve = Curves.easeInOut;
-
-          var tween = Tween(
-            begin: begin,
-            end: end,
-          ).chain(CurveTween(curve: curve));
-          var offsetAnimation = animation.drive(tween);
-
-          return SlideTransition(position: offsetAnimation, child: child);
-        },
-      ),
+    String? res = await context.read<UserProvider>().signUp(
+      _emailController.text,
+      _passwordController.text,
+      _fullNameController.text,
     );
+
+    if (res == null) {
+      if (mounted) {
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
+      }
+    } else {
+      setState(() {
+        _errorMessage = res;
+        _isLoading = false;
+      });
+    }
   }
 
-  void _onForgotPressed() {
+  void _navigateToLogin() {
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
-        pageBuilder:
-            (context, animation, secondaryAnimation) => const ForgotPwd(),
+        pageBuilder: (context, animation, secondaryAnimation) => const Login(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(1.0, 0.0);
+          const begin = Offset(-1.0, 0.0);
           const end = Offset.zero;
           const curve = Curves.easeInOut;
 
@@ -131,7 +86,7 @@ class _LoginState extends State<Login> {
       child: Column(
         children: [
           Text(
-            "Sign In",
+            "Sign Up",
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -140,10 +95,28 @@ class _LoginState extends State<Login> {
           ),
           const SizedBox(height: 10),
           const Text(
-            "Enter valid email and password to continue",
+            "Enter your information to continue",
             style: TextStyle(fontSize: 16, color: Colors.black38),
           ),
           const SizedBox(height: 20),
+          TextFormField(
+            controller: _fullNameController,
+            keyboardType: TextInputType.emailAddress,
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.person_2_outlined),
+              prefixIconColor: Colors.black26,
+              labelText: "Full name",
+              hintStyle: TextStyle(color: Colors.black26),
+              labelStyle: TextStyle(color: Colors.black26),
+              border: OutlineInputBorder(),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black26, width: 1.0),
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+            ),
+            validator: (value) => _validateMandatory(value),
+          ),
+          const SizedBox(height: 10),
           TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
@@ -180,38 +153,16 @@ class _LoginState extends State<Login> {
             obscureText: true,
             validator: (value) => _validateMandatory(value),
           ),
-          if (_invalidUser)
-            const Padding(
-              padding: EdgeInsets.only(top: 10.0),
-              child: Text(
-                "Invalid email or password",
-                style: TextStyle(color: Colors.red, fontSize: 14),
-              ),
-            ),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                onPressed: () => _onForgotPressed(),
-                child: Text('Forgot Password?'),
-              ),
-            ],
+          const SizedBox(height: 20),
+          Text(
+            'By signing up, you agree to our Terms of Service and Privacy Policy',
+            style: TextStyle(color: Colors.black38),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
           if (_isLoading)
             const CircularProgressIndicator()
           else
-            Container(
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(context).colorScheme.primary.withAlpha(50),
-                    blurRadius: 50.0,
-                    offset: Offset(0, 0),
-                  ),
-                ],
-              ),
+            SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
@@ -223,53 +174,16 @@ class _LoginState extends State<Login> {
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                 ),
-                onPressed: () => _signIn(),
-                child: const Text("Login"),
+                onPressed: () => _signUp(),
+                child: const Text("Create Account"),
               ),
             ),
-          const SizedBox(height: 10),
-          SizedBox(
-            width: 250,
-            child: Row(
-              children: [
-                const Expanded(
-                  child: Divider(color: Colors.black38, height: 50),
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Text(
-                    "Or Continue with",
-                    style: TextStyle(
-                      color: Colors.black38,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const Expanded(
-                  child: Divider(color: Colors.black38, height: 50),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-          if (_isGoogleLoading)
-            const CircularProgressIndicator()
-          else
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton.icon(
-                label: const Text("Google"),
-                icon: Image.asset('assets/google.png', width: 24, height: 24),
-                style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  foregroundColor: Theme.of(context).colorScheme.primary,
-                  backgroundColor: Color.fromARGB(255, 242, 242, 242),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                ),
-                onPressed: () => _signInWithGoogle(),
+          if (_errorMessage.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Text(
+                _errorMessage,
+                style: const TextStyle(color: Colors.red, fontSize: 14),
               ),
             ),
         ],
@@ -285,10 +199,10 @@ class _LoginState extends State<Login> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Don't have an account?"),
+            Text("Already have an Account?"),
             TextButton(
-              onPressed: () => _navigateToSignUp(),
-              child: const Text("Sign Up"),
+              onPressed: () => _navigateToLogin(),
+              child: const Text("Sign In"),
             ),
           ],
         ),

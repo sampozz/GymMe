@@ -4,7 +4,6 @@ import 'package:dima_project/content/instructors/instructor_provider.dart';
 import 'package:dima_project/content/profile/login/login.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/global_providers/map_provider.dart';
-import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +23,6 @@ class AuthGate extends StatelessWidget {
         return MultiProvider(
           providers: [
             // List of global providers (accessible to all widgets)
-            ChangeNotifierProvider(create: (context) => ScreenProvider()),
             ChangeNotifierProvider(create: (context) => GymProvider()),
             ChangeNotifierProvider(create: (context) => BookingsProvider()),
             ChangeNotifierProvider(create: (context) => InstructorProvider()),

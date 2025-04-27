@@ -51,6 +51,7 @@ dependencies:
   geolocator: ^13.0.2
   geolocator_platform_interface: ^4.2.5
   geocoding: ^3.0.0
+  google_sign_in: ^6.3.0
 
 dev_dependencies:
   flutter_test:

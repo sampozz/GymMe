@@ -1,4 +1,5 @@
 import 'package:dima_project/auth_gate/auth_gate.dart';
+import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -18,8 +19,11 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => UserProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ScreenProvider()),
+        ChangeNotifierProvider(create: (context) => UserProvider()),
+      ],
       child: const App(),
     ),
   );
