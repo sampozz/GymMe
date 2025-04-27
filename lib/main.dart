@@ -10,7 +10,6 @@ import 'firebase_options.dart';
 // -- > make it a horizontal list of cards in the gym page
 // TODO: in the calendar tabs show a flag if a slot is available
 // TODO: when an activity is removed, cosa facciamo??
-// TODO: login and register
 // TODO: introduction screen
 
 void main() async {
