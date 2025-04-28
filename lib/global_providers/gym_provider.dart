@@ -32,7 +32,7 @@ class GymProvider with ChangeNotifier {
     String? gymId = await _gymService.addGym(gym);
     if (gymId != null) {
       gym.id = gymId;
-      _gymList!.add(gym);
+      _gymList!.insert(0, gym);
       notifyListeners();
     }
   }

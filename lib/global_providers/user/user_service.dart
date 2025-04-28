@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
+import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class UserService {
   /// This method will sign in the user with the provided email and password
@@ -15,6 +17,47 @@ class UserService {
           .signInWithEmailAndPassword(email: email, password: password);
     } catch (e) {
       // TODO: Handle authentication error
+    }
+    return userCredential;
+  }
+
+  Future<auth.UserCredential?> signInWithGoogle() async {
+    if (kIsWeb) {
+      // Web sign-in
+      final auth.GoogleAuthProvider googleProvider = auth.GoogleAuthProvider();
+      googleProvider.addScope('email');
+      return await auth.FirebaseAuth.instance.signInWithPopup(googleProvider);
+    } else {
+      // Mobile sign-in
+      final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email']);
+
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      if (googleUser == null) {
+        throw Exception('User cancelled the sign-in');
+      }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final credential = auth.GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      return await auth.FirebaseAuth.instance.signInWithCredential(credential);
+    }
+  }
+
+  Future<auth.UserCredential?> signUpWithEmailAndPassword(
+    String email,
+    String password,
+  ) async {
+    auth.UserCredential? userCredential;
+    try {
+      userCredential = await auth.FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+    } catch (e) {
+      print('Error signing up: $e');
+      rethrow;
     }
     return userCredential;
   }
@@ -50,6 +93,33 @@ class UserService {
     return userDoc.data();
   }
 
+  Future<void> createUser(User user) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    try {
+      await firestore
+          .collection('users')
+          .doc(user.uid)
+          .withConverter(
+            fromFirestore: User.fromFirestore,
+            toFirestore: (user, options) => user.toFirestore(),
+          )
+          .set(user);
+    } catch (e) {
+      print('Error creating user: $e');
+      rethrow;
+    }
+  }
+
+  /// This method will reset the password for the user with the provided email
+  Future<void> resetPassword(String email) async {
+    try {
+      await auth.FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
   /// This method will update the user favourite gyms in Firestore
   Future<void> updateUserFavourites(User user) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -61,5 +131,25 @@ class UserService {
       // TODO: Handle error
       print('Error updating favourite gyms');
     }
+  }
+
+  Future<List<User>> fetchUsers() async {
+    List<User> users = [];
+    try {
+      var usersRef =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .withConverter(
+                fromFirestore: User.fromFirestore,
+                toFirestore: (user, options) => user.toFirestore(),
+              )
+              .get();
+      users = usersRef.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      // TODO: Handle error
+      print('Error fetching users: $e');
+      rethrow;
+    }
+    return users;
   }
 }

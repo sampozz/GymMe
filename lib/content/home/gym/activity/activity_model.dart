@@ -1,33 +1,32 @@
 import 'package:dima_project/content/instructors/instructor_model.dart';
 
 class Activity {
-  String? id;
-  String? title;
-  String? description;
-  double? price;
-  String? instructorId;
+  final String id;
+  final String title;
+  final String description;
+  final double price;
+  final String instructorId;
 
-  Activity({
-    this.id = '',
-    this.title = '',
-    this.description = 'Description not available',
-    this.price = 0,
-    this.instructorId = '',
-  });
+  Activity({id, title, description, price, instructorId})
+    : id = id ?? '',
+      title = title ?? 'Activity',
+      description = description ?? 'Description',
+      price = price ?? 0.0,
+      instructorId = instructorId ?? Instructor().id;
 
   factory Activity.fromFirestore(Map<String, dynamic> data) {
     return Activity(
       id: data['id'],
-      title: data['title'] ?? Activity().title,
-      description: data['description'] ?? Activity().description,
-      price: data['price'] ?? Activity().price,
-      instructorId: data['instructorId'] ?? Instructor().id,
+      title: data['title'],
+      description: data['description'],
+      price: double.tryParse(data['price'].toString()),
+      instructorId: data['instructorId'],
     );
   }
 
   Map<String, dynamic> toFirestore() {
     return {
-      if (id != null) 'id': id,
+      'id': id,
       'title': title,
       'description': description,
       'price': price,

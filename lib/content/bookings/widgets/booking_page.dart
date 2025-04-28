@@ -42,14 +42,14 @@ class _BookingPageState extends State<BookingPage> {
           leading: const Icon(Icons.calendar_today),
           title: const Text("Date"),
           subtitle: Text(
-            DateFormat.MMMMEEEEd().format(booking.startTime!).toString(),
+            DateFormat.MMMMEEEEd().format(booking.startTime).toString(),
           ),
         ),
         ListTile(
           leading: const Icon(Icons.access_time),
           title: const Text("Time"),
           subtitle: Text(
-            "${DateFormat.jm().format(booking.startTime!)} - ${DateFormat.jm().format(booking.endTime!)}",
+            "${DateFormat.jm().format(booking.startTime)} - ${DateFormat.jm().format(booking.endTime)}",
           ),
         ),
         ListTile(
@@ -108,12 +108,22 @@ class _BookingPageState extends State<BookingPage> {
                       }
                     },
                     icon: const Icon(Icons.cancel),
-                    label: const Text("Cancel Booking"),
+                    label: const Text("Confirm Cancellation"),
                   ),
                 ],
               ),
             ),
           ),
+    );
+  }
+
+  void _addToCalendar(Booking booking) {
+    context.read<BookingsProvider>().addToCalendar(booking);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text("Booking added to calendar successfully"),
+        duration: Duration(seconds: 2),
+      ),
     );
   }
 
@@ -123,22 +133,21 @@ class _BookingPageState extends State<BookingPage> {
       child: Column(
         children: [
           ElevatedButton.icon(
-            onPressed: () {
-              // Logic to add the booking to the calendar
-            },
+            onPressed: () => _addToCalendar(booking),
             icon: const Icon(Icons.calendar_today),
             label: const Text("Add to Calendar"),
           ),
           const SizedBox(height: 10),
-          ElevatedButton.icon(
-            onPressed: () => _cancelBooking(booking),
-            icon: const Icon(Icons.cancel, color: Colors.white),
-            label: const Text(
-              "Cancel Booking",
-              style: TextStyle(color: Colors.white),
+          if (booking.endTime.isAfter(DateTime.now()))
+            ElevatedButton.icon(
+              onPressed: () => _cancelBooking(booking),
+              icon: const Icon(Icons.cancel, color: Colors.white),
+              label: const Text(
+                "Cancel Booking",
+                style: TextStyle(color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             ),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-          ),
         ],
       ),
     );

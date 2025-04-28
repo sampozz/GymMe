@@ -2,11 +2,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima_project/content/instructors/instructor_model.dart';
 
 class InstructorService {
+  final FirebaseFirestore _firestore;
+
+  InstructorService({FirebaseFirestore? firestore})
+    : _firestore = firestore ?? FirebaseFirestore.instance;
+
   Future<List<Instructor>> fetchInstructors() async {
     List<Instructor> instructors = [];
     try {
       var snapshot =
-          await FirebaseFirestore.instance
+          await _firestore
               .collection('instructor')
               .withConverter(
                 fromFirestore: Instructor.fromFirestore,
@@ -25,7 +30,7 @@ class InstructorService {
   Future<Instructor?> fetchInstructorById(String instructorId) async {
     try {
       var instructorDoc =
-          await FirebaseFirestore.instance
+          await _firestore
               .collection('instructor')
               .doc(instructorId)
               .withConverter(
@@ -48,7 +53,7 @@ class InstructorService {
 
   Future<String?> addInstructor(Instructor instructor) async {
     try {
-      var ref = await FirebaseFirestore.instance
+      var ref = await _firestore
           .collection('instructor')
           .withConverter(
             fromFirestore: Instructor.fromFirestore,
@@ -65,10 +70,7 @@ class InstructorService {
 
   Future<void> deleteInstructor(Instructor instructor) async {
     try {
-      FirebaseFirestore.instance
-          .collection('instructor')
-          .doc(instructor.id)
-          .delete();
+      _firestore.collection('instructor').doc(instructor.id).delete();
     } catch (e) {
       // TODO: handle error
       print(e);

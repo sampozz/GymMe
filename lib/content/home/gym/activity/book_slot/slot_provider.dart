@@ -49,7 +49,7 @@ class SlotProvider extends ChangeNotifier {
     await _slotService.createSlot(slot);
 
     if (recurrence != 'None' && until != null) {
-      DateTime currentDate = slot.startTime!;
+      DateTime currentDate = slot.startTime;
 
       while (true) {
         // Update the date for the next occurrence
@@ -77,8 +77,8 @@ class SlotProvider extends ChangeNotifier {
           startTime: currentDate,
           endTime: currentDate.add(
             Duration(
-              hours: slot.endTime!.hour - slot.startTime!.hour,
-              minutes: slot.endTime!.minute - slot.startTime!.minute,
+              hours: slot.endTime.hour - slot.startTime.hour,
+              minutes: slot.endTime.minute - slot.startTime.minute,
             ),
           ),
         );
@@ -87,6 +87,12 @@ class SlotProvider extends ChangeNotifier {
       }
     }
 
+    _nextSlots = null;
+    notifyListeners();
+  }
+
+  Future<void> updateSlot(Slot slot) async {
+    await _slotService.updateSlot(slot);
     _nextSlots = null;
     notifyListeners();
   }
@@ -100,6 +106,12 @@ class SlotProvider extends ChangeNotifier {
       return;
     }
     _nextSlots![index].bookedUsers.add(user.uid);
+    notifyListeners();
+  }
+
+  Future<void> deleteSlot(String slotId) async {
+    await _slotService.deleteSlot(slotId);
+    _nextSlots = null;
     notifyListeners();
   }
 }

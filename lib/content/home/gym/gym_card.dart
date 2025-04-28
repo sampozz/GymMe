@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -73,20 +76,26 @@ class GymCard extends StatelessWidget {
                       topLeft: Radius.circular(15.0),
                       topRight: Radius.circular(15.0),
                     ),
-                    child: Image.network(
-                      gym.imageUrl,
-                      fit: BoxFit.fitWidth,
-                      height: 175,
-                      width: double.infinity,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Image.asset(
-                          'assets/gym.jpeg',
-                          fit: BoxFit.fitWidth,
-                          height: 175,
-                          width: double.infinity,
-                        );
-                      },
-                    ),
+                    child:
+                        !kIsWeb && !Platform.isAndroid && !Platform.isIOS
+                            ? Image.asset(
+                              'assets/avatar.png',
+                              fit: BoxFit.cover,
+                            ) // For tests
+                            : Image.network(
+                              gym.imageUrl,
+                              fit: BoxFit.fitWidth,
+                              height: 175,
+                              width: double.infinity,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.asset(
+                                  'assets/gym.jpeg',
+                                  fit: BoxFit.fitWidth,
+                                  height: 175,
+                                  width: double.infinity,
+                                );
+                              },
+                            ),
                   ),
 
                   Positioned(

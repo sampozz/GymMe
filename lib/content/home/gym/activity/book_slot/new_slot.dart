@@ -7,8 +7,14 @@ import 'package:provider/provider.dart';
 class NewSlot extends StatefulWidget {
   final String gymId;
   final String activityId;
+  final Slot? oldSlot;
 
-  const NewSlot({super.key, required this.gymId, required this.activityId});
+  const NewSlot({
+    super.key,
+    required this.gymId,
+    required this.activityId,
+    this.oldSlot,
+  });
 
   @override
   State<NewSlot> createState() => _NewSlotState();
@@ -27,6 +33,31 @@ class _NewSlotState extends State<NewSlot> {
   DateTime? _selectedEndTime;
   DateTime? _selectedUntilDate;
   String _recurrence = 'None';
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.oldSlot != null) {
+      _slotDateCtrl.text = DateFormat(
+        DateFormat.YEAR_MONTH_DAY,
+      ).format(widget.oldSlot!.startTime);
+      _startTimeCtrl.text = DateFormat(
+        DateFormat.HOUR24_MINUTE,
+      ).format(widget.oldSlot!.startTime);
+      _endTimeCtrl.text = DateFormat(
+        DateFormat.HOUR24_MINUTE,
+      ).format(widget.oldSlot!.endTime);
+      _maxUsersCtrl.text = widget.oldSlot!.maxUsers.toString();
+      _roomCtrl.text = widget.oldSlot!.room;
+      _selectedDate = widget.oldSlot!.startTime;
+      _selectedStartTime = widget.oldSlot!.startTime;
+      _selectedEndTime = widget.oldSlot!.endTime;
+      _recurrence = 'None';
+      _selectedUntilDate = null;
+      _untilCtrl.text = '';
+    }
+  }
 
   @override
   void dispose() {
@@ -44,35 +75,57 @@ class _NewSlotState extends State<NewSlot> {
       return;
     }
 
-    Slot newSlot = Slot(
-      gymId: widget.gymId,
-      activityId: widget.activityId,
-      startTime: DateTime(
-        _selectedDate!.year,
-        _selectedDate!.month,
-        _selectedDate!.day,
-        _selectedStartTime!.hour,
-        _selectedStartTime!.minute,
-      ),
-      endTime: DateTime(
-        _selectedDate!.year,
-        _selectedDate!.month,
-        _selectedDate!.day,
-        _selectedEndTime!.hour,
-        _selectedEndTime!.minute,
-      ),
-      maxUsers: int.parse(_maxUsersCtrl.text),
-      room: _roomCtrl.text.isNotEmpty ? _roomCtrl.text : 'Room not available',
-      bookedUsers: [],
+    setState(() {
+      _isLoading = true;
+    });
+
+    DateTime startTime = DateTime(
+      _selectedDate!.year,
+      _selectedDate!.month,
+      _selectedDate!.day,
+      _selectedStartTime!.hour,
+      _selectedStartTime!.minute,
     );
 
-    await Provider.of<SlotProvider>(
-      context,
-      listen: false,
-    ).createSlot(newSlot, _recurrence, _selectedUntilDate);
-    if (mounted) {
-      Navigator.pop(context);
+    DateTime endTime = DateTime(
+      _selectedDate!.year,
+      _selectedDate!.month,
+      _selectedDate!.day,
+      _selectedEndTime!.hour,
+      _selectedEndTime!.minute,
+    );
+
+    Slot newSlot =
+        widget.oldSlot?.copyWith(
+          startTime: startTime,
+          endTime: endTime,
+          maxUsers: int.parse(_maxUsersCtrl.text),
+          room:
+              _roomCtrl.text.isNotEmpty ? _roomCtrl.text : 'Room not available',
+        ) ??
+        Slot(
+          gymId: widget.gymId,
+          activityId: widget.activityId,
+          startTime: startTime,
+          endTime: endTime,
+          maxUsers: int.parse(_maxUsersCtrl.text),
+          room:
+              _roomCtrl.text.isNotEmpty ? _roomCtrl.text : 'Room not available',
+        );
+
+    if (widget.oldSlot != null) {
+      await Provider.of<SlotProvider>(
+        context,
+        listen: false,
+      ).updateSlot(newSlot);
+    } else {
+      await Provider.of<SlotProvider>(
+        context,
+        listen: false,
+      ).createSlot(newSlot, _recurrence, _selectedUntilDate);
     }
+
+    Navigator.pop(context);
   }
 
   Future<void> _selectDate(TextEditingController controller) async {
@@ -105,31 +158,44 @@ class _NewSlotState extends State<NewSlot> {
   }
 
   Future<void> _selectTime(TextEditingController controller) async {
-    final TimeOfDay? pickedTime = await showTimePicker(
+    final TimeOfDay? time = await showTimePicker(
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            timePickerTheme: TimePickerThemeData(
+              hourMinuteTextColor: Colors.black,
+              entryModeIconColor: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
       context: context,
       initialTime: TimeOfDay.now(),
     );
 
-    if (context.mounted && pickedTime != null) {
+    if (context.mounted && time != null) {
       setState(() {
         if (controller == _startTimeCtrl) {
           _selectedStartTime = DateTime(
             _selectedDate!.year,
             _selectedDate!.month,
             _selectedDate!.day,
-            pickedTime.hour,
-            pickedTime.minute,
+            time.hour,
+            time.minute,
           );
         } else if (controller == _endTimeCtrl) {
           _selectedEndTime = DateTime(
             _selectedDate!.year,
             _selectedDate!.month,
             _selectedDate!.day,
-            pickedTime.hour,
-            pickedTime.minute,
+            time.hour,
+            time.minute,
           );
         }
-        controller.text = pickedTime.format(context);
+        controller.text = DateFormat(
+          DateFormat.HOUR24_MINUTE,
+        ).format(DateTime(0, 0, 0, time.hour, time.minute));
       });
     }
   }
@@ -194,7 +260,9 @@ class _NewSlotState extends State<NewSlot> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Create New Slot')),
+      appBar: AppBar(
+        title: Text(widget.oldSlot == null ? 'Create new slot' : 'Edit slot'),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -261,12 +329,16 @@ class _NewSlotState extends State<NewSlot> {
                   ),
                 ),
                 SizedBox(height: 20),
-                _buildRecurreceForm(),
+                if (widget.oldSlot == null) _buildRecurreceForm(),
                 SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () => _submitForm(),
-                  child: Text('Create Slot'),
-                ),
+                _isLoading
+                    ? CircularProgressIndicator()
+                    : ElevatedButton(
+                      onPressed: () => _submitForm(),
+                      child: Text(
+                        widget.oldSlot == null ? 'Create Slot' : 'Update Slot',
+                      ),
+                    ),
               ],
             ),
           ),
