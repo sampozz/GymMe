@@ -88,4 +88,11 @@ class UserProvider extends ChangeNotifier {
       await _userService.updateUserFavourites(_user!);
     }
   }
+
+  bool isGymInFavourites(String gymId) {
+    if (_user == null) {
+      return false;
+    }
+    return _user!.favouriteGyms.contains(gymId);
+  }
 }

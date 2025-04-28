@@ -35,7 +35,10 @@ class MapProvider with ChangeNotifier {
     return data;
   }
 
-  Map<String, Marker> getMarkers(Locations gyms) {
+  Map<String, Marker> getMarkers(
+    Locations gyms, {
+    Function(String gymName, String gymId)? onMarkerTap,
+  }) {
     if (!_isInitialized) {
       _isInitialized = true;
       _markers.clear();
@@ -43,7 +46,12 @@ class MapProvider with ChangeNotifier {
         final marker = Marker(
           markerId: MarkerId(gym.id),
           position: LatLng(gym.lat, gym.lng),
-          infoWindow: InfoWindow(title: gym.name, snippet: gym.address),
+          //infoWindow: InfoWindow(title: gym.name, snippet: gym.address),
+          onTap: () {
+            if (onMarkerTap != null) {
+              onMarkerTap(gym.name, gym.id);
+            }
+          },
         );
         _markers[gym.id] = marker;
       }

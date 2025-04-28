@@ -1,10 +1,12 @@
 import 'package:dima_project/global_providers/screen_provider.dart';
+import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/global_providers/map_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:dima_project/content/home/gym/gym_model.dart';
+import 'package:dima_project/content/home/gym/gym_card.dart';
 
 class GymMap extends StatefulWidget {
   const GymMap({super.key});
@@ -103,7 +105,50 @@ class _GymAppState extends State<GymMap> {
 
         if (mounted) {
           setState(() {
-            _markers = mapProvider!.getMarkers(gyms);
+            _markers = mapProvider!.getMarkers(
+              gyms,
+              onMarkerTap: (gymName, gymId) {
+                int gymIndex = gymList!.indexWhere((gym) => gym.id == gymId);
+                if (gymIndex != -1) {
+                  bool isFavourite = context
+                      .read<UserProvider>()
+                      .isGymInFavourites(gymId);
+
+                  showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(20),
+                      ),
+                    ),
+                    builder:
+                        (context) => Container(
+                          padding: EdgeInsets.symmetric(vertical: 10),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 50,
+                                height: 4,
+                                margin: EdgeInsets.only(bottom: 10),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                              GymCard(
+                                gymIndex: gymIndex,
+                                isFavourite: isFavourite,
+                                isSelected: true,
+                              ),
+                            ],
+                          ),
+                        ),
+                  );
+                }
+              },
+            );
           });
         }
       }
