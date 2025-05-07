@@ -12,6 +12,7 @@ class User {
   String taxCode;
   bool isAdmin;
   List<String> favouriteGyms;
+  //List<String> subscriptions;
 
   User({
     this.uid = '',
@@ -25,6 +26,7 @@ class User {
     this.taxCode = '',
     this.isAdmin = false,
     this.favouriteGyms = const [],
+    //this.subscriptions = const [],
   });
 
   factory User.fromFirestore(
@@ -38,12 +40,13 @@ class User {
       email: data['email'] ?? User().email,
       photoURL: data['photoURL'] ?? User().photoURL,
       phoneNumber: data['phoneNumber'] ?? User().phoneNumber,
-      birthDate: data['birthDate'] ?? User().birthDate,
+      birthDate: data['birthDate']?.toDate() ?? User().birthDate,
       birthPlace: data['birthPlace'] ?? User().birthPlace,
       address: data['address'] ?? User().address,
       taxCode: data['taxCode'] ?? User().taxCode,
       isAdmin: data['isAdmin'] ?? User().isAdmin,
       favouriteGyms: List<String>.from(data['favouriteGyms'] ?? []),
+      //subscriptions: List<String>.from(data['subscriptions'] ?? []),
     );
   }
 
@@ -60,6 +63,7 @@ class User {
       'taxCode': taxCode,
       'isAdmin': isAdmin,
       'favouriteGyms': favouriteGyms,
+      //'subscriptions': subscriptions,
     };
   }
 }

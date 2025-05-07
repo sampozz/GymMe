@@ -88,4 +88,25 @@ class UserProvider extends ChangeNotifier {
       await _userService.updateUserFavourites(_user!);
     }
   }
+
+  /// This method will update the user profile with the provided data
+  Future<void> updateUserProfile({
+    String? displayName,
+    String? phoneNumber,
+    String? address,
+    String? taxCode,
+    String? birthPlace,
+    DateTime? birthDate,
+  }) async {
+    if (_user != null) {
+      _user!.displayName = displayName ?? _user!.displayName;
+      _user!.phoneNumber = phoneNumber ?? _user!.phoneNumber;
+      _user!.address = address ?? _user!.address;
+      _user!.taxCode = taxCode ?? _user!.taxCode;
+      _user!.birthPlace = birthPlace ?? _user!.birthPlace;
+      _user!.birthDate = birthDate ?? _user!.birthDate;
+      notifyListeners();
+      await _userService.updateUserProfile(_user!);
+    }
+  }
 }

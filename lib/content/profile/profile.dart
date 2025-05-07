@@ -1,5 +1,6 @@
-import 'package:dima_project/content/bookings/widgets/booking_page.dart';
 import 'package:dima_project/content/bookings/widgets/bookings.dart';
+import 'package:dima_project/content/profile/my_data.dart';
+import 'package:dima_project/content/profile/subscription/subscription_page.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -11,18 +12,6 @@ class Profile extends StatelessWidget {
   void _signOut(BuildContext context) async {
     await Provider.of<UserProvider>(context, listen: false).signOut();
   }
-
-  /*    
- Chip utente con dati (dati da definire)
- Nome e cognome
- Pagina “i miei dati” anagrafica
- Pagina delle prenotazioni attive (sempre la solita)
- Pagina per visualizzare tessere e abbonamenti
- Pagina per visualizzare il certificato medico
- pagina gestione accessi notifiche e calendario
- [?] tema chiaro/scuro
- Logout (→ ritorna alla schermata di login/signup)
- Eliminare l’account */
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +39,28 @@ class Profile extends StatelessWidget {
                     switch (i) {
                       case 0: // "Chip"
                         break;
-                      // TODO: gestire gli altri casi
+                      case 1: // "I miei dati"
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => MyData()),
+                        );
+                        break;
                       case 2: // "Prenotazioni"
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => Bookings()),
                         );
                         break;
+                      case 3: // "Tessere e abbonamenti"
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Subscription(),
+                          ),
+                        );
+                        break;
+
+                      // TODO: gestire gli altri casi
                       case 7: // "Logout"
                         _signOut(context);
                         break;
