@@ -152,4 +152,22 @@ class UserService {
     }
     return users;
   }
+
+  /// This method will update the user profile in Firestore
+  Future<void> updateUserProfile(User user) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    try {
+      await firestore.collection('users').doc(user.uid).update({
+        'displayName': user.displayName,
+        'phoneNumber': user.phoneNumber,
+        'address': user.address,
+        'taxCode': user.taxCode,
+        'birthPlace': user.birthPlace,
+        'birthDate': user.birthDate,
+      });
+    } catch (e) {
+      // TODO: Handle error
+      print('Error updating user profile: $e');
+    }
+  }
 }
