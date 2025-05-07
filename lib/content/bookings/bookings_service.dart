@@ -1,19 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima_project/content/bookings/booking_model.dart';
+import 'package:dima_project/content/bookings/booking_update_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 
 class BookingsService {
+  final FirebaseFirestore firestore;
+  final auth.FirebaseAuth firebaseAuth;
+
+  BookingsService({
+    FirebaseFirestore? firestore,
+    auth.FirebaseAuth? firebaseAuth,
+  }) : firestore = firestore ?? FirebaseFirestore.instance,
+       firebaseAuth = firebaseAuth ?? auth.FirebaseAuth.instance;
+
   /// Fetches the bookings for the current user
   /// Returns a list of bookings
   Future<List<Booking>> fetchBookings() async {
     List<Booking> bookings = [];
     try {
-      auth.User user = auth.FirebaseAuth.instance.currentUser!;
+      String uid = firebaseAuth.currentUser!.uid;
       var snapshot =
-          await FirebaseFirestore.instance
+          await firestore
               .collection('booking')
-              .where('userId', isEqualTo: user.uid)
+              .where('userId', isEqualTo: uid)
               .withConverter(
                 fromFirestore: Booking.fromFirestore,
                 toFirestore: (booking, options) => booking.toFirestore(),
@@ -30,18 +40,16 @@ class BookingsService {
 
   /// Add the booking to the booking collection and update the slot collection
   Future<String?> addBooking(Booking booking, Slot slot) async {
-    return await FirebaseFirestore.instance.runTransaction((transaction) async {
+    return await firestore.runTransaction((transaction) async {
       final bookingRef =
-          FirebaseFirestore.instance
+          firestore
               .collection('booking')
               .withConverter(
                 fromFirestore: Booking.fromFirestore,
                 toFirestore: (booking, options) => booking.toFirestore(),
               )
               .doc();
-      final slotRef = FirebaseFirestore.instance
-          .collection('slot')
-          .doc(slot.id);
+      final slotRef = firestore.collection('slot').doc(slot.id);
       final slotDoc = await transaction.get(slotRef);
 
       if (slotDoc.exists) {
@@ -59,14 +67,10 @@ class BookingsService {
 
   /// Deletes a booking by ID
   Future<void> deleteBooking(Booking booking) async {
-    FirebaseFirestore.instance.runTransaction((transaction) async {
+    firestore.runTransaction((transaction) async {
       try {
-        final bookingRef = FirebaseFirestore.instance
-            .collection('booking')
-            .doc(booking.id);
-        final slotRef = FirebaseFirestore.instance
-            .collection('slot')
-            .doc(booking.slotId);
+        final bookingRef = firestore.collection('booking').doc(booking.id);
+        final slotRef = firestore.collection('slot').doc(booking.slotId);
 
         final slot = await transaction.get(slotRef);
         final b = await transaction.get(bookingRef);
@@ -90,5 +94,17 @@ class BookingsService {
         rethrow;
       }
     });
+  }
+
+  Future<void> markUpdateAsRead(BookingUpdate bookingUpdate) async {
+    try {
+      firestore.collection('booking').doc(bookingUpdate.bookingId).update({
+        'bookingUpdate': bookingUpdate.toFirestore(),
+      });
+    } catch (e) {
+      // TODO: handle error
+      print(e);
+      rethrow;
+    }
   }
 }

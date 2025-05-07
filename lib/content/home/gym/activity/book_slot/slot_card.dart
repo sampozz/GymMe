@@ -12,9 +12,9 @@ class SlotCard extends StatelessWidget {
   Widget build(BuildContext context) {
     String day = DateFormat(
       DateFormat.ABBR_MONTH_WEEKDAY_DAY,
-    ).format(slot.startTime!);
-    String startTime = DateFormat.jm().format(slot.startTime!);
-    String endTime = DateFormat.jm().format(slot.endTime!);
+    ).format(slot.startTime);
+    String startTime = DateFormat.jm().format(slot.startTime);
+    String endTime = DateFormat.jm().format(slot.endTime);
     int bookedUsers = slot.bookedUsers.length;
 
     return MouseRegion(

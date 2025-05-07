@@ -42,6 +42,59 @@ class UserProvider extends ChangeNotifier {
     return fetchUser();
   }
 
+  Future<User?> signInWithGoogle() async {
+    // Sign in with Google
+    auth.UserCredential? userCredential = await _userService.signInWithGoogle();
+    if (userCredential != null) {
+      // Get the current firebase user, this user is needed to fetch the user data from Firestore
+      User? user = await fetchUser();
+      if (user == null) {
+        // If the user is not found in Firestore, create a new user
+        await createUser(userCredential.user!.displayName!);
+        user = await fetchUser();
+      }
+      return user;
+    }
+    return null;
+  }
+
+  Future<String?> signUp(String email, String password, String fullName) async {
+    // Sign up with email and password
+    try {
+      await _userService.signUpWithEmailAndPassword(email, password);
+      createUser(fullName);
+    } on auth.FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        return 'The password provided is too weak.';
+      } else if (e.code == 'email-already-in-use') {
+        return 'The account already exists for that email.';
+      }
+    }
+    return null;
+  }
+
+  Future<User?> createUser(String fullName) async {
+    // Get the current firebase user, this user is needed to fetch the user data from Firestore
+    auth.User? firebaseUser = _auth.currentUser;
+    if (firebaseUser == null) {
+      // TODO: Handle authentication error
+      return null;
+    }
+    _user = User(
+      uid: firebaseUser.uid,
+      displayName: fullName,
+      email: firebaseUser.email!,
+      favouriteGyms: [],
+    );
+    try {
+      await _userService.createUser(_user!);
+    } catch (e) {
+      return null;
+    }
+    notifyListeners();
+    return _user;
+  }
+
   /// This method will sign out the user and set the _user property to null
   Future<void> signOut() async {
     await _userService.signOut();
@@ -69,6 +122,26 @@ class UserProvider extends ChangeNotifier {
 
     notifyListeners();
     return _user;
+  }
+
+  Future<String?> resetPassword(String email) async {
+    try {
+      await _userService.resetPassword(email);
+    } on auth.FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        return 'No user found for that email.';
+      } else if (e.code == 'invalid-email') {
+        return 'The email address is badly formatted.';
+      }
+    }
+    return null;
+  }
+
+  Future<List<User>> getUsersByIds(List<String> ids) async {
+    // Fetch the user data from Firestore
+    List<User> users = await _userService.fetchUsers();
+    users = users.where((user) => ids.contains(user.uid)).toList();
+    return users;
   }
 
   /// This method will add a gym to the favourite gyms list of the user

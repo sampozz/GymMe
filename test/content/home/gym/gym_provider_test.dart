@@ -1,13 +1,10 @@
 import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
-import 'package:dima_project/content/home/gym/gym_service.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import 'gym_provider_test.mocks.dart';
+import '../../../service_test.mocks.dart';
 
-@GenerateMocks([GymService])
 void main() {
   late MockGymService mockGymService;
 
@@ -15,7 +12,7 @@ void main() {
     mockGymService = MockGymService();
   });
 
-  group('GymProvider tests', () {
+  group('GymProvider', () {
     test('should return a list of gyms', () async {
       var gymProvider = GymProvider(gymService: mockGymService);
       var gymList = [
@@ -44,7 +41,7 @@ void main() {
       await gymProvider.addGym(newGym);
 
       // Verify that the gym was added to the gym list
-      expect(gymProvider.gymList!.last, newGym);
+      expect(gymProvider.gymList!.first, newGym);
     });
 
     test('should update a gym in the gym list', () async {

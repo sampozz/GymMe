@@ -1,5 +1,6 @@
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_service.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 
 class SlotProvider extends ChangeNotifier {
@@ -48,7 +49,7 @@ class SlotProvider extends ChangeNotifier {
     await _slotService.createSlot(slot);
 
     if (recurrence != 'None' && until != null) {
-      DateTime currentDate = slot.startTime!;
+      DateTime currentDate = slot.startTime;
 
       while (true) {
         // Update the date for the next occurrence
@@ -76,8 +77,8 @@ class SlotProvider extends ChangeNotifier {
           startTime: currentDate,
           endTime: currentDate.add(
             Duration(
-              hours: slot.endTime!.hour - slot.startTime!.hour,
-              minutes: slot.endTime!.minute - slot.startTime!.minute,
+              hours: slot.endTime.hour - slot.startTime.hour,
+              minutes: slot.endTime.minute - slot.startTime.minute,
             ),
           ),
         );
@@ -86,6 +87,30 @@ class SlotProvider extends ChangeNotifier {
       }
     }
 
+    _nextSlots = null;
+    notifyListeners();
+  }
+
+  Future<void> updateSlot(Slot slot) async {
+    await _slotService.updateSlot(slot);
+    _nextSlots = null;
+    notifyListeners();
+  }
+
+  /// Add the user to the booked users list of a slot
+  Future<void> addUserToSlot(String slotId) async {
+    auth.User user = auth.FirebaseAuth.instance.currentUser!;
+    // Get the slot from the list of next slots
+    int index = _nextSlots!.indexWhere((slot) => slot.id == slotId);
+    if (index == -1) {
+      return;
+    }
+    _nextSlots![index].bookedUsers.add(user.uid);
+    notifyListeners();
+  }
+
+  Future<void> deleteSlot(String slotId) async {
+    await _slotService.deleteSlot(slotId);
     _nextSlots = null;
     notifyListeners();
   }

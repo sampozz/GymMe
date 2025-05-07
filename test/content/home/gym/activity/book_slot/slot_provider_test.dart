@@ -1,13 +1,10 @@
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart';
-import 'package:dima_project/content/home/gym/activity/book_slot/slot_service.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import 'slot_provider_test.mocks.dart';
+import '../../../../../service_test.mocks.dart';
 
-@GenerateMocks([SlotService])
 void main() {
   group('SlotProvider tests', () {
     late MockSlotService mockSlotService;

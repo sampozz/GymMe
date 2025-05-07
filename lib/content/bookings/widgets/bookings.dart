@@ -8,6 +8,7 @@ class Bookings extends StatelessWidget {
   const Bookings({super.key});
 
   Future<void> _refreshBookings(BuildContext context) async {
+    print("Refreshing bookings...");
     context.read<BookingsProvider>().getBookings();
   }
 
@@ -17,14 +18,17 @@ class Bookings extends StatelessWidget {
     return switch (bookings) {
       null => const Center(child: CircularProgressIndicator()),
       [] => const Center(child: Text("No bookings available")),
-      _ => ListView.builder(
-        itemCount: bookings.length,
-        itemBuilder: (context, index) {
-          Booking booking = bookings[index];
-          return BookingCard(
-            bookingIndex: bookingsProvider.getBookingIndex(booking.id!),
-          );
-        },
+      _ => RefreshIndicator(
+        onRefresh: () => _refreshBookings(context),
+        child: ListView.builder(
+          itemCount: bookings.length,
+          itemBuilder: (context, index) {
+            Booking booking = bookings[index];
+            return BookingCard(
+              bookingIndex: bookingsProvider.getBookingIndex(booking.id),
+            );
+          },
+        ),
       ),
     };
   }
@@ -47,32 +51,27 @@ class Bookings extends StatelessWidget {
             dividerHeight: 0,
           ),
         ),
-        body: RefreshIndicator(
-          onRefresh: () => _refreshBookings(context),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
-            child: TabBarView(
-              children: <Widget>[
-                Center(
-                  child: _buildBookingsList(
-                    context,
-                    bookings
-                        ?.where((b) => b.startTime?.isAfter(startOfDay) ?? true)
-                        .toList(),
-                  ),
+        body: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+          child: TabBarView(
+            children: <Widget>[
+              Center(
+                child: _buildBookingsList(
+                  context,
+                  bookings
+                      ?.where((b) => b.startTime.isAfter(startOfDay))
+                      .toList(),
                 ),
-                Center(
-                  child: _buildBookingsList(
-                    context,
-                    bookings
-                        ?.where(
-                          (b) => b.startTime?.isBefore(startOfDay) ?? false,
-                        )
-                        .toList(),
-                  ),
+              ),
+              Center(
+                child: _buildBookingsList(
+                  context,
+                  bookings
+                      ?.where((b) => b.startTime.isBefore(startOfDay))
+                      .toList(),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

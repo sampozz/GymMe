@@ -54,14 +54,14 @@ class _NewActivityState extends State<NewActivity> {
           id: widget.activity?.id ?? '',
           title: titleCtrl.text,
           description: descrCtrl.text,
-          price: double.tryParse(priceCtrl.text) ?? 0,
+          price: double.tryParse(priceCtrl.text) ?? 0.0,
           instructorId: instructorId,
         ) ??
         Activity(
           id: DateTime.now().millisecondsSinceEpoch.toString(),
           title: titleCtrl.text,
           description: descrCtrl.text,
-          price: double.tryParse(priceCtrl.text) ?? 0,
+          price: double.tryParse(priceCtrl.text) ?? 0.0,
           instructorId: instructorId,
         );
 
@@ -104,11 +104,19 @@ class _NewActivityState extends State<NewActivity> {
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundImage:
-                      instructor.photo.isEmpty
-                          ? AssetImage('assets/avatar.png')
-                          : NetworkImage(instructor.photo),
                   radius: 20,
+                  child: ClipOval(
+                    child: Image.network(
+                      instructor.photo,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) {
+                        return Image.asset(
+                          'assets/avatar.png',
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                  ),
                 ),
                 SizedBox(width: 10),
                 Column(

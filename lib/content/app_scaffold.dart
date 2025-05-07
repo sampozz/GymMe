@@ -4,6 +4,7 @@ import 'package:dima_project/content/custom_sidebar.dart';
 import 'package:dima_project/content/favourites/favourites.dart';
 import 'package:dima_project/content/home/home.dart';
 import 'package:dima_project/content/profile/profile.dart';
+import 'package:dima_project/content/map/gym_map.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -44,7 +45,7 @@ class _AppScaffoldState extends State<AppScaffold> {
         "title": "Map",
         "description": "Map page",
         "icon": Icons.map_outlined,
-        "widget": null, // TODO: implement map page
+        "widget": GymMap(),
       },
       {
         "title": "Bookings",
@@ -77,51 +78,63 @@ class _AppScaffoldState extends State<AppScaffold> {
 
     _createPagesList();
 
-    return Container(
-      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
-      child: Row(
-        children: [
-          // Sidebar only if the screen is not mobile
-          !(screenProvider.useMobileLayout)
-              ? CustomSidebar(
-                pages: _pages,
-                currentIndex: _currentIndex,
-                onTapCallback: _navigateTab,
-                navigatorKey: navigatorKey,
-              )
-              : Container(),
-          Expanded(
-            child: Navigator(
-              key: navigatorKey,
-              onGenerateRoute: (settings) {
-                return MaterialPageRoute(
-                  builder:
-                      (context) => Scaffold(
-                        backgroundColor: Colors.transparent,
-                        // Widget selected in the navigation bar
-                        body: Stack(
-                          children: [
-                            _pages[_currentIndex]["widget"],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          return;
+        }
+        // Check if the current Navigator can pop
+        if (navigatorKey.currentState?.canPop() ?? false) {
+          navigatorKey.currentState?.pop();
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
+        child: Row(
+          children: [
+            // Sidebar only if the screen is not mobile
+            !(screenProvider.useMobileLayout)
+                ? CustomSidebar(
+                  pages: _pages,
+                  currentIndex: _currentIndex,
+                  onTapCallback: _navigateTab,
+                  navigatorKey: navigatorKey,
+                )
+                : Container(),
+            Expanded(
+              child: Navigator(
+                key: navigatorKey,
+                onGenerateRoute: (settings) {
+                  return MaterialPageRoute(
+                    builder:
+                        (context) => Scaffold(
+                          backgroundColor: Colors.transparent,
+                          // Widget selected in the navigation bar
+                          body: Stack(
+                            children: [
+                              _pages[_currentIndex]["widget"],
 
-                            screenProvider.useMobileLayout
-                                ? Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: CustomBottomNavBar(
-                                    pages: _pages,
-                                    currentIndex: _currentIndex,
-                                    onTapCallback: _navigateTab,
-                                    navigatorKey: navigatorKey,
-                                  ),
-                                )
-                                : Container(),
-                          ],
+                              screenProvider.useMobileLayout
+                                  ? Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: CustomBottomNavBar(
+                                      pages: _pages,
+                                      currentIndex: _currentIndex,
+                                      onTapCallback: _navigateTab,
+                                      navigatorKey: navigatorKey,
+                                    ),
+                                  )
+                                  : Container(),
+                            ],
+                          ),
                         ),
-                      ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

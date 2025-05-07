@@ -1,4 +1,5 @@
 import 'package:dima_project/content/home/gym/activity/activity_model.dart';
+import 'package:dima_project/content/home/gym/activity/book_slot/admin_slot_modal.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/confirm_booking_modal.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/new_slot.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_card.dart';
@@ -65,14 +66,38 @@ class _BookSlotPageState extends State<BookSlotPage>
 
   /// Deletes the activity from the database
   void _deleteActivity(Gym gym, Activity activity) {
-    Provider.of<GymProvider>(
-      context,
-      listen: false,
-    ).removeActivity(gym, activity);
+    // Show confirmation dialog
+    showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Activity'),
+          content: const Text('Are you sure you want to delete this activity?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    ).then((confirm) {
+      // If the user confirmed, delete the activity
+      if (confirm == true) {
+        Provider.of<GymProvider>(
+          context,
+          listen: false,
+        ).removeActivity(gym, activity);
 
-    if (context.mounted) {
-      Navigator.pop(context);
-    }
+        if (context.mounted) {
+          Navigator.pop(context);
+        }
+      }
+    });
   }
 
   /// Modify the activity
@@ -93,13 +118,28 @@ class _BookSlotPageState extends State<BookSlotPage>
         builder:
             (_) => ChangeNotifierProvider.value(
               value: context.read<SlotProvider>(),
-              child: NewSlot(gymId: gym.id!, activityId: activity.id!),
+              child: NewSlot(gymId: gym.id!, activityId: activity.id),
             ),
       ),
     );
   }
 
   void _showBookingModal(Slot slot) {
+    User? user = context.read<UserProvider>().user;
+    if (user?.isAdmin ?? false) {
+      showModalBottomSheet<void>(
+        isScrollControlled: true,
+        context: context,
+        useRootNavigator: true,
+        builder:
+            (_) => ChangeNotifierProvider.value(
+              value: context.read<SlotProvider>(),
+              child: AdminSlotModal(slot: slot),
+            ),
+      );
+      return;
+    }
+
     // Check if the user is already booked for the slot
     if (slot.bookedUsers.contains(user?.uid)) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -123,12 +163,20 @@ class _BookSlotPageState extends State<BookSlotPage>
     }
 
     showModalBottomSheet<void>(
+      isScrollControlled: true,
       context: context,
-      useRootNavigator: true,
       builder:
-          (_) =>
-              ConfirmBookingModal(gym: gym!, activity: activity!, slot: slot),
+          (_) => ConfirmBookingModal(
+            gym: gym!,
+            activity: activity!,
+            slot: slot,
+            onBookingConfirmed: _onBookingConfirmed,
+          ),
     );
+  }
+
+  void _onBookingConfirmed(String slotId) {
+    Provider.of<SlotProvider>(context, listen: false).addUserToSlot(slotId);
   }
 
   Widget _buildAdminActions() {
@@ -176,9 +224,9 @@ class _BookSlotPageState extends State<BookSlotPage>
                   slotList!.map((slot) {
                     // Check if the slot date matches the selected date
                     if (_tabController.index != 30 &&
-                        (slot.startTime!.day != selectedDate?.day ||
-                            slot.startTime!.month != selectedDate?.month ||
-                            slot.startTime!.year != selectedDate?.year)) {
+                        (slot.startTime.day != selectedDate?.day ||
+                            slot.startTime.month != selectedDate?.month ||
+                            slot.startTime.year != selectedDate?.year)) {
                       return Container(); // Skip this slot
                     }
                     return GestureDetector(
@@ -202,7 +250,7 @@ class _BookSlotPageState extends State<BookSlotPage>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(activity!.description!, style: TextStyle(fontSize: 16)),
+          Text(activity!.description, style: TextStyle(fontSize: 16)),
           SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -211,10 +259,19 @@ class _BookSlotPageState extends State<BookSlotPage>
                 child: Row(
                   children: [
                     CircleAvatar(
-                      backgroundImage:
-                          instructor?.photo.isEmpty ?? true
-                              ? AssetImage('assets/avatar.png')
-                              : NetworkImage(instructor!.photo),
+                      radius: 20,
+                      child: ClipOval(
+                        child: Image.network(
+                          instructor?.photo ?? '',
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, _, _) {
+                            return Image.asset(
+                              'assets/avatar.png',
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        ),
+                      ),
                     ),
                     SizedBox(width: 10),
                     Column(
@@ -299,7 +356,7 @@ class _BookSlotPageState extends State<BookSlotPage>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(activity!.title!),
+        title: Text(activity!.title),
         bottom: TabBar(
           controller: _tabController,
           isScrollable: true,
@@ -318,9 +375,9 @@ class _BookSlotPageState extends State<BookSlotPage>
                 slotList!.every(
                   (slot) =>
                       _tabController.index != 30 &&
-                      (slot.startTime!.day != selectedDate?.day ||
-                          slot.startTime!.month != selectedDate?.month ||
-                          slot.startTime!.year != selectedDate?.year),
+                      (slot.startTime.day != selectedDate?.day ||
+                          slot.startTime.month != selectedDate?.month ||
+                          slot.startTime.year != selectedDate?.year),
                 ))
               Center(child: Text('No slots available for the selected date')),
             SizedBox(height: 20),
