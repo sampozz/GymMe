@@ -274,6 +274,37 @@ class MockUserProvider extends _i1.Mock implements _i12.UserProvider {
           as _i4.Future<_i13.User?>);
 
   @override
+  _i4.Future<_i13.User?> signInWithGoogle() =>
+      (super.noSuchMethod(
+            Invocation.method(#signInWithGoogle, []),
+            returnValue: _i4.Future<_i13.User?>.value(),
+            returnValueForMissingStub: _i4.Future<_i13.User?>.value(),
+          )
+          as _i4.Future<_i13.User?>);
+
+  @override
+  _i4.Future<String?> signUp(
+    String? email,
+    String? password,
+    String? fullName,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#signUp, [email, password, fullName]),
+            returnValue: _i4.Future<String?>.value(),
+            returnValueForMissingStub: _i4.Future<String?>.value(),
+          )
+          as _i4.Future<String?>);
+
+  @override
+  _i4.Future<_i13.User?> createUser(String? fullName) =>
+      (super.noSuchMethod(
+            Invocation.method(#createUser, [fullName]),
+            returnValue: _i4.Future<_i13.User?>.value(),
+            returnValueForMissingStub: _i4.Future<_i13.User?>.value(),
+          )
+          as _i4.Future<_i13.User?>);
+
+  @override
   _i4.Future<void> signOut() =>
       (super.noSuchMethod(
             Invocation.method(#signOut, []),
@@ -290,6 +321,15 @@ class MockUserProvider extends _i1.Mock implements _i12.UserProvider {
             returnValueForMissingStub: _i4.Future<_i13.User?>.value(),
           )
           as _i4.Future<_i13.User?>);
+
+  @override
+  _i4.Future<String?> resetPassword(String? email) =>
+      (super.noSuchMethod(
+            Invocation.method(#resetPassword, [email]),
+            returnValue: _i4.Future<String?>.value(),
+            returnValueForMissingStub: _i4.Future<String?>.value(),
+          )
+          as _i4.Future<String?>);
 
   @override
   _i4.Future<List<_i13.User>> getUsersByIds(List<String>? ids) =>
@@ -315,6 +355,29 @@ class MockUserProvider extends _i1.Mock implements _i12.UserProvider {
   _i4.Future<void> removeFavouriteGym(String? gymId) =>
       (super.noSuchMethod(
             Invocation.method(#removeFavouriteGym, [gymId]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> updateUserProfile({
+    String? displayName,
+    String? phoneNumber,
+    String? address,
+    String? taxCode,
+    String? birthPlace,
+    DateTime? birthDate,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateUserProfile, [], {
+              #displayName: displayName,
+              #phoneNumber: phoneNumber,
+              #address: address,
+              #taxCode: taxCode,
+              #birthPlace: birthPlace,
+              #birthDate: birthDate,
+            }),
             returnValue: _i4.Future<void>.value(),
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
@@ -349,6 +412,15 @@ class MockUserProvider extends _i1.Mock implements _i12.UserProvider {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockGymProvider extends _i1.Mock implements _i14.GymProvider {
+  @override
+  bool get isLoading =>
+      (super.noSuchMethod(
+            Invocation.getter(#isLoading),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
+
   @override
   bool get hasListeners =>
       (super.noSuchMethod(
@@ -481,6 +553,15 @@ class MockGymProvider extends _i1.Mock implements _i14.GymProvider {
 /// See the documentation for Mockito's code generation for more information.
 class MockInstructorProvider extends _i1.Mock
     implements _i16.InstructorProvider {
+  @override
+  bool get isLoading =>
+      (super.noSuchMethod(
+            Invocation.getter(#isLoading),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
+
   @override
   bool get hasListeners =>
       (super.noSuchMethod(
@@ -660,4 +741,27 @@ class MockSlotProvider extends _i1.Mock implements _i18.SlotProvider {
     Invocation.method(#notifyListeners, []),
     returnValueForMissingStub: null,
   );
+}
+
+/// A class which mocks [PlatformService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPlatformService extends _i1.Mock implements _i3.PlatformService {
+  @override
+  bool get isWeb =>
+      (super.noSuchMethod(
+            Invocation.getter(#isWeb),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
+
+  @override
+  bool get isMobile =>
+      (super.noSuchMethod(
+            Invocation.getter(#isMobile),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
 }

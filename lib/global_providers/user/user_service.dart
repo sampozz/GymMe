@@ -5,20 +5,25 @@ import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class UserService {
+  auth.FirebaseAuth firebaseAuth;
+  FirebaseFirestore firestore;
+
+  UserService({
+    auth.FirebaseAuth? firebaseAuth,
+    FirebaseFirestore? firebaseFirestore,
+  }) : firebaseAuth = firebaseAuth ?? auth.FirebaseAuth.instance,
+       firestore = firebaseFirestore ?? FirebaseFirestore.instance;
+
   /// This method will sign in the user with the provided email and password
   Future<auth.UserCredential?> signInWithEmailAndPassword(
     String email,
     String password,
   ) async {
-    auth.UserCredential? userCredential;
     // Sign in with email and password
-    try {
-      userCredential = await auth.FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
-    } catch (e) {
-      // TODO: Handle authentication error
-    }
-    return userCredential;
+    return await firebaseAuth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
   }
 
   Future<auth.UserCredential?> signInWithGoogle() async {
@@ -26,7 +31,7 @@ class UserService {
       // Web sign-in
       final auth.GoogleAuthProvider googleProvider = auth.GoogleAuthProvider();
       googleProvider.addScope('email');
-      return await auth.FirebaseAuth.instance.signInWithPopup(googleProvider);
+      return await firebaseAuth.signInWithPopup(googleProvider);
     } else {
       // Mobile sign-in
       final GoogleSignIn googleSignIn = GoogleSignIn(scopes: ['email']);
@@ -43,7 +48,7 @@ class UserService {
         idToken: googleAuth.idToken,
       );
 
-      return await auth.FirebaseAuth.instance.signInWithCredential(credential);
+      return await firebaseAuth.signInWithCredential(credential);
     }
   }
 
@@ -53,8 +58,10 @@ class UserService {
   ) async {
     auth.UserCredential? userCredential;
     try {
-      userCredential = await auth.FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
+      userCredential = await firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
     } catch (e) {
       print('Error signing up: $e');
       rethrow;
@@ -64,15 +71,13 @@ class UserService {
 
   /// This method will sign out the user
   Future<void> signOut() async {
-    await auth.FirebaseAuth.instance.signOut();
+    await firebaseAuth.signOut();
   }
 
   /// This method will fetch the user data from Firestore
   /// If the user is not found in Firestore, the method will return null
   /// If the user is found in Firestore, the method will return a User model object
   Future<User?> fetchUser(auth.User firebaseUser) async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-
     // Get user document from Firestore
     var userDoc =
         await firestore
@@ -94,26 +99,20 @@ class UserService {
   }
 
   Future<void> createUser(User user) async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    try {
-      await firestore
-          .collection('users')
-          .doc(user.uid)
-          .withConverter(
-            fromFirestore: User.fromFirestore,
-            toFirestore: (user, options) => user.toFirestore(),
-          )
-          .set(user);
-    } catch (e) {
-      print('Error creating user: $e');
-      rethrow;
-    }
+    await firestore
+        .collection('users')
+        .doc(user.uid)
+        .withConverter(
+          fromFirestore: User.fromFirestore,
+          toFirestore: (user, options) => user.toFirestore(),
+        )
+        .set(user);
   }
 
   /// This method will reset the password for the user with the provided email
   Future<void> resetPassword(String email) async {
     try {
-      await auth.FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      await firebaseAuth.sendPasswordResetEmail(email: email);
     } catch (e) {
       print(e);
       rethrow;
@@ -122,40 +121,27 @@ class UserService {
 
   /// This method will update the user favourite gyms in Firestore
   Future<void> updateUserFavourites(User user) async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    try {
-      await firestore.collection('users').doc(user.uid).update({
-        'favouriteGyms': user.favouriteGyms,
-      });
-    } catch (e) {
-      // TODO: Handle error
-      print('Error updating favourite gyms');
-    }
+    await firestore.collection('users').doc(user.uid).update({
+      'favouriteGyms': user.favouriteGyms,
+    });
   }
 
   Future<List<User>> fetchUsers() async {
     List<User> users = [];
-    try {
-      var usersRef =
-          await FirebaseFirestore.instance
-              .collection('users')
-              .withConverter(
-                fromFirestore: User.fromFirestore,
-                toFirestore: (user, options) => user.toFirestore(),
-              )
-              .get();
-      users = usersRef.docs.map((doc) => doc.data()).toList();
-    } catch (e) {
-      // TODO: Handle error
-      print('Error fetching users: $e');
-      rethrow;
-    }
+    var usersRef =
+        await firestore
+            .collection('users')
+            .withConverter(
+              fromFirestore: User.fromFirestore,
+              toFirestore: (user, options) => user.toFirestore(),
+            )
+            .get();
+    users = usersRef.docs.map((doc) => doc.data()).toList();
     return users;
   }
 
   /// This method will update the user profile in Firestore
   Future<void> updateUserProfile(User user) async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
     try {
       await firestore.collection('users').doc(user.uid).update({
         'displayName': user.displayName,

@@ -122,7 +122,7 @@ class _LoginState extends State<Login> {
   }
 
   Widget _buildLoginHeader() {
-    return Image.asset('assets/logo.png', width: 300, height: 300);
+    return Image.asset('assets/logo.png', width: 300, height: 220);
   }
 
   Widget _buildLoginForm() {
@@ -147,6 +147,7 @@ class _LoginState extends State<Login> {
           TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.next,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.email_outlined),
               prefixIconColor: Colors.black26,
@@ -165,6 +166,8 @@ class _LoginState extends State<Login> {
           TextFormField(
             controller: _passwordController,
             keyboardType: TextInputType.visiblePassword,
+            textInputAction: TextInputAction.done,
+            onFieldSubmitted: (_) => _signIn(),
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.lock_outline),
               prefixIconColor: Colors.black26,
@@ -192,7 +195,7 @@ class _LoginState extends State<Login> {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TextButton(
+              OutlinedButton(
                 onPressed: () => _onForgotPressed(),
                 child: Text('Forgot Password?'),
               ),
@@ -214,8 +217,8 @@ class _LoginState extends State<Login> {
               ),
               width: double.infinity,
               height: 50,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
+              child: TextButton(
+                style: TextButton.styleFrom(
                   elevation: 0,
                   foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   backgroundColor: Theme.of(context).colorScheme.primary,
@@ -258,10 +261,10 @@ class _LoginState extends State<Login> {
             SizedBox(
               width: double.infinity,
               height: 50,
-              child: ElevatedButton.icon(
+              child: TextButton.icon(
                 label: const Text("Google"),
                 icon: Image.asset('assets/google.png', width: 24, height: 24),
-                style: ElevatedButton.styleFrom(
+                style: TextButton.styleFrom(
                   elevation: 0,
                   foregroundColor: Theme.of(context).colorScheme.primary,
                   backgroundColor: Color.fromARGB(255, 242, 242, 242),
@@ -286,7 +289,7 @@ class _LoginState extends State<Login> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("Don't have an account?"),
-            TextButton(
+            OutlinedButton(
               onPressed: () => _navigateToSignUp(),
               child: const Text("Sign Up"),
             ),
@@ -296,17 +299,18 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget _buildLoginScreen() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(flex: 1, child: _buildLoginHeader()),
-          Expanded(flex: 2, child: _buildLoginForm()),
-          _buildFooter(),
-        ],
+  Widget _buildLoginScreenContent() {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+        child: Column(children: [_buildLoginHeader(), _buildLoginForm()]),
       ),
+    );
+  }
+
+  Widget _buildLoginScreen() {
+    return Column(
+      children: [Expanded(child: _buildLoginScreenContent()), _buildFooter()],
     );
   }
 

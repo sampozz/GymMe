@@ -186,7 +186,7 @@ class MyData extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          ElevatedButton(
+                          TextButton(
                             onPressed: () {
                               Navigator.push(
                                 context,

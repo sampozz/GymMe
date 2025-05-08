@@ -6,6 +6,9 @@ class InstructorProvider extends ChangeNotifier {
   final InstructorService _instructorService;
   List<Instructor>? _instructorList;
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
   InstructorProvider({InstructorService? instructorService})
     : _instructorService = instructorService ?? InstructorService();
 
@@ -30,12 +33,15 @@ class InstructorProvider extends ChangeNotifier {
   }
 
   Future<String?> addInstructor(Instructor instructor) async {
+    _isLoading = true;
+    notifyListeners();
     String? instructorId = await _instructorService.addInstructor(instructor);
     if (instructorId != null) {
       instructor.id = instructorId;
       _instructorList!.add(instructor);
-      notifyListeners();
     }
+    _isLoading = false;
+    notifyListeners();
     return instructorId;
   }
 }

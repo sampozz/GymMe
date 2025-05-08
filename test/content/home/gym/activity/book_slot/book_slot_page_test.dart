@@ -132,5 +132,210 @@ void main() {
       // Expect the slot card to be displayed
       expect(slotCardFinder, findsOneWidget);
     });
+
+    testWidgets('should navigate between dates using tab controller', (
+      WidgetTester tester,
+    ) async {
+      // Setup mock data with slots for different dates
+      final today = DateTime.now();
+      final tomorrow = today.add(Duration(days: 1));
+
+      Slot todaySlot = Slot(
+        id: 's1',
+        startTime: today,
+        endTime: today.add(Duration(hours: 1)),
+        room: 'Room 1',
+        maxUsers: 10,
+        bookedUsers: ['user2'],
+      );
+
+      Slot tomorrowSlot = Slot(
+        id: 's2',
+        startTime: tomorrow,
+        endTime: tomorrow.add(Duration(hours: 1)),
+        room: 'Room 2',
+        maxUsers: 10,
+      );
+
+      when(mockSlotProvider.nextSlots).thenReturn([todaySlot, tomorrowSlot]);
+      when(mockUserProvider.user).thenReturn(user);
+
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<SlotProvider>.value(value: mockSlotProvider),
+            ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
+            ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
+            ChangeNotifierProvider<InstructorProvider>.value(
+              value: mockInstructorProvider,
+            ),
+          ],
+          child: MaterialApp(home: BookSlotPage(gymIndex: 0, activityIndex: 0)),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Initially should show today's slot
+      expect(find.text('Room: Room 1'), findsOneWidget);
+      expect(find.text('Room: Room 2'), findsNothing);
+
+      // Find and tap tomorrow's tab (index 1)
+      await tester.tap(find.text(tomorrow.day.toString()).first);
+      await tester.pumpAndSettle();
+
+      // Now should show tomorrow's slot
+      expect(find.text('Room: Room 1'), findsNothing);
+      expect(find.text('Room: Room 2'), findsOneWidget);
+    });
+
+    testWidgets('should show admin actions for admin users', (
+      WidgetTester tester,
+    ) async {
+      // Create an admin user
+      User adminUser = User(uid: 'admin1', email: '', isAdmin: true);
+
+      when(
+        mockSlotProvider.nextSlots,
+      ).thenReturn([Slot(id: 's1', startTime: DateTime.now())]);
+      when(mockUserProvider.user).thenReturn(adminUser);
+
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<SlotProvider>.value(value: mockSlotProvider),
+            ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
+            ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
+            ChangeNotifierProvider<InstructorProvider>.value(
+              value: mockInstructorProvider,
+            ),
+          ],
+          child: MaterialApp(home: BookSlotPage(gymIndex: 0, activityIndex: 0)),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Admin buttons should be visible
+      expect(find.text('Add slot'), findsOneWidget);
+      expect(find.text('Modify activity'), findsOneWidget);
+      expect(find.text('Delete activity'), findsOneWidget);
+    });
+
+    testWidgets('should not show admin actions for regular users', (
+      WidgetTester tester,
+    ) async {
+      // Regular user (non-admin)
+      when(
+        mockSlotProvider.nextSlots,
+      ).thenReturn([Slot(id: 's1', startTime: DateTime.now())]);
+      when(mockUserProvider.user).thenReturn(user); // regular user
+
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<SlotProvider>.value(value: mockSlotProvider),
+            ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
+            ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
+            ChangeNotifierProvider<InstructorProvider>.value(
+              value: mockInstructorProvider,
+            ),
+          ],
+          child: MaterialApp(home: BookSlotPage(gymIndex: 0, activityIndex: 0)),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Admin buttons should not be visible
+      expect(find.text('Add slot'), findsNothing);
+      expect(find.text('Modify activity'), findsNothing);
+      expect(find.text('Delete activity'), findsNothing);
+    });
+
+    testWidgets(
+      'should show booking modal when slot is tapped by regular user',
+      (WidgetTester tester) async {
+        final slot = Slot(
+          id: 's1',
+          startTime: DateTime.now(),
+          endTime: DateTime.now().add(Duration(hours: 1)),
+          maxUsers: 10,
+        );
+
+        when(mockSlotProvider.nextSlots).thenReturn([slot]);
+        when(mockUserProvider.user).thenReturn(user);
+        when(mockInstructorProvider.instructorList).thenReturn([]);
+
+        await tester.pumpWidget(
+          MultiProvider(
+            providers: [
+              ChangeNotifierProvider<SlotProvider>.value(
+                value: mockSlotProvider,
+              ),
+              ChangeNotifierProvider<UserProvider>.value(
+                value: mockUserProvider,
+              ),
+              ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
+              ChangeNotifierProvider<InstructorProvider>.value(
+                value: mockInstructorProvider,
+              ),
+            ],
+            child: MaterialApp(
+              home: BookSlotPage(gymIndex: 0, activityIndex: 0),
+            ),
+          ),
+        );
+
+        await tester.pumpAndSettle();
+
+        // Tap on the slot card
+        await tester.tap(find.byType(SlotCard));
+        await tester.pumpAndSettle();
+
+        // The booking confirmation modal should appear
+        expect(find.text('Confirm'), findsOneWidget);
+      },
+    );
+
+    testWidgets('should show admin slot modal when slot is tapped by admin', (
+      WidgetTester tester,
+    ) async {
+      final slot = Slot(
+        id: 's1',
+        startTime: DateTime.now(),
+        endTime: DateTime.now().add(Duration(hours: 1)),
+        maxUsers: 10,
+      );
+
+      User adminUser = User(uid: 'admin1', email: '', isAdmin: true);
+
+      when(mockSlotProvider.nextSlots).thenReturn([slot]);
+      when(mockUserProvider.user).thenReturn(adminUser);
+      when(mockInstructorProvider.instructorList).thenReturn([]);
+
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<SlotProvider>.value(value: mockSlotProvider),
+            ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
+            ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
+            ChangeNotifierProvider<InstructorProvider>.value(
+              value: mockInstructorProvider,
+            ),
+          ],
+          child: MaterialApp(home: BookSlotPage(gymIndex: 0, activityIndex: 0)),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // Tap on the slot card
+      await tester.tap(find.byType(SlotCard));
+      await tester.pumpAndSettle();
+
+      // The admin slot modal should appear
+      expect(find.text('Delete slot'), findsOneWidget);
+    });
   });
 }
