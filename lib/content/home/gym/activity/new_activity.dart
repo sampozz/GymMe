@@ -180,6 +180,7 @@ class _NewActivityState extends State<NewActivity> {
 
   @override
   Widget build(BuildContext context) {
+    bool isLoading = context.watch<GymProvider>().isLoading;
     List<Instructor>? instructors =
         Provider.of<InstructorProvider>(context).instructorList;
 
@@ -232,15 +233,20 @@ class _NewActivityState extends State<NewActivity> {
               SizedBox(height: 20),
               _buildDropDownMenu(instructors),
               SizedBox(height: 20),
-              ElevatedButton(
+              TextButton(
                 onPressed: () => _navigateToInstructors(),
                 child: Text('Edit instructors'),
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () => _createOrUpdateActivity(),
+              TextButton(
+                onPressed: isLoading ? null : () => _createOrUpdateActivity(),
                 child:
-                    widget.activity == null
+                    isLoading
+                        ? SizedBox(
+                          width: 25,
+                          child: CircularProgressIndicator(),
+                        )
+                        : widget.activity == null
                         ? Text('Add activity')
                         : Text('Update activity'),
               ),

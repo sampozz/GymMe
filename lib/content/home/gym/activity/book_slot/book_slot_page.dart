@@ -59,11 +59,6 @@ class _BookSlotPageState extends State<BookSlotPage>
     super.dispose();
   }
 
-  /// Refreshes the gym list by fetching it from the provider
-  Future<void> _onRefresh() async {
-    await Provider.of<SlotProvider>(context, listen: false).getUpcomingSlots();
-  }
-
   /// Deletes the activity from the database
   void _deleteActivity(Gym gym, Activity activity) {
     // Show confirmation dialog
@@ -146,6 +141,8 @@ class _BookSlotPageState extends State<BookSlotPage>
         SnackBar(
           content: Text('You have already booked this slot.'),
           duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.red,
         ),
       );
       return;
@@ -157,6 +154,8 @@ class _BookSlotPageState extends State<BookSlotPage>
         SnackBar(
           content: Text('This slot is already full.'),
           duration: Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.red,
         ),
       );
       return;
@@ -213,31 +212,28 @@ class _BookSlotPageState extends State<BookSlotPage>
       // Display a message when there are no slots available
       [] => Center(child: Text('No slots available')),
       // Display the slot list - remove Expanded
-      _ => RefreshIndicator(
-        onRefresh: () => _onRefresh(),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children:
-                  slotList!.map((slot) {
-                    // Check if the slot date matches the selected date
-                    if (_tabController.index != 30 &&
-                        (slot.startTime.day != selectedDate?.day ||
-                            slot.startTime.month != selectedDate?.month ||
-                            slot.startTime.year != selectedDate?.year)) {
-                      return Container(); // Skip this slot
-                    }
-                    return GestureDetector(
-                      onTap: () => _showBookingModal(slot),
-                      child: SlotCard(
-                        slot: slot,
-                        alreadyBooked: slot.bookedUsers.contains(user?.uid),
-                      ),
-                    );
-                  }).toList(),
-            ),
+      _ => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children:
+                slotList!.map((slot) {
+                  // Check if the slot date matches the selected date
+                  if (_tabController.index != 30 &&
+                      (slot.startTime.day != selectedDate?.day ||
+                          slot.startTime.month != selectedDate?.month ||
+                          slot.startTime.year != selectedDate?.year)) {
+                    return Container(); // Skip this slot
+                  }
+                  return GestureDetector(
+                    onTap: () => _showBookingModal(slot),
+                    child: SlotCard(
+                      slot: slot,
+                      alreadyBooked: slot.bookedUsers.contains(user?.uid),
+                    ),
+                  );
+                }).toList(),
           ),
         ),
       ),
@@ -314,10 +310,11 @@ class _BookSlotPageState extends State<BookSlotPage>
           final month = DateFormat('MMMM').format(date);
           final weekdayName = DateFormat('EEE').format(date);
           return Tab(
-            height: 70,
+            height: 84,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                SizedBox(height: 10),
                 Text(weekdayName, style: TextStyle(fontSize: 12)),
                 SizedBox(height: 2),
                 Text(
@@ -326,13 +323,26 @@ class _BookSlotPageState extends State<BookSlotPage>
                 ),
                 SizedBox(height: 2),
                 Text(month, style: TextStyle(fontSize: 12)),
+                SizedBox(height: 2),
+                Icon(
+                  Icons.circle,
+                  color:
+                      (slotList
+                                  ?.map((slot) => slot.startTime.day)
+                                  .contains(date.day) ??
+                              false)
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.transparent,
+                  size: 8,
+                ),
+                SizedBox(height: 2),
               ],
             ),
           );
         }) +
         [
           Tab(
-            height: 70,
+            height: 84,
             child: Text(
               'Show all',
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
@@ -362,6 +372,11 @@ class _BookSlotPageState extends State<BookSlotPage>
           isScrollable: true,
           dividerHeight: 0,
           tabs: _generateTabs(),
+          indicatorSize: TabBarIndicatorSize.tab,
+          indicator: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary.withAlpha(20),
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       ),
       body: SingleChildScrollView(

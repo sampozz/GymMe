@@ -13,6 +13,7 @@ import 'package:mockito/annotations.dart';
   MockSpec<GymProvider>(),
   MockSpec<InstructorProvider>(),
   MockSpec<SlotProvider>(),
+  MockSpec<PlatformService>(),
 ])
 void main() {
   // Method to set up the test environment

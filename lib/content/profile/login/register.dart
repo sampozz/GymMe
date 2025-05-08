@@ -77,7 +77,7 @@ class _RegisterState extends State<Register> {
   }
 
   Widget _buildLoginHeader() {
-    return Image.asset('assets/logo.png', width: 300, height: 300);
+    return Image.asset('assets/logo.png', width: 300, height: 220);
   }
 
   Widget _buildLoginForm() {
@@ -165,8 +165,8 @@ class _RegisterState extends State<Register> {
             SizedBox(
               width: double.infinity,
               height: 50,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
+              child: TextButton(
+                style: TextButton.styleFrom(
                   elevation: 0,
                   foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   backgroundColor: Theme.of(context).colorScheme.primary,
@@ -200,7 +200,7 @@ class _RegisterState extends State<Register> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("Already have an Account?"),
-            TextButton(
+            OutlinedButton(
               onPressed: () => _navigateToLogin(),
               child: const Text("Sign In"),
             ),
@@ -210,17 +210,21 @@ class _RegisterState extends State<Register> {
     );
   }
 
-  Widget _buildLoginScreen() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(flex: 1, child: _buildLoginHeader()),
-          Expanded(flex: 2, child: _buildLoginForm()),
-          _buildFooter(),
-        ],
+  Widget _buildRegisterScreenContent() {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+        child: Column(children: [_buildLoginHeader(), _buildLoginForm()]),
       ),
+    );
+  }
+
+  Widget _buildLoginScreen() {
+    return Column(
+      children: [
+        Expanded(child: _buildRegisterScreenContent()),
+        _buildFooter(),
+      ],
     );
   }
 

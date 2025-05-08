@@ -101,8 +101,8 @@ class _ConfirmBookingModalState extends State<ConfirmBookingModal> {
           else
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
+              child: TextButton(
+                style: TextButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
