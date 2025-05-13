@@ -68,6 +68,8 @@ class UserProvider extends ChangeNotifier {
         return 'The password provided is too weak.';
       } else if (e.code == 'email-already-in-use') {
         return 'The account already exists for that email.';
+      } else if (e.code == 'invalid-email') {
+        return 'The email address is badly formatted.';
       }
     }
     return null;

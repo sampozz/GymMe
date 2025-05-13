@@ -1,4 +1,5 @@
 import 'package:dima_project/content/bookings/booking_model.dart';
+import 'package:dima_project/content/bookings/booking_update_model.dart';
 import 'package:dima_project/content/bookings/bookings_provider.dart';
 import 'package:dima_project/content/home/gym/activity/activity_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
@@ -9,6 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
 import '../../firestore_test.mocks.dart';
+import '../../provider_test.mocks.dart';
 import '../../service_test.mocks.dart';
 
 void main() {
@@ -125,6 +127,92 @@ void main() {
       int index = bookingsProvider.getBookingIndex('1');
 
       expect(index, 0);
+    });
+
+    test('addToCalendar web should call addToCalendar', () async {
+      Booking booking = Booking(
+        title: 'Gin Tonic pre-workout',
+        startTime: DateTime(2025, 5, 7, 13, 19),
+        endTime: DateTime(2025, 5, 7, 18, 7),
+        gymName: 'GynTonic®',
+      );
+
+      String url =
+          'https://www.google.com/calendar/render?action=TEMPLATE&text=Gin%20Tonic%20pre-workout&details=Description&dates=20250507T111900/20250507T160700&location=GynTonic%C2%AE';
+      MockPlatformService platformService = MockPlatformService();
+      when(platformService.isWeb).thenReturn(true);
+
+      BookingsProvider bookingsProvider = BookingsProvider(
+        bookingsService: bookingsService,
+        instructorService: instructorService,
+        firebaseAuth: firebaseAuth,
+        platformService: platformService,
+      );
+
+      when(bookingsService.addToCalendarWeb(url)).thenReturn(null);
+
+      bookingsProvider.addToCalendar(booking);
+
+      verify(bookingsService.addToCalendarWeb(url)).called(1);
+    });
+
+    test('addToCalendar mobile should call addToCalendar', () async {
+      Booking booking = Booking(
+        title: 'Gin Tonic pre-workout',
+        startTime: DateTime(2025, 5, 7, 13, 19),
+        endTime: DateTime(2025, 5, 7, 18, 7),
+        gymName: 'GynTonic®',
+      );
+
+      MockPlatformService platformService = MockPlatformService();
+      when(platformService.isWeb).thenReturn(false);
+
+      BookingsProvider bookingsProvider = BookingsProvider(
+        bookingsService: bookingsService,
+        instructorService: instructorService,
+        firebaseAuth: firebaseAuth,
+        platformService: platformService,
+      );
+
+      when(bookingsService.addToCalendarMobile(any)).thenReturn(null);
+
+      bookingsProvider.addToCalendar(booking);
+
+      verify(bookingsService.addToCalendarMobile(any)).called(1);
+    });
+
+    test('getBookingUpdates should return booking updates', () async {
+      BookingUpdate bookingUpdate = BookingUpdate(bookingId: '1');
+      List<Booking> mockBookings = [
+        Booking(id: '1', bookingUpdate: bookingUpdate),
+        Booking(id: '2'),
+      ];
+      when(
+        bookingsService.fetchBookings(),
+      ).thenAnswer((_) async => mockBookings);
+
+      final updates = await bookingsProvider.getBookingUpdates();
+
+      expect(updates.length, 1);
+      expect(updates[0].bookingId, '1');
+    });
+
+    test('markUpdateAsRead should mark booking update as read', () async {
+      BookingUpdate bookingUpdate = BookingUpdate(bookingId: '1');
+
+      List<Booking> mockBookings = [
+        Booking(id: '1', bookingUpdate: bookingUpdate),
+        Booking(id: '2'),
+      ];
+      when(
+        bookingsService.fetchBookings(),
+      ).thenAnswer((_) async => mockBookings);
+
+      await bookingsProvider.getBookings();
+
+      bookingsProvider.markUpdateAsRead(bookingUpdate);
+
+      expect(bookingsProvider.bookings![0].bookingUpdate!.read, true);
     });
   });
 }

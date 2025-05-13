@@ -1,8 +1,11 @@
+import 'package:dima_project/content/bookings/bookings_provider.dart';
 import 'package:dima_project/content/home/gym/activity/activity_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/book_slot_page.dart';
+import 'package:dima_project/content/home/gym/activity/book_slot/new_slot.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_card.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart';
+import 'package:dima_project/content/home/gym/activity/new_activity.dart';
 import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:dima_project/content/instructors/instructor_provider.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
@@ -22,8 +25,12 @@ void main() {
   MockInstructorProvider mockInstructorProvider = MockInstructorProvider();
 
   setUp(() {
+    Activity activity = Activity.fromFirestore({
+      'id': 'a1',
+      'title': 'Activity 1',
+    });
     when(mockGymProvider.gymList).thenReturn([
-      Gym(name: 'Gym 1', activities: [Activity(title: 'Activity 1')]),
+      Gym(name: 'Gym 1', activities: [activity]),
     ]);
   });
 
@@ -256,6 +263,8 @@ void main() {
     testWidgets(
       'should show booking modal when slot is tapped by regular user',
       (WidgetTester tester) async {
+        final MockBookingsProvider mockBookingsProvider =
+            MockBookingsProvider();
         final slot = Slot(
           id: 's1',
           startTime: DateTime.now(),
@@ -280,6 +289,9 @@ void main() {
               ChangeNotifierProvider<InstructorProvider>.value(
                 value: mockInstructorProvider,
               ),
+              ChangeNotifierProvider<BookingsProvider>.value(
+                value: mockBookingsProvider,
+              ),
             ],
             child: MaterialApp(
               home: BookSlotPage(gymIndex: 0, activityIndex: 0),
@@ -295,6 +307,13 @@ void main() {
 
         // The booking confirmation modal should appear
         expect(find.text('Confirm'), findsOneWidget);
+
+        // Tap on the confirm button
+        await tester.tap(find.text('Confirm'));
+        await tester.pumpAndSettle();
+
+        // Verify that the createBooking method was called
+        verify(mockBookingsProvider.createBooking(any, any, any)).called(1);
       },
     );
 
@@ -336,6 +355,105 @@ void main() {
 
       // The admin slot modal should appear
       expect(find.text('Delete slot'), findsOneWidget);
+    });
+
+    testWidgets('deleteActivity shows a confirmation dialog', (
+      WidgetTester tester,
+    ) async {
+      var user = User(uid: 'u1', email: '', isAdmin: true);
+      when(mockUserProvider.user).thenReturn(user);
+      when(mockInstructorProvider.instructorList).thenReturn([]);
+
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<SlotProvider>.value(value: mockSlotProvider),
+            ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
+            ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
+            ChangeNotifierProvider<InstructorProvider>.value(
+              value: mockInstructorProvider,
+            ),
+          ],
+          child: MaterialApp(home: BookSlotPage(gymIndex: 0, activityIndex: 0)),
+        ),
+      );
+
+      // Tap on the delete activity button
+      await tester.tap(find.text('Delete activity'));
+      await tester.pump();
+
+      // The confirmation dialog should appear
+      expect(
+        find.text('Are you sure you want to delete this activity?'),
+        findsOneWidget,
+      );
+
+      // Tap on the confirm button
+      await tester.tap(find.text('Delete'));
+      await tester.pump();
+      // Verify that the deleteActivity method was called
+      verify(mockGymProvider.removeActivity(any, any)).called(1);
+    });
+
+    testWidgets('Modify activity navigates to new activity page', (
+      WidgetTester tester,
+    ) async {
+      var user = User(uid: 'u1', email: '', isAdmin: true);
+      when(mockUserProvider.user).thenReturn(user);
+      when(mockInstructorProvider.instructorList).thenReturn([]);
+
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<SlotProvider>.value(value: mockSlotProvider),
+            ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
+            ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
+            ChangeNotifierProvider<InstructorProvider>.value(
+              value: mockInstructorProvider,
+            ),
+          ],
+          child: MaterialApp(home: BookSlotPage(gymIndex: 0, activityIndex: 0)),
+        ),
+      );
+
+      // Tap on the modify activity button
+      await tester.tap(find.text('Modify activity'));
+      await tester.pumpAndSettle();
+
+      // Verify that the navigation occurred
+      expect(find.byType(NewActivity), findsOneWidget);
+    });
+
+    testWidgets('addSlot navigates to new slot page', (
+      WidgetTester tester,
+    ) async {
+      var user = User(uid: 'u1', email: '', isAdmin: true);
+      when(mockUserProvider.user).thenReturn(user);
+      when(mockInstructorProvider.instructorList).thenReturn([]);
+      when(mockGymProvider.gymList).thenReturn([
+        Gym(id: 'g1', activities: [Activity(id: 'a1', title: 'Activity 1')]),
+      ]);
+
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<SlotProvider>.value(value: mockSlotProvider),
+            ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
+            ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
+            ChangeNotifierProvider<InstructorProvider>.value(
+              value: mockInstructorProvider,
+            ),
+          ],
+          child: MaterialApp(home: BookSlotPage(gymIndex: 0, activityIndex: 0)),
+        ),
+      );
+
+      // Tap on the add slot button
+      await tester.tap(find.text('Add slot'));
+      await tester.pumpAndSettle();
+
+      // Verify that the navigation occurred
+      expect(find.byType(NewSlot), findsOneWidget);
     });
   });
 }

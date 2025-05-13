@@ -1,8 +1,10 @@
+import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima_project/content/bookings/booking_model.dart';
 import 'package:dima_project/content/bookings/booking_update_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:url_launcher/url_launcher.dart';
 
 class BookingsService {
   final FirebaseFirestore firestore;
@@ -50,8 +52,6 @@ class BookingsService {
         transaction.update(slotRef, {
           'bookedUsers': FieldValue.arrayUnion([booking.userId]),
         });
-      } else {
-        throw Exception("Slot does not exist");
       }
 
       transaction.set(bookingRef, booking);
@@ -61,7 +61,7 @@ class BookingsService {
 
   /// Deletes a booking by ID
   Future<void> deleteBooking(Booking booking) async {
-    firestore.runTransaction((transaction) async {
+    await firestore.runTransaction((transaction) async {
       final bookingRef = firestore.collection('booking').doc(booking.id);
       final slotRef = firestore.collection('slot').doc(booking.slotId);
 
@@ -72,21 +72,25 @@ class BookingsService {
         transaction.update(slotRef, {
           'bookedUsers': FieldValue.arrayRemove([booking.userId]),
         });
-      } else {
-        throw Exception("Slot does not exist");
       }
 
       if (b.exists) {
         transaction.delete(bookingRef);
-      } else {
-        throw Exception("Booking does not exist");
       }
     });
   }
 
   Future<void> markUpdateAsRead(BookingUpdate bookingUpdate) async {
-    firestore.collection('booking').doc(bookingUpdate.bookingId).update({
+    await firestore.collection('booking').doc(bookingUpdate.bookingId).update({
       'bookingUpdate': bookingUpdate.toFirestore(),
     });
+  }
+
+  void addToCalendarWeb(String url) {
+    launchUrl(Uri.parse(url));
+  }
+
+  void addToCalendarMobile(Event event) {
+    Add2Calendar.addEvent2Cal(event);
   }
 }

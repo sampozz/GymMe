@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 class SlotProvider extends ChangeNotifier {
   final SlotService _slotService;
+  final auth.FirebaseAuth _firebaseAuth;
   final String gymId;
   final String activityId;
   List<Slot>? _nextSlots;
@@ -21,9 +22,11 @@ class SlotProvider extends ChangeNotifier {
   // Dependency injection, needed for unit testing
   SlotProvider({
     SlotService? slotService,
+    auth.FirebaseAuth? firebaseAuth,
     required this.gymId,
     required this.activityId,
-  }) : _slotService = slotService ?? SlotService();
+  }) : _slotService = slotService ?? SlotService(),
+       _firebaseAuth = firebaseAuth ?? auth.FirebaseAuth.instance;
 
   /// Fetches the next available slots for a given gym and activity.
   Future<List<Slot>> getUpcomingSlots() async {
@@ -91,6 +94,8 @@ class SlotProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Update an existing slot in firebase
+  /// Deletes the list of next slots to force a refresh
   Future<void> updateSlot(Slot slot) async {
     await _slotService.updateSlot(slot);
     _nextSlots = null;
@@ -98,8 +103,9 @@ class SlotProvider extends ChangeNotifier {
   }
 
   /// Add the user to the booked users list of a slot
+  /// No need to update the slot in firebase, as it is done in the transaction in booking service
   Future<void> addUserToSlot(String slotId) async {
-    auth.User user = auth.FirebaseAuth.instance.currentUser!;
+    auth.User user = _firebaseAuth.currentUser!;
     // Get the slot from the list of next slots
     int index = _nextSlots!.indexWhere((slot) => slot.id == slotId);
     if (index == -1) {

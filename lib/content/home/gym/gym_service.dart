@@ -7,9 +7,11 @@ import 'package:http/http.dart' as http;
 
 class GymService {
   final FirebaseFirestore _firestore;
+  final http.Client _httpClient;
 
-  GymService({FirebaseFirestore? firestore})
-    : _firestore = firestore ?? FirebaseFirestore.instance;
+  GymService({FirebaseFirestore? firestore, http.Client? httpClient})
+    : _firestore = firestore ?? FirebaseFirestore.instance,
+      _httpClient = httpClient ?? http.Client();
 
   /// Fetches a list of gyms from the Firestore 'gym' collection.
   /// Returns a list of Gym objects.
@@ -84,7 +86,7 @@ class GymService {
     request.fields['type'] = 'base64';
     request.fields['image'] = base64Image;
 
-    final streamedResponse = await request.send();
+    final streamedResponse = await _httpClient.send(request);
     final response = await http.Response.fromStream(streamedResponse);
 
     final responseData = json.decode(response.body);

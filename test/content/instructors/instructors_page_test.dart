@@ -55,5 +55,33 @@ void main() {
       // Verify that the create instructor form is displayed
       expect(find.byType(Form), findsOneWidget);
     });
+
+    testWidgets('create instructor calls addInstructor', (tester) async {
+      // Mock the InstructorProvider and its methods
+      final instructorProvider = MockInstructorProvider();
+      when(instructorProvider.instructorList).thenReturn([]);
+
+      // Build the InstructorsPage widget
+      await tester.pumpWidget(
+        ChangeNotifierProvider<InstructorProvider>.value(
+          value: instructorProvider,
+          child: MaterialApp(home: InstructorsPage()),
+        ),
+      );
+
+      // Tap the add button to show the create instructor form
+      await tester.tap(find.text('New Instructor'));
+      await tester.pumpAndSettle();
+
+      // Fill in the form fields
+      await tester.enterText(find.byKey(const Key('nameCtrl')), 'John Doe');
+
+      // Tap the save button
+      await tester.tap(find.text('Confirm'));
+      await tester.pumpAndSettle();
+
+      // Verify that addInstructor was called with the correct parameters
+      verify(instructorProvider.addInstructor(any)).called(1);
+    });
   });
 }

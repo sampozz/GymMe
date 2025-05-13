@@ -22,19 +22,49 @@ class ActivityCard extends StatelessWidget {
     String gymId,
     String activityId,
   ) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder:
-            (_) => ChangeNotifierProvider<SlotProvider>(
-              create: (_) => SlotProvider(gymId: gymId, activityId: activityId),
-              child: BookSlotPage(
+    // Check if the SlotProvider is already provided in the widget tree
+    // If not, create a new instance of SlotProvider
+    // and push the BookSlotPage onto the navigation stack
+    // using the provided gymId and activityId
+    // This is useful for testing purposes
+
+    bool hasSlotProvider = false;
+    try {
+      context.read<SlotProvider>();
+      hasSlotProvider = true;
+    } catch (_) {
+      // Provider doesn't exist, we'll create a new one
+    }
+
+    if (hasSlotProvider) {
+      // SlotProvider exists, just navigate
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) => BookSlotPage(
                 gymIndex: gymIndex,
                 activityIndex: activityIndex,
               ),
-            ),
-      ),
-    );
+        ),
+      );
+    } else {
+      // SlotProvider doesn't exist, create a new instance
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) => ChangeNotifierProvider(
+                create:
+                    (_) => SlotProvider(gymId: gymId, activityId: activityId),
+                child: BookSlotPage(
+                  gymIndex: gymIndex,
+                  activityIndex: activityIndex,
+                ),
+              ),
+        ),
+      );
+    }
   }
 
   @override

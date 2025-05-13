@@ -193,5 +193,20 @@ void main() {
       await tester.pumpWidget(createWidgetUnderTest(gym: testGym));
       expect(find.text('Edit gym'), findsOneWidget);
     });
+
+    testWidgets('should show time picker on tap', (WidgetTester tester) async {
+      await tester.pumpWidget(createWidgetUnderTest());
+
+      // Tap the open time field
+      await tester.tap(find.byType(TextFormField).at(4));
+      await tester.pumpAndSettle();
+
+      // Verify that the time picker is displayed
+      expect(find.byType(TimePickerDialog), findsOneWidget);
+
+      // Simulate selecting a time
+      await tester.tap(find.text('OK').last);
+      await tester.pumpAndSettle();
+    });
   });
 }

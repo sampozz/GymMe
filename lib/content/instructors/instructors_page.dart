@@ -69,6 +69,7 @@ class _InstructorsPageState extends State<InstructorsPage> {
             child: Column(
               children: [
                 TextFormField(
+                  key: const Key('nameCtrl'),
                   controller: nameCtrl,
                   decoration: const InputDecoration(
                     labelText: 'Name',
