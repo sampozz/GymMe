@@ -8,7 +8,6 @@ import 'firebase_options.dart';
 
 // TODO?? add activities to favourites -> create new activity card that can be shown in the home
 // -- > make it a horizontal list of cards in the gym page
-// TODO: in the calendar tabs show a flag if a slot is available
 // TODO: when an activity is removed, cosa facciamo??
 // TODO: introduction screen
 
@@ -61,6 +60,18 @@ class App extends StatelessWidget {
           onTertiary: Colors.white, // White text/icons on lighter blue
           onSurface: Colors.black, // Black text on white surfaces
           onError: Colors.white, // White text on red error color
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
+            elevation: 0,
+            fixedSize: Size(200, 40),
+            backgroundColor: Colors.white,
+          ),
         ),
       ),
 

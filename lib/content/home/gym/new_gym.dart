@@ -166,6 +166,8 @@ class _NewGymState extends State<NewGym> {
 
   @override
   Widget build(BuildContext context) {
+    bool isLoading = context.watch<GymProvider>().isLoading;
+
     return Scaffold(
       appBar: AppBar(title: Text(widget.gym == null ? 'Add gym' : 'Edit gym')),
       body: SingleChildScrollView(
@@ -229,7 +231,7 @@ class _NewGymState extends State<NewGym> {
                   onTap: () => _showTimePicker(false),
                 ),
                 SizedBox(height: 20),
-                ElevatedButton.icon(
+                TextButton.icon(
                   onPressed: () => _showFilePicker(),
                   icon: Icon(Icons.image),
                   label: Text('Upload Image'),
@@ -244,10 +246,17 @@ class _NewGymState extends State<NewGym> {
                     )
                     : Text(widget.gym?.imageUrl ?? 'No image selected'),
                 SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () => _createOrUpdateGym(),
+                TextButton(
+                  onPressed: isLoading ? null : () => _createOrUpdateGym(),
                   child:
-                      widget.gym == null ? Text('Add Gym') : Text('Update Gym'),
+                      isLoading
+                          ? SizedBox(
+                            width: 25,
+                            child: CircularProgressIndicator(),
+                          )
+                          : widget.gym == null
+                          ? Text('Add Gym')
+                          : Text('Update Gym'),
                 ),
               ],
             ),

@@ -96,7 +96,7 @@ class UserProvider extends ChangeNotifier {
     // Get the current firebase user, this user is needed to fetch the user data from Firestore
     auth.User? firebaseUser = _auth.currentUser;
     if (firebaseUser == null) {
-      // TODO: Handle authentication error
+      // Authentication error
       return null;
     }
     _user = User(
@@ -127,7 +127,7 @@ class UserProvider extends ChangeNotifier {
     auth.User? firebaseUser = _auth.currentUser;
 
     if (firebaseUser == null) {
-      // TODO: Handle authentication error
+      // Authentication error
       return null;
     }
 
@@ -135,7 +135,7 @@ class UserProvider extends ChangeNotifier {
     _user = await _userService.fetchUser(firebaseUser);
 
     if (_user == null) {
-      // TODO: Handle user not found in Firestore
+      // User not found in Firestore
       return null;
     }
 

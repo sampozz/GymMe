@@ -60,7 +60,21 @@ class GymPage extends StatelessWidget {
     );
     // If the user confirmed, delete the gym
     if (confirm == true) {
-      await Provider.of<GymProvider>(context, listen: false).removeGym(gym);
+      await Provider.of<GymProvider>(context, listen: false)
+          .removeGym(gym)
+          .timeout(
+            const Duration(seconds: 5),
+            onTimeout: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Error while deleting gym. Please try again.'),
+                  duration: Duration(seconds: 2),
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Colors.red,
+                ),
+              );
+            },
+          );
       if (context.mounted) {
         Navigator.pop(context);
       }
@@ -188,7 +202,7 @@ class GymPage extends StatelessWidget {
           ? SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
+              child: TextButton(
                 onPressed: () => _addActivity(context, gym),
                 child: Text('Add activity'),
               ),
@@ -255,7 +269,7 @@ class GymPage extends StatelessWidget {
       SliverToBoxAdapter(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: ElevatedButton(
+          child: TextButton(
             onPressed: () => _modifyGym(context, gym),
             child: Text('Modify gym'),
           ),
@@ -264,9 +278,9 @@ class GymPage extends StatelessWidget {
       SliverToBoxAdapter(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: ElevatedButton(
+          child: TextButton(
             onPressed: () => _deleteGym(context, gym),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            style: TextButton.styleFrom(backgroundColor: Colors.red),
             child: Text('Delete gym', style: TextStyle(color: Colors.white)),
           ),
         ),

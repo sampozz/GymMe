@@ -249,8 +249,8 @@ class _NewMyDataState extends State<NewMyData> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
+                            TextButton(
+                              style: TextButton.styleFrom(
                                 alignment: Alignment.center,
                               ),
                               onPressed: _isSaving ? null : _saveChanges,

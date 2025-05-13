@@ -10,7 +10,7 @@ import 'package:dima_project/content/bookings/booking_model.dart' as _i6;
 import 'package:dima_project/content/bookings/booking_update_model.dart' as _i8;
 import 'package:dima_project/content/bookings/bookings_service.dart' as _i4;
 import 'package:dima_project/content/home/gym/activity/activity_model.dart'
-    as _i11;
+    as _i12;
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart'
     as _i7;
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_service.dart'
@@ -24,7 +24,7 @@ import 'package:dima_project/global_providers/user/user_model.dart' as _i14;
 import 'package:dima_project/global_providers/user/user_service.dart' as _i13;
 import 'package:firebase_auth/firebase_auth.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i12;
+import 'package:mockito/src/dummies.dart' as _i11;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -140,31 +140,35 @@ class MockGymService extends _i1.Mock implements _i9.GymService {
           as _i5.Future<List<_i10.Gym>>);
 
   @override
-  _i5.Future<String?> addGym(_i10.Gym? gym) =>
+  _i5.Future<String> addGym(_i10.Gym? gym) =>
       (super.noSuchMethod(
             Invocation.method(#addGym, [gym]),
-            returnValue: _i5.Future<String?>.value(),
-            returnValueForMissingStub: _i5.Future<String?>.value(),
+            returnValue: _i5.Future<String>.value(
+              _i11.dummyValue<String>(this, Invocation.method(#addGym, [gym])),
+            ),
+            returnValueForMissingStub: _i5.Future<String>.value(
+              _i11.dummyValue<String>(this, Invocation.method(#addGym, [gym])),
+            ),
           )
-          as _i5.Future<String?>);
+          as _i5.Future<String>);
 
   @override
-  _i5.Future<String?> updateGym(_i10.Gym? gym) =>
+  _i5.Future<void> updateGym(_i10.Gym? gym) =>
       (super.noSuchMethod(
             Invocation.method(#updateGym, [gym]),
-            returnValue: _i5.Future<String?>.value(),
-            returnValueForMissingStub: _i5.Future<String?>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i5.Future<String?>);
+          as _i5.Future<void>);
 
   @override
-  _i5.Future<String?> deleteGym(String? gymId) =>
+  _i5.Future<void> deleteGym(String? gymId) =>
       (super.noSuchMethod(
             Invocation.method(#deleteGym, [gymId]),
-            returnValue: _i5.Future<String?>.value(),
-            returnValueForMissingStub: _i5.Future<String?>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i5.Future<String?>);
+          as _i5.Future<void>);
 
   @override
   _i5.Future<void> setActivity(_i10.Gym? gym) =>
@@ -176,26 +180,26 @@ class MockGymService extends _i1.Mock implements _i9.GymService {
           as _i5.Future<void>);
 
   @override
-  _i5.Future<String?> deleteActivity(_i10.Gym? gym, _i11.Activity? activity) =>
+  _i5.Future<void> deleteActivity(_i10.Gym? gym, _i12.Activity? activity) =>
       (super.noSuchMethod(
             Invocation.method(#deleteActivity, [gym, activity]),
-            returnValue: _i5.Future<String?>.value(),
-            returnValueForMissingStub: _i5.Future<String?>.value(),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
           )
-          as _i5.Future<String?>);
+          as _i5.Future<void>);
 
   @override
   _i5.Future<String> uploadImage(String? base64Image) =>
       (super.noSuchMethod(
             Invocation.method(#uploadImage, [base64Image]),
             returnValue: _i5.Future<String>.value(
-              _i12.dummyValue<String>(
+              _i11.dummyValue<String>(
                 this,
                 Invocation.method(#uploadImage, [base64Image]),
               ),
             ),
             returnValueForMissingStub: _i5.Future<String>.value(
-              _i12.dummyValue<String>(
+              _i11.dummyValue<String>(
                 this,
                 Invocation.method(#uploadImage, [base64Image]),
               ),
@@ -209,12 +213,75 @@ class MockGymService extends _i1.Mock implements _i9.GymService {
 /// See the documentation for Mockito's code generation for more information.
 class MockUserService extends _i1.Mock implements _i13.UserService {
   @override
+  _i3.FirebaseAuth get firebaseAuth =>
+      (super.noSuchMethod(
+            Invocation.getter(#firebaseAuth),
+            returnValue: _FakeFirebaseAuth_1(
+              this,
+              Invocation.getter(#firebaseAuth),
+            ),
+            returnValueForMissingStub: _FakeFirebaseAuth_1(
+              this,
+              Invocation.getter(#firebaseAuth),
+            ),
+          )
+          as _i3.FirebaseAuth);
+
+  @override
+  set firebaseAuth(_i3.FirebaseAuth? _firebaseAuth) => super.noSuchMethod(
+    Invocation.setter(#firebaseAuth, _firebaseAuth),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  _i2.FirebaseFirestore get firestore =>
+      (super.noSuchMethod(
+            Invocation.getter(#firestore),
+            returnValue: _FakeFirebaseFirestore_0(
+              this,
+              Invocation.getter(#firestore),
+            ),
+            returnValueForMissingStub: _FakeFirebaseFirestore_0(
+              this,
+              Invocation.getter(#firestore),
+            ),
+          )
+          as _i2.FirebaseFirestore);
+
+  @override
+  set firestore(_i2.FirebaseFirestore? _firestore) => super.noSuchMethod(
+    Invocation.setter(#firestore, _firestore),
+    returnValueForMissingStub: null,
+  );
+
+  @override
   _i5.Future<_i3.UserCredential?> signInWithEmailAndPassword(
     String? email,
     String? password,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#signInWithEmailAndPassword, [email, password]),
+            returnValue: _i5.Future<_i3.UserCredential?>.value(),
+            returnValueForMissingStub: _i5.Future<_i3.UserCredential?>.value(),
+          )
+          as _i5.Future<_i3.UserCredential?>);
+
+  @override
+  _i5.Future<_i3.UserCredential?> signInWithGoogle() =>
+      (super.noSuchMethod(
+            Invocation.method(#signInWithGoogle, []),
+            returnValue: _i5.Future<_i3.UserCredential?>.value(),
+            returnValueForMissingStub: _i5.Future<_i3.UserCredential?>.value(),
+          )
+          as _i5.Future<_i3.UserCredential?>);
+
+  @override
+  _i5.Future<_i3.UserCredential?> signUpWithEmailAndPassword(
+    String? email,
+    String? password,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#signUpWithEmailAndPassword, [email, password]),
             returnValue: _i5.Future<_i3.UserCredential?>.value(),
             returnValueForMissingStub: _i5.Future<_i3.UserCredential?>.value(),
           )
@@ -239,6 +306,24 @@ class MockUserService extends _i1.Mock implements _i13.UserService {
           as _i5.Future<_i14.User?>);
 
   @override
+  _i5.Future<void> createUser(_i14.User? user) =>
+      (super.noSuchMethod(
+            Invocation.method(#createUser, [user]),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> resetPassword(String? email) =>
+      (super.noSuchMethod(
+            Invocation.method(#resetPassword, [email]),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
   _i5.Future<void> updateUserFavourites(_i14.User? user) =>
       (super.noSuchMethod(
             Invocation.method(#updateUserFavourites, [user]),
@@ -257,6 +342,15 @@ class MockUserService extends _i1.Mock implements _i13.UserService {
             ),
           )
           as _i5.Future<List<_i14.User>>);
+
+  @override
+  _i5.Future<void> updateUserProfile(_i14.User? user) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateUserProfile, [user]),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 }
 
 /// A class which mocks [InstructorService].

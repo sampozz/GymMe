@@ -30,7 +30,6 @@ class _HomeState extends State<Home> {
   List<Gym>? _gymList;
   List<Gym>? _filteredGymList;
   List<Booking> _todaysBookings = [];
-  bool _isFetchingBookings = true;
 
   @override
   void initState() {
@@ -44,7 +43,6 @@ class _HomeState extends State<Home> {
     context.read<BookingsProvider>().getTodaysBookings().then((value) {
       setState(() {
         _todaysBookings = value;
-        _isFetchingBookings = false;
       });
     });
     _controller.addListener(_filterGymList);
@@ -77,24 +75,36 @@ class _HomeState extends State<Home> {
 
   /// Refreshes the gym list by fetching it from the provider
   Future<void> _onRefresh() async {
-    setState(() {
-      _isFetchingBookings = true;
-    });
-    await Provider.of<GymProvider>(context, listen: false).getGymList().then((
-      list,
-    ) {
-      setState(() {
-        _filteredGymList = list;
-      });
-    });
-    await Provider.of<BookingsProvider>(
+    // Get gym list
+    final list = await Provider.of<GymProvider>(
       context,
       listen: false,
-    ).getTodaysBookings().then((value) {
-      setState(() {
-        _todaysBookings = value;
-        _isFetchingBookings = false;
-      });
+    ).getGymList().timeout(
+      Duration(seconds: 5),
+      onTimeout: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to refresh gym list'),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        return _filteredGymList ?? [];
+      },
+    );
+
+    setState(() {
+      _filteredGymList = list;
+    });
+
+    final value =
+        await Provider.of<BookingsProvider>(
+          context,
+          listen: false,
+        ).getTodaysBookings();
+
+    setState(() {
+      _todaysBookings = value;
     });
   }
 
@@ -102,9 +112,9 @@ class _HomeState extends State<Home> {
   void _navigateToAddGym() {
     // If the screen is desktop, use the desktop navigator
     if (!_useMobileLayout) {
-      desktopNavKey.currentState?.push(
-        MaterialPageRoute(builder: (context) => NewGym()),
-      );
+      desktopNavKey.currentState
+          ?.push(MaterialPageRoute(builder: (context) => NewGym()))
+          .then((_) => _filterGymList());
       return;
     }
     Navigator.push(
@@ -167,9 +177,9 @@ class _HomeState extends State<Home> {
     return (_user != null && _user!.isAdmin)
         ? Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: ElevatedButton(
+          child: TextButton(
             onPressed: () => _navigateToAddGym(),
-            style: ElevatedButton.styleFrom(
+            style: TextButton.styleFrom(
               padding: const EdgeInsets.symmetric(
                 horizontal: 20.0,
                 vertical: 10.0,
@@ -251,14 +261,13 @@ class _HomeState extends State<Home> {
   Widget _buildMobileHome() {
     return CustomScrollView(
       slivers: [
-        if (!_isFetchingBookings && _todaysBookings.isNotEmpty)
+        if (_todaysBookings.isNotEmpty)
           SliverAppBar(
             backgroundColor: Colors.transparent,
             expandedHeight: 50.0,
             flexibleSpace: _buildTopBar('Upcoming bookings'),
           ),
-        if (!_isFetchingBookings && _todaysBookings.isNotEmpty)
-          _buildTodaysBookings(),
+        if (_todaysBookings.isNotEmpty) _buildTodaysBookings(),
         SliverAppBar(
           backgroundColor: Colors.transparent,
           expandedHeight: 50.0,
@@ -343,7 +352,6 @@ class _HomeState extends State<Home> {
     });
 
     // TODO: sort the gym list by distance
-    // TODO: show next bookings if any
     // TODO: replace CircularProgressIndicator with shimmer effect https://docs.flutter.dev/cookbook/effects/shimmer-loading
     return Scaffold(
       backgroundColor: Colors.transparent,
