@@ -39,24 +39,23 @@ class MapProvider with ChangeNotifier {
     Locations gyms, {
     Function(String gymName, String gymId)? onMarkerTap,
   }) {
-    if (!_isInitialized) {
-      _isInitialized = true;
-      _markers.clear();
-      for (final gym in gyms.gyms) {
-        final marker = Marker(
-          markerId: MarkerId(gym.id),
-          position: LatLng(gym.lat, gym.lng),
-          //infoWindow: InfoWindow(title: gym.name, snippet: gym.address),
-          onTap: () {
-            if (onMarkerTap != null) {
-              onMarkerTap(gym.name, gym.id);
-            }
-          },
-        );
-        _markers[gym.id] = marker;
-      }
-      notifyListeners();
+    _isInitialized = (!_isInitialized) ? true : _isInitialized;
+
+    _markers.clear();
+    for (final gym in gyms.gyms) {
+      final marker = Marker(
+        markerId: MarkerId(gym.id),
+        position: LatLng(gym.lat, gym.lng),
+        onTap: () {
+          if (onMarkerTap != null) {
+            onMarkerTap(gym.name, gym.id);
+          }
+        },
+      );
+      _markers[gym.id] = marker;
     }
+    notifyListeners();
+
     return _markers;
   }
 
