@@ -1,3 +1,4 @@
+import 'package:dima_project/content/profile/subscription/subscription_model.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
@@ -65,6 +66,30 @@ class UserService {
   /// This method will sign out the user
   Future<void> signOut() async {
     await auth.FirebaseAuth.instance.signOut();
+  }
+
+  /// This method will fetch all the user from Firestore
+  Future<List<User>> fetchUserList() async {
+    List<User> userList = [];
+    try {
+      var usersRef =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .withConverter(
+                fromFirestore: User.fromFirestore,
+                toFirestore: (User user, options) => user.toFirestore(),
+              )
+              .get();
+      for (var doc in usersRef.docs) {
+        userList.add(doc.data());
+      }
+    } catch (e) {
+      // TODO: Handle error
+      print(e);
+      rethrow;
+    }
+
+    return userList;
   }
 
   /// This method will fetch the user data from Firestore
@@ -169,5 +194,35 @@ class UserService {
       // TODO: Handle error
       print('Error updating user profile: $e');
     }
+  }
+
+  /// Updates the user document in the Firestore 'user' collection with the new subscription.
+  /// Throws a FirebaseException if there is an error during the set operation.
+  /// Returns the id of the set subscription.
+  Future<void> setSubscription(User user) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .update({
+            'subscriptions':
+                user.subscriptions
+                    .map((subscription) => subscription.toFirestore())
+                    .toList(),
+          });
+    } catch (e) {
+      // TODO: Handle error
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<void> updateMedicalCertificate(
+    String uid,
+    DateTime certificateExpDate,
+  ) async {
+    FirebaseFirestore.instance.collection('users').doc(uid).update({
+      'certificateExpDate': certificateExpDate,
+    });
   }
 }

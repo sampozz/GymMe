@@ -94,7 +94,7 @@ class _NewMyDataState extends State<NewMyData> {
             children: [
               Icon(Icons.check_circle, color: Colors.white),
               SizedBox(width: 12),
-              Expanded(child: Text('Dati aggiornati con successo')),
+              Expanded(child: Text('Changes saved successfully!')),
             ],
           ),
           backgroundColor: Colors.green,
@@ -121,7 +121,7 @@ class _NewMyDataState extends State<NewMyData> {
       // Gestisci eventuali errori
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Errore durante l\'aggiornamento: $e'),
+          content: Text('There\'s been an issue during the update: $e'),
           backgroundColor: Colors.red,
         ),
       );
@@ -133,7 +133,7 @@ class _NewMyDataState extends State<NewMyData> {
     final user = widget.user ?? Provider.of<UserProvider>(context).user;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Modifica dati')),
+      appBar: AppBar(title: Text('Modify data')),
       body:
           _isSaving
               ? Center(
@@ -142,7 +142,7 @@ class _NewMyDataState extends State<NewMyData> {
                   children: [
                     CircularProgressIndicator(),
                     SizedBox(height: 16),
-                    Text('Salvataggio in corso...'),
+                    Text('Saving...'),
                   ],
                 ),
               )
@@ -153,18 +153,18 @@ class _NewMyDataState extends State<NewMyData> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Nome
+                      // Name and Surname
                       TextFormField(
                         controller: nameCtrl,
                         decoration: InputDecoration(
-                          labelText: 'Nome e cognome',
+                          labelText: 'Name and Surname',
                           icon: Icon(Icons.person),
                           border: OutlineInputBorder(),
                         ),
                         validator: (value) => _validateMandatory(value),
                       ),
                       SizedBox(height: 16),
-                      // Email (di sola lettura)
+                      // Email (read-only)
                       TextFormField(
                         enabled: false,
                         decoration: InputDecoration(
@@ -178,11 +178,11 @@ class _NewMyDataState extends State<NewMyData> {
                       ),
                       SizedBox(height: 16),
 
-                      // Telefono
+                      // Phone number
                       TextFormField(
                         controller: phoneCtrl,
                         decoration: InputDecoration(
-                          labelText: 'Telefono',
+                          labelText: 'Phone number',
                           icon: Icon(Icons.phone),
                           border: OutlineInputBorder(),
                         ),
@@ -190,31 +190,31 @@ class _NewMyDataState extends State<NewMyData> {
                         validator: (value) => _validateMandatory(value),
                       ),
                       SizedBox(height: 16),
-                      // Indirizzo
+                      // Address
                       TextFormField(
                         controller: addressCtrl,
                         decoration: InputDecoration(
-                          labelText: 'Indirizzo',
+                          labelText: 'Address',
                           icon: Icon(Icons.home),
                           border: OutlineInputBorder(),
                         ),
                       ),
                       SizedBox(height: 16),
-                      // Codice fiscale
+                      // Tax code
                       TextFormField(
                         controller: taxCodeCtrl,
                         decoration: InputDecoration(
-                          labelText: 'Codice fiscale',
+                          labelText: 'Tax code',
                           icon: Icon(Icons.badge),
                           border: OutlineInputBorder(),
                         ),
                       ),
                       SizedBox(height: 16),
-                      // Data di nascita
+                      // Birth date
                       TextFormField(
                         controller: birthDateCtrl,
                         decoration: InputDecoration(
-                          labelText: 'Data di nascita',
+                          labelText: 'Birth date',
                           icon: Icon(Icons.date_range),
                           border: OutlineInputBorder(),
                         ),
@@ -234,16 +234,16 @@ class _NewMyDataState extends State<NewMyData> {
                         },
                       ),
                       SizedBox(height: 16),
-                      // Luogo di nascita
+                      // Birth place
                       TextFormField(
                         controller: birthPlaceCtrl,
                         decoration: InputDecoration(
-                          labelText: 'Luogo di nascita',
+                          labelText: 'Birth place',
                           icon: Icon(Icons.location_city),
                           border: OutlineInputBorder(),
                         ),
                       ),
-                      // Salvataggio
+                      // Save button
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
@@ -254,7 +254,7 @@ class _NewMyDataState extends State<NewMyData> {
                                 alignment: Alignment.center,
                               ),
                               onPressed: _isSaving ? null : _saveChanges,
-                              child: Text("Salva"),
+                              child: Text("Save changes"),
                             ),
                           ],
                         ),

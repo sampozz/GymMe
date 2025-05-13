@@ -13,194 +13,329 @@ class MyData extends StatelessWidget {
     final User? user = context.watch<UserProvider>().user;
 
     return Scaffold(
-      appBar: AppBar(title: Text('I miei dati'), elevation: 0),
+      appBar: AppBar(title: Text('My data'), elevation: 0),
       body:
           user == null
               ? Center(child: CircularProgressIndicator())
               : Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: ListView(
                   children: [
-                    ListTile(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                      leading: Icon(
-                        Icons.person,
-                        color: Colors.grey[700],
-                        size: 22,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 4.0,
                       ),
-                      title: Text('Nome', style: TextStyle(fontSize: 16)),
-                      subtitle: Text(
-                        user.displayName.isNotEmpty
-                            ? user.displayName
-                            : 'Non specificato',
-                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                      ),
-                    ),
-                    Divider(
-                      height: 1,
-                      thickness: 1,
-                      color: Color.fromARGB(255, 172, 172, 172),
-                    ),
-                    ListTile(
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                      leading: Icon(
-                        Icons.email,
-                        color: Colors.grey[700],
-                        size: 22,
-                      ),
-                      title: Text('Email', style: TextStyle(fontSize: 16)),
-                      subtitle: Text(
-                        user.email,
-                        style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                      ),
-                    ),
-                    Divider(
-                      height: 1,
-                      thickness: 1,
-                      color: Color.fromARGB(255, 172, 172, 172),
-                    ),
-                    if (!(user.isAdmin)) ...[
-                      ListTile(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                        leading: Icon(
-                          Icons.phone,
-                          color: Colors.grey[700],
-                          size: 22,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 2,
+                              offset: Offset(0, 1),
+                            ),
+                          ],
                         ),
-                        title: Text('Telefono', style: TextStyle(fontSize: 16)),
-                        subtitle: Text(
-                          user.phoneNumber.isNotEmpty
-                              ? user.phoneNumber
-                              : 'Non specificato',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
+                        child: ListTile(
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16.0,
                           ),
-                        ),
-                      ),
-                      Divider(
-                        height: 1,
-                        thickness: 1,
-                        color: Color.fromARGB(255, 172, 172, 172),
-                      ),
-                      ListTile(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                        leading: Icon(
-                          Icons.home,
-                          color: Colors.grey[700],
-                          size: 22,
-                        ),
-                        title: Text(
-                          'Indirizzo',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        subtitle: Text(
-                          user.address.isNotEmpty
-                              ? user.address
-                              : 'Non specificato',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
+                          leading: Icon(
+                            Icons.person,
+                            color: Colors.grey[700],
+                            size: 22,
                           ),
-                        ),
-                      ),
-                      Divider(
-                        height: 1,
-                        thickness: 1,
-                        color: Color.fromARGB(255, 172, 172, 172),
-                      ),
-                      ListTile(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                        leading: Icon(
-                          Icons.badge,
-                          color: Colors.grey[700],
-                          size: 22,
-                        ),
-                        title: Text(
-                          'Codice fiscale',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        subtitle: Text(
-                          user.taxCode.isNotEmpty
-                              ? user.taxCode
-                              : 'Non specificato',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ),
-                      Divider(
-                        height: 1,
-                        thickness: 1,
-                        color: Color.fromARGB(255, 172, 172, 172),
-                      ),
-                      ListTile(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                        leading: Icon(
-                          Icons.calendar_today,
-                          color: Colors.grey[700],
-                          size: 22,
-                        ),
-                        title: Text(
-                          'Data di nascita',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        subtitle: Text(
-                          user.birthDate != null
-                              ? '${user.birthDate!.day}/${user.birthDate!.month}/${user.birthDate!.year}'
-                              : 'Non specificato',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ),
-                      Divider(
-                        height: 1,
-                        thickness: 1,
-                        color: Color.fromARGB(255, 172, 172, 172),
-                      ),
-                      ListTile(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-                        leading: Icon(
-                          Icons.location_city,
-                          color: Colors.grey[700],
-                          size: 22,
-                        ),
-                        title: Text(
-                          'Luogo di nascita',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        subtitle: Text(
-                          user.birthPlace.isNotEmpty
-                              ? user.birthPlace
-                              : 'Non specificato',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => NewMyData(user: user),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              'Modifica',
-                              textAlign: TextAlign.center,
+                          title: Text('Name', style: TextStyle(fontSize: 16)),
+                          subtitle: Text(
+                            user.displayName.isNotEmpty
+                                ? user.displayName
+                                : 'Unspecified',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[600],
                             ),
                           ),
-                        ],
+                        ),
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 4.0,
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 2,
+                              offset: Offset(0, 1),
+                            ),
+                          ],
+                        ),
+                        child: ListTile(
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                          ),
+                          leading: Icon(
+                            Icons.email,
+                            color: Colors.grey[700],
+                            size: 22,
+                          ),
+                          title: Text('Email', style: TextStyle(fontSize: 16)),
+                          subtitle: Text(
+                            user.email,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    if (!(user.isAdmin)) ...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 4.0,
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 2,
+                                offset: Offset(0, 1),
+                              ),
+                            ],
+                          ),
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            leading: Icon(
+                              Icons.phone,
+                              color: Colors.grey[700],
+                              size: 22,
+                            ),
+                            title: Text(
+                              'Phone number',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            subtitle: Text(
+                              user.phoneNumber.isNotEmpty
+                                  ? user.phoneNumber
+                                  : 'Unspecified',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 4.0,
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 2,
+                                offset: Offset(0, 1),
+                              ),
+                            ],
+                          ),
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            leading: Icon(
+                              Icons.home,
+                              color: Colors.grey[700],
+                              size: 22,
+                            ),
+                            title: Text(
+                              'Address',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            subtitle: Text(
+                              user.address.isNotEmpty
+                                  ? user.address
+                                  : 'Unspecified',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 4.0,
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 2,
+                                offset: Offset(0, 1),
+                              ),
+                            ],
+                          ),
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            leading: Icon(
+                              Icons.badge,
+                              color: Colors.grey[700],
+                              size: 22,
+                            ),
+                            title: Text(
+                              'Tax code',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            subtitle: Text(
+                              user.taxCode.isNotEmpty
+                                  ? user.taxCode
+                                  : 'Unspecified',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 4.0,
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 2,
+                                offset: Offset(0, 1),
+                              ),
+                            ],
+                          ),
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            leading: Icon(
+                              Icons.calendar_today,
+                              color: Colors.grey[700],
+                              size: 22,
+                            ),
+                            title: Text(
+                              'Birth date',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            subtitle: Text(
+                              user.birthDate != null
+                                  ? '${user.birthDate!.day}/${user.birthDate!.month}/${user.birthDate!.year}'
+                                  : 'Unspecified',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 4.0,
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 2,
+                                offset: Offset(0, 1),
+                              ),
+                            ],
+                          ),
+                          child: ListTile(
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                            ),
+                            leading: Icon(
+                              Icons.location_city,
+                              color: Colors.grey[700],
+                              size: 22,
+                            ),
+                            title: Text(
+                              'Birth place',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            subtitle: Text(
+                              user.birthPlace.isNotEmpty
+                                  ? user.birthPlace
+                                  : 'Unspecified',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => NewMyData(user: user),
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                'Modify',
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ],
