@@ -6,6 +6,8 @@ import 'package:dima_project/content/home/home.dart';
 import 'package:dima_project/content/profile/profile.dart';
 import 'package:dima_project/content/map/gym_map.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
+import 'package:dima_project/global_providers/user/user_model.dart';
+import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +35,7 @@ class _AppScaffoldState extends State<AppScaffold> {
   }
 
   /// Create list of pages to show in the navigation bar
-  void _createPagesList() {
+  void _createUserPagesList() {
     _pages = [
       {
         "title": "Home",
@@ -68,15 +70,55 @@ class _AppScaffoldState extends State<AppScaffold> {
     ];
   }
 
+  void _createAdminPagesList() {
+    _pages = [
+      {
+        "title": "Home",
+        "description": "Home page",
+        "icon": Icons.home_outlined,
+        "widget": Home(),
+      },
+      {
+        "title": "Map",
+        "description": "Map page",
+        "icon": Icons.map_outlined,
+        "widget": GymMap(),
+      },
+      {
+        "title": "Subscriptions",
+        "description": "Subscription page",
+        "icon": Icons.edit_note_outlined,
+        "widget": null,
+      },
+      {
+        "title": "Favourites",
+        "description": "Favourites page",
+        "icon": Icons.favorite_border,
+        "widget": Favourites(),
+      },
+      {
+        "title": "Profile",
+        "description": "Profile page",
+        "icon": Icons.person_outline,
+        "widget": Profile(),
+      },
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     // Get the screen data and assign it to the ScreenProvider
     ScreenProvider screenProvider = context.read<ScreenProvider>();
     screenProvider.screenData = MediaQuery.of(context);
+    User? user = context.watch<UserProvider>().user;
 
     // TODO: setup internationalization
 
-    _createPagesList();
+    if (user?.isAdmin ?? false) {
+      _createAdminPagesList();
+    } else {
+      _createUserPagesList();
+    }
 
     return PopScope(
       canPop: false,
@@ -100,6 +142,7 @@ class _AppScaffoldState extends State<AppScaffold> {
                   currentIndex: _currentIndex,
                   onTapCallback: _navigateTab,
                   navigatorKey: navigatorKey,
+                  isLoading: user == null,
                 )
                 : Container(),
             Expanded(

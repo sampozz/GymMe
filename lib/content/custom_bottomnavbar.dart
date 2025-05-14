@@ -1,5 +1,9 @@
+import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
-import 'dart:ui'; // Import for BackdropFilter
+import 'package:provider/provider.dart';
+import 'dart:ui';
+
+import 'package:shimmer/shimmer.dart'; // Import for BackdropFilter
 
 class CustomBottomNavBar extends StatelessWidget {
   final List pages;
@@ -15,8 +19,30 @@ class CustomBottomNavBar extends StatelessWidget {
     this.navigatorKey,
   });
 
+  Widget _buildLoadingShimmer() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: List.generate(5, (index) {
+          return Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    bool isLoading = context.watch<UserProvider>().user == null;
+
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: ClipRRect(
@@ -31,25 +57,28 @@ class CustomBottomNavBar extends StatelessWidget {
                 context,
               ).colorScheme.primaryContainer.withValues(alpha: 50),
             ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ...pages.map((page) {
-                  return NavBarItem(
-                    icon: page['icon'],
-                    title: page['title'],
-                    isSelected: pages.indexOf(page) == currentIndex,
-                    onTapCallback: () {
-                      navigatorKey?.currentState?.popUntil(
-                        (route) => route.isFirst,
-                      );
-                      onTapCallback(pages.indexOf(page));
-                    },
-                  );
-                }),
-              ],
-            ),
+            child:
+                isLoading
+                    ? _buildLoadingShimmer()
+                    : Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ...pages.map((page) {
+                          return NavBarItem(
+                            icon: page['icon'],
+                            title: page['title'],
+                            isSelected: pages.indexOf(page) == currentIndex,
+                            onTapCallback: () {
+                              navigatorKey?.currentState?.popUntil(
+                                (route) => route.isFirst,
+                              );
+                              onTapCallback(pages.indexOf(page));
+                            },
+                          );
+                        }),
+                      ],
+                    ),
           ),
         ),
       ),
