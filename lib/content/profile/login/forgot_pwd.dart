@@ -200,7 +200,7 @@ class _ForgotPwdState extends State<ForgotPwd> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text("Do you remember your password?"),
-            TextButton(
+            OutlinedButton(
               onPressed: () => _navigateToLogin(),
               child: const Text("Sign In"),
             ),
@@ -210,17 +210,21 @@ class _ForgotPwdState extends State<ForgotPwd> {
     );
   }
 
-  Widget _buildLoginScreen() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(flex: 1, child: _buildLoginHeader()),
-          Expanded(flex: 2, child: _buildLoginForm()),
-          _buildFooter(),
-        ],
+  Widget _buildForgotPwdScreenContent() {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+        child: Column(children: [_buildLoginHeader(), _buildLoginForm()]),
       ),
+    );
+  }
+
+  Widget _buildLoginScreen() {
+    return Column(
+      children: [
+        Expanded(child: _buildForgotPwdScreenContent()),
+        _buildFooter(),
+      ],
     );
   }
 

@@ -53,6 +53,7 @@ class _NotificationsState extends State<Notifications> {
       appBar: AppBar(title: Text('Notifications')),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           if (_isLoading)
             Center(child: CircularProgressIndicator())

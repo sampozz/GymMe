@@ -147,6 +147,11 @@ class MockGymProvider extends _i1.Mock implements _i9.GymProvider {
   }
 
   @override
+  bool get isLoading =>
+      (super.noSuchMethod(Invocation.getter(#isLoading), returnValue: false)
+          as bool);
+
+  @override
   bool get hasListeners =>
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
           as bool);

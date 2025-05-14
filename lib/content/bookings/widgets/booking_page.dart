@@ -87,15 +87,25 @@ class _BookingPageState extends State<BookingPage> {
                     style: TextStyle(fontSize: 18),
                   ),
                   const SizedBox(height: 20),
-                  ElevatedButton.icon(
+                  TextButton.icon(
                     onPressed: () async {
                       if (mounted) {
                         context.read<BookingsProvider>().removeBooking(booking);
                       }
                       if (mounted) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Booking cancelled successfully"),
+                          SnackBar(
+                            content: Row(
+                              children: [
+                                Icon(Icons.check_circle, color: Colors.white),
+                                SizedBox(width: 12),
+                                Expanded(
+                                  child: Text("Booking cancelled successfully"),
+                                ),
+                              ],
+                            ),
+                            backgroundColor: Colors.green,
+                            behavior: SnackBarBehavior.floating,
                             duration: Duration(seconds: 2),
                           ),
                         );
@@ -119,12 +129,6 @@ class _BookingPageState extends State<BookingPage> {
 
   void _addToCalendar(Booking booking) {
     context.read<BookingsProvider>().addToCalendar(booking);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Booking added to calendar successfully"),
-        duration: Duration(seconds: 2),
-      ),
-    );
   }
 
   Widget _buildBookingActions(Booking booking) {
@@ -132,21 +136,24 @@ class _BookingPageState extends State<BookingPage> {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          ElevatedButton.icon(
+          TextButton.icon(
+            style: TextButton.styleFrom(
+              side: BorderSide(color: Theme.of(context).colorScheme.primary),
+            ),
             onPressed: () => _addToCalendar(booking),
             icon: const Icon(Icons.calendar_today),
             label: const Text("Add to Calendar"),
           ),
           const SizedBox(height: 10),
           if (booking.endTime.isAfter(DateTime.now()))
-            ElevatedButton.icon(
+            TextButton.icon(
               onPressed: () => _cancelBooking(booking),
               icon: const Icon(Icons.cancel, color: Colors.white),
               label: const Text(
                 "Cancel Booking",
                 style: TextStyle(color: Colors.white),
               ),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              style: TextButton.styleFrom(backgroundColor: Colors.red),
             ),
         ],
       ),
@@ -212,6 +219,7 @@ class _BookingPageState extends State<BookingPage> {
                       vertical: 20.0,
                     ),
             child: Card(
+              elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15.0),
               ),

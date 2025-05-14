@@ -77,7 +77,7 @@ class UserProvider extends ChangeNotifier {
     // Get the current firebase user, this user is needed to fetch the user data from Firestore
     auth.User? firebaseUser = _auth.currentUser;
     if (firebaseUser == null) {
-      // TODO: Handle authentication error
+      // Authentication error
       return null;
     }
     _user = User(
@@ -108,7 +108,7 @@ class UserProvider extends ChangeNotifier {
     auth.User? firebaseUser = _auth.currentUser;
 
     if (firebaseUser == null) {
-      // TODO: Handle authentication error
+      // Authentication error
       return null;
     }
 
@@ -116,7 +116,7 @@ class UserProvider extends ChangeNotifier {
     _user = await _userService.fetchUser(firebaseUser);
 
     if (_user == null) {
-      // TODO: Handle user not found in Firestore
+      // User not found in Firestore
       return null;
     }
 
@@ -162,10 +162,32 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
+  // This method verifies the presence of a gym in the favourite gyms list of the user
   bool isGymInFavourites(String gymId) {
     if (_user == null) {
       return false;
     }
     return _user!.favouriteGyms.contains(gymId);
+  }
+  
+  /// This method will update the user profile with the provided data
+  Future<void> updateUserProfile({
+    String? displayName,
+    String? phoneNumber,
+    String? address,
+    String? taxCode,
+    String? birthPlace,
+    DateTime? birthDate,
+  }) async {
+    if (_user != null) {
+      _user!.displayName = displayName ?? _user!.displayName;
+      _user!.phoneNumber = phoneNumber ?? _user!.phoneNumber;
+      _user!.address = address ?? _user!.address;
+      _user!.taxCode = taxCode ?? _user!.taxCode;
+      _user!.birthPlace = birthPlace ?? _user!.birthPlace;
+      _user!.birthDate = birthDate ?? _user!.birthDate;
+      notifyListeners();
+      await _userService.updateUserProfile(_user!);
+    }
   }
 }
