@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dima_project/content/profile/subscription/subscription_model.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
 import 'package:dima_project/global_providers/user/user_service.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
@@ -7,6 +9,23 @@ class UserProvider extends ChangeNotifier {
   final UserService _userService;
   final auth.FirebaseAuth _auth;
   User? _user;
+  List<User>? _userList;
+
+  /// Getter for the user list. If the list is null, fetch it from the service.
+  List<User>? get userList {
+    if (_userList == null) {
+      getUserList();
+    }
+    return _userList;
+  }
+
+  /// Returns a list of User objects.
+  Future<List<User>> getUserList() async {
+    var data = await _userService.fetchUserList();
+    _userList = data;
+    notifyListeners();
+    return data;
+  }
 
   // Constructor with dependency injection
   UserProvider({UserService? userService, auth.FirebaseAuth? authInstance})
@@ -181,5 +200,29 @@ class UserProvider extends ChangeNotifier {
       notifyListeners();
       await _userService.updateUserProfile(_user!);
     }
+  }
+
+  /// Adds a new subscription to the user list.
+  Future<void> addSubscription(User user, Subscription subscription) async {
+    var index = _userList!.indexWhere((element) => element.uid == user.uid);
+    _userList![index].subscriptions.add(subscription);
+    await _userService.setSubscription(user);
+    notifyListeners();
+  }
+
+  /// Removes the account of the user.
+  Future<void> deleteAccount(String uid) async {
+    auth.User? firebaseUser = _auth.currentUser;
+    await firebaseUser?.delete();
+    await _userService.removeAccount(uid);
+  }
+
+  /// Updates the medical certificate of the user.
+  Future<void> updateMedicalCertificate(
+    String uid,
+    DateTime certificateExpDate,
+  ) async {
+    await _userService.updateMedicalCertificate(uid, certificateExpDate);
+    notifyListeners();
   }
 }
