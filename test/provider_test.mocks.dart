@@ -274,6 +274,37 @@ class MockUserProvider extends _i1.Mock implements _i12.UserProvider {
           as _i4.Future<_i13.User?>);
 
   @override
+  _i4.Future<_i13.User?> signInWithGoogle() =>
+      (super.noSuchMethod(
+            Invocation.method(#signInWithGoogle, []),
+            returnValue: _i4.Future<_i13.User?>.value(),
+            returnValueForMissingStub: _i4.Future<_i13.User?>.value(),
+          )
+          as _i4.Future<_i13.User?>);
+
+  @override
+  _i4.Future<String?> signUp(
+    String? email,
+    String? password,
+    String? fullName,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#signUp, [email, password, fullName]),
+            returnValue: _i4.Future<String?>.value(),
+            returnValueForMissingStub: _i4.Future<String?>.value(),
+          )
+          as _i4.Future<String?>);
+
+  @override
+  _i4.Future<_i13.User?> createUser(String? fullName) =>
+      (super.noSuchMethod(
+            Invocation.method(#createUser, [fullName]),
+            returnValue: _i4.Future<_i13.User?>.value(),
+            returnValueForMissingStub: _i4.Future<_i13.User?>.value(),
+          )
+          as _i4.Future<_i13.User?>);
+
+  @override
   _i4.Future<void> signOut() =>
       (super.noSuchMethod(
             Invocation.method(#signOut, []),
@@ -290,6 +321,15 @@ class MockUserProvider extends _i1.Mock implements _i12.UserProvider {
             returnValueForMissingStub: _i4.Future<_i13.User?>.value(),
           )
           as _i4.Future<_i13.User?>);
+
+  @override
+  _i4.Future<String?> resetPassword(String? email) =>
+      (super.noSuchMethod(
+            Invocation.method(#resetPassword, [email]),
+            returnValue: _i4.Future<String?>.value(),
+            returnValueForMissingStub: _i4.Future<String?>.value(),
+          )
+          as _i4.Future<String?>);
 
   @override
   _i4.Future<List<_i13.User>> getUsersByIds(List<String>? ids) =>
@@ -319,6 +359,15 @@ class MockUserProvider extends _i1.Mock implements _i12.UserProvider {
             returnValueForMissingStub: _i4.Future<void>.value(),
           )
           as _i4.Future<void>);
+
+  @override
+  bool isGymInFavourites(String? gymId) =>
+      (super.noSuchMethod(
+            Invocation.method(#isGymInFavourites, [gymId]),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
 
   @override
   void addListener(_i10.VoidCallback? listener) => super.noSuchMethod(

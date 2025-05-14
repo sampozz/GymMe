@@ -221,6 +221,27 @@ class MockUserService extends _i1.Mock implements _i13.UserService {
           as _i5.Future<_i3.UserCredential?>);
 
   @override
+  _i5.Future<_i3.UserCredential?> signInWithGoogle() =>
+      (super.noSuchMethod(
+            Invocation.method(#signInWithGoogle, []),
+            returnValue: _i5.Future<_i3.UserCredential?>.value(),
+            returnValueForMissingStub: _i5.Future<_i3.UserCredential?>.value(),
+          )
+          as _i5.Future<_i3.UserCredential?>);
+
+  @override
+  _i5.Future<_i3.UserCredential?> signUpWithEmailAndPassword(
+    String? email,
+    String? password,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#signUpWithEmailAndPassword, [email, password]),
+            returnValue: _i5.Future<_i3.UserCredential?>.value(),
+            returnValueForMissingStub: _i5.Future<_i3.UserCredential?>.value(),
+          )
+          as _i5.Future<_i3.UserCredential?>);
+
+  @override
   _i5.Future<void> signOut() =>
       (super.noSuchMethod(
             Invocation.method(#signOut, []),
@@ -237,6 +258,24 @@ class MockUserService extends _i1.Mock implements _i13.UserService {
             returnValueForMissingStub: _i5.Future<_i14.User?>.value(),
           )
           as _i5.Future<_i14.User?>);
+
+  @override
+  _i5.Future<void> createUser(_i14.User? user) =>
+      (super.noSuchMethod(
+            Invocation.method(#createUser, [user]),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> resetPassword(String? email) =>
+      (super.noSuchMethod(
+            Invocation.method(#resetPassword, [email]),
+            returnValue: _i5.Future<void>.value(),
+            returnValueForMissingStub: _i5.Future<void>.value(),
+          )
+          as _i5.Future<void>);
 
   @override
   _i5.Future<void> updateUserFavourites(_i14.User? user) =>
