@@ -43,7 +43,7 @@ class MyData extends StatelessWidget {
                             horizontal: 16.0,
                           ),
                           leading: Icon(
-                            Icons.person,
+                            Icons.person_outlined,
                             color: Colors.grey[700],
                             size: 22,
                           ),
@@ -83,7 +83,7 @@ class MyData extends StatelessWidget {
                             horizontal: 16.0,
                           ),
                           leading: Icon(
-                            Icons.email,
+                            Icons.email_outlined,
                             color: Colors.grey[700],
                             size: 22,
                           ),
@@ -122,7 +122,7 @@ class MyData extends StatelessWidget {
                               horizontal: 16.0,
                             ),
                             leading: Icon(
-                              Icons.phone,
+                              Icons.phone_outlined,
                               color: Colors.grey[700],
                               size: 22,
                             ),
@@ -165,7 +165,7 @@ class MyData extends StatelessWidget {
                               horizontal: 16.0,
                             ),
                             leading: Icon(
-                              Icons.home,
+                              Icons.home_outlined,
                               color: Colors.grey[700],
                               size: 22,
                             ),
@@ -208,7 +208,7 @@ class MyData extends StatelessWidget {
                               horizontal: 16.0,
                             ),
                             leading: Icon(
-                              Icons.badge,
+                              Icons.badge_outlined,
                               color: Colors.grey[700],
                               size: 22,
                             ),
@@ -251,7 +251,7 @@ class MyData extends StatelessWidget {
                               horizontal: 16.0,
                             ),
                             leading: Icon(
-                              Icons.calendar_today,
+                              Icons.calendar_today_outlined,
                               color: Colors.grey[700],
                               size: 22,
                             ),
@@ -294,7 +294,7 @@ class MyData extends StatelessWidget {
                               horizontal: 16.0,
                             ),
                             leading: Icon(
-                              Icons.location_city,
+                              Icons.location_on_outlined,
                               color: Colors.grey[700],
                               size: 22,
                             ),

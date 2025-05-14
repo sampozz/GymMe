@@ -92,7 +92,7 @@ class _NewMyDataState extends State<NewMyData> {
         SnackBar(
           content: Row(
             children: [
-              Icon(Icons.check_circle, color: Colors.white),
+              Icon(Icons.check_circle_outlined, color: Colors.white),
               SizedBox(width: 12),
               Expanded(child: Text('Changes saved successfully!')),
             ],
@@ -128,6 +128,146 @@ class _NewMyDataState extends State<NewMyData> {
     }
   }
 
+  Widget buildFormField(
+    String label,
+    IconData icon,
+    TextEditingController controller,
+    bool isMandatory,
+  ) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          icon: Icon(icon),
+          border: InputBorder.none,
+        ),
+        validator: isMandatory ? (value) => _validateMandatory(value) : null,
+      ),
+    );
+  }
+
+  Widget buildFormCard() {
+    return Card(
+      elevation: 0,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 8),
+            buildFormField(
+              'Name and Surname',
+              Icons.person_outlined,
+              nameCtrl,
+              true,
+            ),
+            SizedBox(height: 10),
+
+            // Email (read-only)
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: TextFormField(
+                enabled: false,
+                decoration: InputDecoration(
+                  labelText: widget.user?.email,
+                  icon: Icon(Icons.email_outlined),
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+
+            buildFormField(
+              'Phone number',
+              Icons.phone_outlined,
+              phoneCtrl,
+              true,
+            ),
+            SizedBox(height: 10),
+            buildFormField('Address', Icons.home_outlined, addressCtrl, false),
+            SizedBox(height: 10),
+            buildFormField(
+              'Tax code',
+              Icons.badge_outlined,
+              taxCodeCtrl,
+              false,
+            ),
+            SizedBox(height: 10),
+
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: TextFormField(
+                controller: birthDateCtrl,
+                decoration: InputDecoration(
+                  labelText: 'Birth date',
+                  icon: Icon(Icons.date_range_outlined),
+                  border: InputBorder.none,
+                ),
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime(2100),
+                  );
+                  if (pickedDate != null) {
+                    String formattedDate = DateFormat(
+                      'dd/MM/yyyy',
+                    ).format(pickedDate);
+                    birthDateCtrl.text = formattedDate;
+                  }
+                },
+              ),
+            ),
+
+            // Birth date
+            SizedBox(height: 10),
+
+            buildFormField(
+              'Birth place',
+              Icons.location_on_outlined,
+              birthPlaceCtrl,
+              false,
+            ),
+            SizedBox(height: 10),
+
+            // Save button
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    style: TextButton.styleFrom(alignment: Alignment.center),
+                    onPressed: _isSaving ? null : _saveChanges,
+                    child: Text("Save changes"),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = widget.user ?? Provider.of<UserProvider>(context).user;
@@ -148,120 +288,7 @@ class _NewMyDataState extends State<NewMyData> {
               )
               : SingleChildScrollView(
                 padding: EdgeInsets.all(16.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Name and Surname
-                      TextFormField(
-                        controller: nameCtrl,
-                        decoration: InputDecoration(
-                          labelText: 'Name and Surname',
-                          icon: Icon(Icons.person),
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) => _validateMandatory(value),
-                      ),
-                      SizedBox(height: 16),
-                      // Email (read-only)
-                      TextFormField(
-                        enabled: false,
-                        decoration: InputDecoration(
-                          labelText: widget.user?.email,
-                          icon: Icon(Icons.email),
-                          border: OutlineInputBorder(),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade400),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 16),
-
-                      // Phone number
-                      TextFormField(
-                        controller: phoneCtrl,
-                        decoration: InputDecoration(
-                          labelText: 'Phone number',
-                          icon: Icon(Icons.phone),
-                          border: OutlineInputBorder(),
-                        ),
-                        keyboardType: TextInputType.phone,
-                        validator: (value) => _validateMandatory(value),
-                      ),
-                      SizedBox(height: 16),
-                      // Address
-                      TextFormField(
-                        controller: addressCtrl,
-                        decoration: InputDecoration(
-                          labelText: 'Address',
-                          icon: Icon(Icons.home),
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      // Tax code
-                      TextFormField(
-                        controller: taxCodeCtrl,
-                        decoration: InputDecoration(
-                          labelText: 'Tax code',
-                          icon: Icon(Icons.badge),
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      // Birth date
-                      TextFormField(
-                        controller: birthDateCtrl,
-                        decoration: InputDecoration(
-                          labelText: 'Birth date',
-                          icon: Icon(Icons.date_range),
-                          border: OutlineInputBorder(),
-                        ),
-                        onTap: () async {
-                          DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(1900),
-                            lastDate: DateTime(2100),
-                          );
-                          if (pickedDate != null) {
-                            String formattedDate = DateFormat(
-                              'dd/MM/yyyy',
-                            ).format(pickedDate);
-                            birthDateCtrl.text = formattedDate;
-                          }
-                        },
-                      ),
-                      SizedBox(height: 16),
-                      // Birth place
-                      TextFormField(
-                        controller: birthPlaceCtrl,
-                        decoration: InputDecoration(
-                          labelText: 'Birth place',
-                          icon: Icon(Icons.location_city),
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      // Save button
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            TextButton(
-                              style: TextButton.styleFrom(
-                                alignment: Alignment.center,
-                              ),
-                              onPressed: _isSaving ? null : _saveChanges,
-                              child: Text("Save changes"),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                child: Form(key: _formKey, child: buildFormCard()),
               ),
     );
   }

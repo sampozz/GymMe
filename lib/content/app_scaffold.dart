@@ -86,8 +86,8 @@ class _AppScaffoldState extends State<AppScaffold> {
         "widget": GymMap(),
       },
       {
-        "title": "Subscriptions",
-        "description": "Subscription page",
+        "title": "Members",
+        "description": "Members page",
         "icon": Icons.edit_note_outlined,
         "widget": FetchSubscription(),
       },

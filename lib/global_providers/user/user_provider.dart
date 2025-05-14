@@ -213,8 +213,8 @@ class UserProvider extends ChangeNotifier {
   /// Removes the account of the user.
   Future<void> deleteAccount(String uid) async {
     auth.User? firebaseUser = _auth.currentUser;
-    await FirebaseFirestore.instance.collection('users').doc(uid).delete();
     await firebaseUser?.delete();
+    await _userService.removeAccount(uid);
   }
 
   /// Updates the medical certificate of the user.

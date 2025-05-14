@@ -47,7 +47,10 @@ class _ProfileState extends State<Profile> {
                           const SnackBar(
                             content: Row(
                               children: [
-                                Icon(Icons.check_circle, color: Colors.white),
+                                Icon(
+                                  Icons.check_circle_outlined,
+                                  color: Colors.white,
+                                ),
                                 SizedBox(width: 12),
                                 Expanded(
                                   child: Text('User deleted successfully!'),
@@ -102,7 +105,10 @@ class _ProfileState extends State<Profile> {
                           const SnackBar(
                             content: Row(
                               children: [
-                                Icon(Icons.check_circle, color: Colors.white),
+                                Icon(
+                                  Icons.check_circle_outlined,
+                                  color: Colors.white,
+                                ),
                                 SizedBox(width: 12),
                                 Expanded(
                                   child: Text('Logged out successfully!'),
@@ -260,8 +266,9 @@ class _ProfileState extends State<Profile> {
                                             key: ValueKey(isDark),
                                             icon: Icon(
                                               isDark
-                                                  ? Icons.nightlight_round
-                                                  : Icons.wb_sunny,
+                                                  ? Icons
+                                                      .nightlight_round_outlined
+                                                  : Icons.wb_sunny_outlined,
                                             ),
                                             onPressed: onToggleTheme,
                                           ),
@@ -380,13 +387,13 @@ class _ProfileState extends State<Profile> {
                                     // Sostituisci questa condizione
                                     if (i == 3) // Logout item
                                       Icon(
-                                        Icons.logout,
+                                        Icons.logout_outlined,
                                         size: 20,
                                         color: Colors.red,
                                       )
                                     else if (i > 0 && i < fields.length - 1)
                                       Icon(
-                                        Icons.arrow_forward_ios,
+                                        Icons.arrow_forward_ios_outlined,
                                         size: 16,
                                         color: Colors.grey,
                                       ),

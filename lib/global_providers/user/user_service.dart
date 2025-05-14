@@ -211,4 +211,8 @@ class UserService {
       'certificateExpDate': certificateExpDate,
     });
   }
+
+  Future<void> removeAccount(String uid) async {
+    await FirebaseFirestore.instance.collection('users').doc(uid).delete();
+  }
 }

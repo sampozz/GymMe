@@ -1,4 +1,5 @@
 import 'package:dima_project/content/profile/subscription/new_subscription.dart';
+import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class _FetchSubscriptionState extends State<FetchSubscription> {
   List<User>? _userList;
   List<User>? _filteredUserList;
   late UserProvider _userProvider;
+  bool _useMobileLayout = true;
 
   @override
   void initState() {
@@ -185,8 +187,9 @@ class _FetchSubscriptionState extends State<FetchSubscription> {
 
   @override
   Widget build(BuildContext context) {
+    _useMobileLayout = context.watch<ScreenProvider>().useMobileLayout;
     return Scaffold(
-      appBar: AppBar(title: Text('New subscription or medical certification')),
+      appBar: AppBar(title: Text('Members')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -194,6 +197,8 @@ class _FetchSubscriptionState extends State<FetchSubscription> {
             _buildSearchBar(),
             SizedBox(height: 16.0),
             Expanded(child: _buildUserList()),
+            // If the user if from mobile, add padding to the bottom
+            if (_useMobileLayout) SizedBox(height: 65.0),
           ],
         ),
       ),
