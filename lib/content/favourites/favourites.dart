@@ -12,8 +12,21 @@ class Favourites extends StatelessWidget {
 
   /// Refreshes the gym list by fetching it from the provider
   Future<void> _onRefresh(BuildContext context) async {
-    Provider.of<UserProvider>(context, listen: false).fetchUser();
-    Provider.of<GymProvider>(context, listen: false).getGymList();
+    await Provider.of<UserProvider>(context, listen: false).fetchUser();
+    await Provider.of<GymProvider>(context, listen: false).getGymList().timeout(
+      Duration(seconds: 5),
+      onTimeout: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Failed to refresh gyms"),
+            duration: Duration(seconds: 2),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        return [];
+      },
+    );
   }
 
   /// Builds the body of the Favourites page
@@ -30,7 +43,7 @@ class Favourites extends StatelessWidget {
     } else {
       return RefreshIndicator(
         color: Colors.white,
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         onRefresh: () => _onRefresh(context),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

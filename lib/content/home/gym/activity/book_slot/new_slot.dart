@@ -271,6 +271,7 @@ class _NewSlotState extends State<NewSlot> {
             child: Column(
               children: <Widget>[
                 TextFormField(
+                  key: Key('dateField'),
                   controller: _slotDateCtrl,
                   decoration: InputDecoration(
                     labelText: 'Date',
@@ -282,6 +283,7 @@ class _NewSlotState extends State<NewSlot> {
                 ),
                 SizedBox(height: 20),
                 TextFormField(
+                  key: Key('startTimeField'),
                   controller: _startTimeCtrl,
                   decoration: InputDecoration(
                     labelText: 'Start Time',
@@ -293,6 +295,7 @@ class _NewSlotState extends State<NewSlot> {
                 ),
                 SizedBox(height: 20),
                 TextFormField(
+                  key: Key('endTimeField'),
                   controller: _endTimeCtrl,
                   decoration: InputDecoration(
                     labelText: 'End Time',
@@ -304,6 +307,7 @@ class _NewSlotState extends State<NewSlot> {
                 ),
                 SizedBox(height: 20),
                 TextFormField(
+                  key: Key('maxUsersField'),
                   controller: _maxUsersCtrl,
                   decoration: InputDecoration(
                     labelText: 'Max Reservations',
@@ -322,6 +326,7 @@ class _NewSlotState extends State<NewSlot> {
                 ),
                 SizedBox(height: 20),
                 TextFormField(
+                  key: Key('roomField'),
                   controller: _roomCtrl,
                   decoration: InputDecoration(
                     labelText: 'Room',
@@ -333,7 +338,7 @@ class _NewSlotState extends State<NewSlot> {
                 SizedBox(height: 20),
                 _isLoading
                     ? CircularProgressIndicator()
-                    : ElevatedButton(
+                    : TextButton(
                       onPressed: () => _submitForm(),
                       child: Text(
                         widget.oldSlot == null ? 'Create Slot' : 'Update Slot',

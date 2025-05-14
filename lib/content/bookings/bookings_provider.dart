@@ -11,7 +11,13 @@ import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+class PlatformService {
+  bool get isWeb => kIsWeb;
+  bool get isMobile => !kIsWeb;
+}
+
 class BookingsProvider extends ChangeNotifier {
+  final PlatformService _platformService;
   final BookingsService _bookingsService;
   final InstructorService _instructorService;
   final auth.FirebaseAuth _firebaseAuth;
@@ -22,9 +28,12 @@ class BookingsProvider extends ChangeNotifier {
     BookingsService? bookingsService,
     InstructorService? instructorService,
     auth.FirebaseAuth? firebaseAuth,
+    PlatformService? platformService,
+    Function? injectedLaunchUrl,
   }) : _bookingsService = bookingsService ?? BookingsService(),
        _instructorService = instructorService ?? InstructorService(),
-       _firebaseAuth = firebaseAuth ?? auth.FirebaseAuth.instance;
+       _firebaseAuth = firebaseAuth ?? auth.FirebaseAuth.instance,
+       _platformService = platformService ?? PlatformService();
 
   /// Getter for the bookings. If the list is empty, fetch it from the service.
   List<Booking>? get bookings {
@@ -112,7 +121,7 @@ class BookingsProvider extends ChangeNotifier {
   }
 
   void addToCalendar(Booking booking) {
-    if (kIsWeb) {
+    if (_platformService.isWeb) {
       final startUtc =
           booking.startTime
               .toUtc()
@@ -138,6 +147,7 @@ class BookingsProvider extends ChangeNotifier {
           '&location=${Uri.encodeComponent(booking.gymName)}';
 
       launchUrl(Uri.parse(url));
+      return;
     }
 
     final Event event = Event(

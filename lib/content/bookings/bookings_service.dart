@@ -18,23 +18,17 @@ class BookingsService {
   /// Returns a list of bookings
   Future<List<Booking>> fetchBookings() async {
     List<Booking> bookings = [];
-    try {
-      String uid = firebaseAuth.currentUser!.uid;
-      var snapshot =
-          await firestore
-              .collection('booking')
-              .where('userId', isEqualTo: uid)
-              .withConverter(
-                fromFirestore: Booking.fromFirestore,
-                toFirestore: (booking, options) => booking.toFirestore(),
-              )
-              .get();
-      bookings = snapshot.docs.map((doc) => doc.data()).toList();
-    } catch (e) {
-      // TODO: handle error
-      print(e);
-      rethrow;
-    }
+    String uid = firebaseAuth.currentUser!.uid;
+    var snapshot =
+        await firestore
+            .collection('booking')
+            .where('userId', isEqualTo: uid)
+            .withConverter(
+              fromFirestore: Booking.fromFirestore,
+              toFirestore: (booking, options) => booking.toFirestore(),
+            )
+            .get();
+    bookings = snapshot.docs.map((doc) => doc.data()).toList();
     return bookings;
   }
 
@@ -68,43 +62,31 @@ class BookingsService {
   /// Deletes a booking by ID
   Future<void> deleteBooking(Booking booking) async {
     firestore.runTransaction((transaction) async {
-      try {
-        final bookingRef = firestore.collection('booking').doc(booking.id);
-        final slotRef = firestore.collection('slot').doc(booking.slotId);
+      final bookingRef = firestore.collection('booking').doc(booking.id);
+      final slotRef = firestore.collection('slot').doc(booking.slotId);
 
-        final slot = await transaction.get(slotRef);
-        final b = await transaction.get(bookingRef);
+      final slot = await transaction.get(slotRef);
+      final b = await transaction.get(bookingRef);
 
-        if (slot.exists) {
-          transaction.update(slotRef, {
-            'bookedUsers': FieldValue.arrayRemove([booking.userId]),
-          });
-        } else {
-          throw Exception("Slot does not exist");
-        }
+      if (slot.exists) {
+        transaction.update(slotRef, {
+          'bookedUsers': FieldValue.arrayRemove([booking.userId]),
+        });
+      } else {
+        throw Exception("Slot does not exist");
+      }
 
-        if (b.exists) {
-          transaction.delete(bookingRef);
-        } else {
-          throw Exception("Booking does not exist");
-        }
-      } catch (e) {
-        // TODO: handle error
-        print(e);
-        rethrow;
+      if (b.exists) {
+        transaction.delete(bookingRef);
+      } else {
+        throw Exception("Booking does not exist");
       }
     });
   }
 
   Future<void> markUpdateAsRead(BookingUpdate bookingUpdate) async {
-    try {
-      firestore.collection('booking').doc(bookingUpdate.bookingId).update({
-        'bookingUpdate': bookingUpdate.toFirestore(),
-      });
-    } catch (e) {
-      // TODO: handle error
-      print(e);
-      rethrow;
-    }
+    firestore.collection('booking').doc(bookingUpdate.bookingId).update({
+      'bookingUpdate': bookingUpdate.toFirestore(),
+    });
   }
 }

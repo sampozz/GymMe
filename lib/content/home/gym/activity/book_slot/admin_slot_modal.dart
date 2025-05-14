@@ -121,14 +121,14 @@ class _AdminSlotModalState extends State<AdminSlotModal> {
         ),
         SizedBox(height: 20),
         Center(
-          child: ElevatedButton(
+          child: TextButton(
             onPressed: () => _navigateToModifySlot(),
             child: Text('Modify slot'),
           ),
         ),
         SizedBox(height: 10, width: double.infinity),
         Center(
-          child: ElevatedButton(
+          child: TextButton(
             onPressed: () => _deleteSlot(),
             child: Text('Delete slot'),
           ),

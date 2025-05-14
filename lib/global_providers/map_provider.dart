@@ -39,7 +39,9 @@ class MapProvider with ChangeNotifier {
     Locations gyms, {
     Function(String gymName, String gymId)? onMarkerTap,
   }) {
-    _isInitialized = (!_isInitialized) ? true : _isInitialized;
+    if (!_isInitialized) {
+      _isInitialized = true;
+    }
 
     _markers.clear();
     for (final gym in gyms.gyms) {

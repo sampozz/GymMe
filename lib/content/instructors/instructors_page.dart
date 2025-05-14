@@ -59,6 +59,8 @@ class _InstructorsPageState extends State<InstructorsPage> {
   }
 
   Widget _buildNewInstructorForm() {
+    bool isLoading = context.watch<InstructorProvider>().isLoading;
+
     return creatingInstructor
         ? Padding(
           padding: const EdgeInsets.all(20.0),
@@ -83,7 +85,7 @@ class _InstructorsPageState extends State<InstructorsPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                ElevatedButton.icon(
+                TextButton.icon(
                   onPressed: () => _showFilePicker(),
                   icon: Icon(Icons.image),
                   label: Text('Upload Image'),
@@ -93,9 +95,16 @@ class _InstructorsPageState extends State<InstructorsPage> {
                   imageBytes != null ? 'Image selected' : 'No image selected',
                 ),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () => _createInstructor(),
-                  child: const Text('Confirm'),
+                TextButton(
+                  onPressed: isLoading ? null : () => _createInstructor(),
+                  child:
+                      isLoading
+                          ? SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(),
+                          )
+                          : const Text('Confirm'),
                 ),
               ],
             ),
@@ -172,7 +181,7 @@ class _InstructorsPageState extends State<InstructorsPage> {
           _buildNewInstructorForm(),
           const SizedBox(height: 20),
           if (!creatingInstructor)
-            ElevatedButton(
+            TextButton(
               onPressed: () {
                 setState(() {
                   creatingInstructor = !creatingInstructor;

@@ -80,31 +80,34 @@ class _NavBarItemState extends State<NavBarItem> {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: GestureDetector(
-        onTap: () => widget.onTapCallback(),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              widget.icon,
-              color:
-                  widget.isSelected || _isHovered
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.onSecondary,
-            ),
-            widget.isSelected
-                ? Text(
-                  widget.title,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                )
-                : Container(),
-          ],
+    return Expanded(
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque, // Make entire area tappable
+          onTap: () => widget.onTapCallback(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                widget.icon,
+                color:
+                    widget.isSelected || _isHovered
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.onSecondary,
+              ),
+              widget.isSelected
+                  ? Text(
+                    widget.title,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  )
+                  : Container(),
+            ],
+          ),
         ),
       ),
     );
