@@ -36,6 +36,7 @@ void main() {
               pages: pages,
               currentIndex: 0,
               onTapCallback: (index) {},
+              isLoading: false,
             ),
           ),
         ),

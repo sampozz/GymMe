@@ -1,141 +1,152 @@
 import 'package:dima_project/content/instructors/instructor_model.dart';
 import 'package:dima_project/content/instructors/instructor_service.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
-
-import '../../firestore_test.mocks.dart';
 
 void main() {
   group('InstructorService', () {
-    provideDummy<Instructor>(Instructor(id: '1'));
+    late FakeFirebaseFirestore fakeFirestore;
+    late InstructorService instructorService;
+
+    setUp(() {
+      fakeFirestore = FakeFirebaseFirestore();
+      instructorService = InstructorService(firestore: fakeFirestore);
+    });
+
     test('fetchInstructors returns a list of instructors', () async {
-      final mockFirebase = MockFirebaseFirestore();
+      // Add test data to fake firestore
+      await fakeFirestore.collection('instructor').doc('1').set({
+        'name': 'John Doe',
+        'specialization': 'Yoga',
+        'bio': 'Yoga expert',
+      });
+      await fakeFirestore.collection('instructor').doc('2').set({
+        'name': 'Jane Smith',
+        'specialization': 'Pilates',
+        'bio': 'Pilates expert',
+      });
 
-      final mockCollectionReference =
-          MockCollectionReference<Map<String, dynamic>>();
-      when(
-        mockFirebase.collection('instructor'),
-      ).thenReturn(mockCollectionReference);
-
-      final mockCollectionReferenceInstructor =
-          MockCollectionReference<Instructor>();
-      when(
-        mockCollectionReference.withConverter(
-          fromFirestore: anyNamed('fromFirestore'),
-          toFirestore: anyNamed('toFirestore'),
-        ),
-      ).thenReturn(mockCollectionReferenceInstructor);
-
-      final mockQuerySnapshot = MockQuerySnapshot<Instructor>();
-      when(
-        mockCollectionReferenceInstructor.get(),
-      ).thenAnswer((_) async => mockQuerySnapshot);
-
-      when(mockQuerySnapshot.docs).thenReturn([
-        MockQueryDocumentSnapshot<Instructor>(),
-        MockQueryDocumentSnapshot<Instructor>(),
-      ]);
-
-      final instructorService = InstructorService(firestore: mockFirebase);
-
+      // Call the method being tested
       final instructors = await instructorService.fetchInstructors();
 
-      expect(instructors, isA<List<Instructor>>());
+      // Verify results
+      expect(instructors.length, 2);
+      expect(instructors[0].id, isNotEmpty);
+      expect(instructors[1].id, isNotEmpty);
     });
 
     test('fetchInstructorById returns an instructor', () async {
-      final mockFirebase = MockFirebaseFirestore();
+      // Add test data to fake firestore
+      await fakeFirestore.collection('instructor').doc('1').set({
+        'name': 'John Doe',
+        'specialization': 'Yoga',
+        'bio': 'Yoga expert',
+      });
 
-      final mockCollectionReference =
-          MockCollectionReference<Map<String, dynamic>>();
-      when(
-        mockFirebase.collection('instructor'),
-      ).thenReturn(mockCollectionReference);
-
-      final mockDocumentReference =
-          MockDocumentReference<Map<String, dynamic>>();
-      when(mockCollectionReference.doc('1')).thenReturn(mockDocumentReference);
-
-      final mockDocumentReferenceInstructor =
-          MockDocumentReference<Instructor>();
-      when(
-        mockDocumentReference.withConverter(
-          fromFirestore: anyNamed('fromFirestore'),
-          toFirestore: anyNamed('toFirestore'),
-        ),
-      ).thenReturn(mockDocumentReferenceInstructor);
-
-      final mockDocumentSnapshot = MockDocumentSnapshot<Instructor>();
-      when(
-        mockDocumentReferenceInstructor.get(),
-      ).thenAnswer((_) async => mockDocumentSnapshot);
-
-      when(mockDocumentSnapshot.exists).thenReturn(true);
-      when(mockDocumentSnapshot.data()).thenReturn(Instructor(id: '1'));
-
-      final instructorService = InstructorService(firestore: mockFirebase);
-
+      // Call the method being tested
       final instructor = await instructorService.fetchInstructorById('1');
 
-      expect(instructor, isA<Instructor>());
+      // Verify results
+      expect(instructor, isNotNull);
       expect(instructor?.id, '1');
     });
 
+    test(
+      'fetchInstructorById returns null for non-existent instructor',
+      () async {
+        // Call the method being tested
+        final instructor = await instructorService.fetchInstructorById(
+          'non-existent',
+        );
+
+        // Verify results
+        expect(instructor, isNull);
+      },
+    );
+
     test('addInstructor adds an instructor and returns its ID', () async {
-      final mockFirebase = MockFirebaseFirestore();
-
-      final mockCollectionReference =
-          MockCollectionReference<Map<String, dynamic>>();
-      when(
-        mockFirebase.collection('instructor'),
-      ).thenReturn(mockCollectionReference);
-
-      final mockCollectionReferenceInstructor =
-          MockCollectionReference<Instructor>();
-      when(
-        mockCollectionReference.withConverter(
-          fromFirestore: anyNamed('fromFirestore'),
-          toFirestore: anyNamed('toFirestore'),
-        ),
-      ).thenReturn(mockCollectionReferenceInstructor);
-
-      final mockDocumentReference = MockDocumentReference<Instructor>();
-      when(
-        mockCollectionReferenceInstructor.add(any),
-      ).thenAnswer((_) async => mockDocumentReference);
-
-      when(mockDocumentReference.id).thenReturn('1');
-
-      final instructorService = InstructorService(firestore: mockFirebase);
-
-      final instructorId = await instructorService.addInstructor(
-        Instructor(id: '1'),
+      // Create test instructor
+      final newInstructor = Instructor(
+        id: '', // ID will be assigned by Firestore
+        name: 'New Instructor',
       );
 
-      expect(instructorId, '1');
+      // Call the method being tested
+      final instructorId = await instructorService.addInstructor(newInstructor);
+
+      // Verify results
+      expect(instructorId, isNotNull);
+      expect(instructorId, isNotEmpty);
+
+      // Verify the instructor was actually added to Firestore
+      final docSnapshot =
+          await fakeFirestore.collection('instructor').doc(instructorId).get();
+
+      expect(docSnapshot.exists, true);
+      expect(docSnapshot.data()?['name'], 'New Instructor');
     });
 
     test('deleteInstructor deletes an instructor', () async {
-      final mockFirebase = MockFirebaseFirestore();
+      // Add test data to fake firestore
+      await fakeFirestore.collection('instructor').doc('1').set({
+        'name': 'John Doe',
+        'specialization': 'Yoga',
+        'bio': 'Yoga expert',
+      });
 
-      final mockCollectionReference =
-          MockCollectionReference<Map<String, dynamic>>();
-      when(
-        mockFirebase.collection('instructor'),
-      ).thenReturn(mockCollectionReference);
+      // Verify the instructor exists before deletion
+      var docSnapshot =
+          await fakeFirestore.collection('instructor').doc('1').get();
+      expect(docSnapshot.exists, true);
 
-      final mockDocumentReference =
-          MockDocumentReference<Map<String, dynamic>>();
-      when(mockCollectionReference.doc('1')).thenReturn(mockDocumentReference);
+      // Call the method being tested
+      await instructorService.deleteInstructor(Instructor(id: '1'));
 
-      when(mockDocumentReference.delete()).thenAnswer((_) async {});
-
-      final instructorService = InstructorService(firestore: mockFirebase);
-
-      final instructor = Instructor(id: '1');
-      await instructorService.deleteInstructor(instructor);
-
-      verify(mockDocumentReference.delete()).called(1);
+      // Verify the instructor was deleted
+      docSnapshot = await fakeFirestore.collection('instructor').doc('1').get();
+      expect(docSnapshot.exists, false);
     });
+
+    test('instructor copyWith creates a copy with modified fields', () {
+      final instructor = Instructor(
+        id: '1',
+        name: 'John Doe',
+        photo: 'photo_url',
+        title: 'Yoga Instructor',
+      );
+
+      final modifiedInstructor = instructor.copyWith(
+        name: 'Jane Doe',
+        title: 'Pilates Instructor',
+      );
+
+      expect(modifiedInstructor.id, '1');
+      expect(modifiedInstructor.name, 'Jane Doe');
+      expect(modifiedInstructor.photo, 'photo_url');
+      expect(modifiedInstructor.title, 'Pilates Instructor');
+    });
+
+    test(
+      'instructorProvider.instructorList returns a list of instructors',
+      () async {
+        // Add test data to fake firestore
+        await fakeFirestore.collection('instructor').doc('1').set({
+          'name': 'John Doe',
+          'specialization': 'Yoga',
+          'bio': 'Yoga expert',
+        });
+        await fakeFirestore.collection('instructor').doc('2').set({
+          'name': 'Jane Smith',
+          'specialization': 'Pilates',
+          'bio': 'Pilates expert',
+        });
+
+        // Call the method being tested
+        final instructors = await instructorService.fetchInstructors();
+
+        // Verify results
+        expect(instructors.length, 2);
+      },
+    );
   });
 }

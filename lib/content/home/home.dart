@@ -5,6 +5,7 @@ import 'package:dima_project/content/custom_appbar.dart';
 import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:dima_project/content/home/gym/gym_page.dart';
 import 'package:dima_project/content/home/gym/new_gym.dart';
+import 'package:dima_project/content/home/home_loading.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/content/home/gym/gym_card.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
@@ -259,30 +260,34 @@ class _HomeState extends State<Home> {
   }
 
   Widget _buildMobileHome() {
-    return CustomScrollView(
-      slivers: [
-        if (_todaysBookings.isNotEmpty)
+    if (_filteredGymList == null || _user == null) {
+      return HomeLoading();
+    } else {
+      return CustomScrollView(
+        slivers: [
+          if (_todaysBookings.isNotEmpty)
+            SliverAppBar(
+              backgroundColor: Colors.transparent,
+              expandedHeight: 50.0,
+              flexibleSpace: _buildTopBar('Upcoming bookings'),
+            ),
+          if (_todaysBookings.isNotEmpty) _buildTodaysBookings(),
           SliverAppBar(
             backgroundColor: Colors.transparent,
             expandedHeight: 50.0,
-            flexibleSpace: _buildTopBar('Upcoming bookings'),
+            flexibleSpace: _buildTopBar('Discover new activities'),
           ),
-        if (_todaysBookings.isNotEmpty) _buildTodaysBookings(),
-        SliverAppBar(
-          backgroundColor: Colors.transparent,
-          expandedHeight: 50.0,
-          flexibleSpace: _buildTopBar('Discover new activities'),
-        ),
-        SliverAppBar(
-          backgroundColor: Colors.transparent,
-          expandedHeight: 75.0,
-          flexibleSpace: _buildSearchBar(),
-        ),
-        SliverToBoxAdapter(child: _buildNewGymButton()),
-        _buildGymSliverList(),
-        SliverToBoxAdapter(child: SizedBox(height: 100.0)),
-      ],
-    );
+          SliverAppBar(
+            backgroundColor: Colors.transparent,
+            expandedHeight: 75.0,
+            flexibleSpace: _buildSearchBar(),
+          ),
+          SliverToBoxAdapter(child: _buildNewGymButton()),
+          _buildGymSliverList(),
+          SliverToBoxAdapter(child: SizedBox(height: 100.0)),
+        ],
+      );
+    }
   }
 
   Widget _buildDesktopHome() {
@@ -298,25 +303,28 @@ class _HomeState extends State<Home> {
         Expanded(
           child: Row(
             children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _filteredGymList?.length ?? 0,
-                  itemBuilder: (context, index) {
-                    Gym gym = _filteredGymList![index];
-                    int gymIndex = _gymProvider.getGymIndex(gym);
-                    return gymIndex != -1
-                        ? GestureDetector(
-                          onTap: () => _onGymCardTap(gymIndex),
-                          child: GymCard(
-                            gymIndex: gymIndex,
-                            isFavourite: _isFavourite(gym),
-                            isSelected: _selectedGymIndex == gymIndex,
-                          ),
-                        )
-                        : Container();
-                  },
+              if (_filteredGymList == null || _user == null)
+                Expanded(child: HomeLoading())
+              else
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: _filteredGymList?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      Gym gym = _filteredGymList![index];
+                      int gymIndex = _gymProvider.getGymIndex(gym);
+                      return gymIndex != -1
+                          ? GestureDetector(
+                            onTap: () => _onGymCardTap(gymIndex),
+                            child: GymCard(
+                              gymIndex: gymIndex,
+                              isFavourite: _isFavourite(gym),
+                              isSelected: _selectedGymIndex == gymIndex,
+                            ),
+                          )
+                          : Container();
+                    },
+                  ),
                 ),
-              ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -352,7 +360,6 @@ class _HomeState extends State<Home> {
     });
 
     // TODO: sort the gym list by distance
-    // TODO: replace CircularProgressIndicator with shimmer effect https://docs.flutter.dev/cookbook/effects/shimmer-loading
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: _useMobileLayout ? CustomAppBar(user: _user) : null,

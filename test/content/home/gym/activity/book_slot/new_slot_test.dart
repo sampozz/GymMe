@@ -91,7 +91,7 @@ void main() {
       expect(find.text('Repeat until'), findsNothing);
     });
 
-    testWidgets('should call createSlot when creating a new slot', (
+    testWidgets('should show date picker when tap on date', (
       WidgetTester tester,
     ) async {
       // Arrange - need to stub the provider method
@@ -108,18 +108,55 @@ void main() {
         ),
       );
 
-      // Need to fill all required fields
-      // This would be more complex in real implementation with datetime pickers
-      // Mocking the form completion - in a real test we would need to interact with
-      // date/time pickers, but for simplicity we'll just set the controllers
+      // Act - tap the date field
+      await tester.tap(find.byKey(Key('dateField')));
+      await tester.pumpAndSettle();
 
-      // For testing purposes we have to find the form fields and fill them
-      // However, since we can't easily test the date/time pickers in widget tests,
-      // this is more of a skeleton test structure
+      // Assert - check if the date picker is displayed
+      expect(find.byType(DatePickerDialog), findsOneWidget);
 
-      // Verify createSlot would be called with appropriate parameters
-      // However, this verification will likely fail in the current implementation
-      // since we can't easily fill the date/time pickers in widget tests
+      // Simulate selecting a date
+      await tester.tap(find.text('OK').last);
+      await tester.pumpAndSettle();
+      // Assert - check if the selected date is displayed
+      expect(
+        find.text(DateFormat(DateFormat.YEAR_MONTH_DAY).format(DateTime.now())),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('should show time picker when tap on start time', (
+      WidgetTester tester,
+    ) async {
+      // Arrange - need to stub the provider method
+      when(
+        mockSlotProvider.createSlot(any, any, any),
+      ).thenAnswer((_) async => {});
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ChangeNotifierProvider<SlotProvider>.value(
+            value: mockSlotProvider,
+            child: NewSlot(gymId: 'gym1', activityId: 'activity1'),
+          ),
+        ),
+      );
+
+      // Act - tap the start time field
+      await tester.tap(find.byKey(Key('startTimeField')));
+      await tester.pumpAndSettle();
+
+      // Assert - check if the time picker is displayed
+      expect(find.byType(TimePickerDialog), findsOneWidget);
+
+      // Simulate selecting a time
+      await tester.tap(find.text('OK').last);
+      await tester.pumpAndSettle();
+      // Assert - check if the selected time is displayed
+      expect(
+        find.text(DateFormat(DateFormat.HOUR24_MINUTE).format(DateTime.now())),
+        findsOneWidget,
+      );
     });
 
     testWidgets('should call updateSlot when editing an existing slot', (
@@ -160,6 +197,35 @@ void main() {
       await tester.pump();
 
       // In a full implementation, we would expect verify the updateSlot method was called
+      verify(mockSlotProvider.updateSlot(any)).called(1);
+    });
+
+    testWidgets('should call createSlot when creating a new slot', (
+      WidgetTester tester,
+    ) async {
+      // Arrange
+      when(
+        mockSlotProvider.createSlot(any, any, any),
+      ).thenAnswer((_) async => {});
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: ChangeNotifierProvider<SlotProvider>.value(
+            value: mockSlotProvider,
+            child: NewSlot(gymId: 'gym1', activityId: 'activity1'),
+          ),
+        ),
+      );
+
+      // Act - tap the create button
+      final button = find.text('Create Slot');
+      await tester.ensureVisible(button);
+      await tester.pumpAndSettle();
+      await tester.tap(button);
+      await tester.pumpAndSettle();
+
+      // Assert - verify that createSlot was called
+      verify(mockSlotProvider.createSlot(any, any, any)).called(1);
     });
 
     testWidgets('should handle recurrence selection', (

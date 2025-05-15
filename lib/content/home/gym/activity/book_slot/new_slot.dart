@@ -56,6 +56,21 @@ class _NewSlotState extends State<NewSlot> {
       _recurrence = 'None';
       _selectedUntilDate = null;
       _untilCtrl.text = '';
+    } else {
+      _slotDateCtrl.text = DateFormat(
+        DateFormat.YEAR_MONTH_DAY,
+      ).format(DateTime.now());
+      _startTimeCtrl.text = DateFormat(
+        DateFormat.HOUR24_MINUTE,
+      ).format(DateTime.now());
+      _endTimeCtrl.text = DateFormat(
+        DateFormat.HOUR24_MINUTE,
+      ).format(DateTime.now().add(const Duration(hours: 1)));
+      _maxUsersCtrl.text = '1';
+      _roomCtrl.text = '';
+      _selectedDate = DateTime.now();
+      _selectedStartTime = DateTime.now();
+      _selectedEndTime = DateTime.now().add(const Duration(hours: 1));
     }
   }
 

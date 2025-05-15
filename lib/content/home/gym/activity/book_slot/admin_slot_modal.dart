@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:dima_project/content/home/gym/activity/book_slot/new_slot.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -100,18 +103,24 @@ class _AdminSlotModalState extends State<AdminSlotModal> {
               return ListTile(
                 leading: CircleAvatar(
                   radius: 20,
-                  child: ClipOval(
-                    child: Image.network(
-                      _bookedUsers[index].photoURL,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) {
-                        return Image.asset(
-                          'assets/avatar.png',
-                          fit: BoxFit.cover,
-                        );
-                      },
-                    ),
-                  ),
+                  child:
+                      !kIsWeb && !Platform.isAndroid && !Platform.isIOS
+                          ? Image.asset(
+                            'assets/avatar.png',
+                            fit: BoxFit.cover,
+                          ) // For tests
+                          : ClipOval(
+                            child: Image.network(
+                              _bookedUsers[index].photoURL,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, _, _) {
+                                return Image.asset(
+                                  'assets/avatar.png',
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            ),
+                          ),
                 ),
                 title: Text(_bookedUsers[index].displayName),
                 subtitle: Text(_bookedUsers[index].email),

@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:dima_project/content/instructors/instructor_model.dart';
 import 'package:dima_project/content/instructors/instructor_provider.dart';
 import 'package:dima_project/content/instructors/instructors_page.dart';
 import 'package:dima_project/content/home/gym/activity/activity_model.dart';
 import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -48,7 +51,6 @@ class _NewActivityState extends State<NewActivity> {
     if (_formKey.currentState?.validate() != true) {
       return;
     }
-
     Activity newActivity =
         widget.activity?.copyWith(
           id: widget.activity?.id ?? '',
@@ -105,18 +107,24 @@ class _NewActivityState extends State<NewActivity> {
               children: [
                 CircleAvatar(
                   radius: 20,
-                  child: ClipOval(
-                    child: Image.network(
-                      instructor.photo,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) {
-                        return Image.asset(
-                          'assets/avatar.png',
-                          fit: BoxFit.cover,
-                        );
-                      },
-                    ),
-                  ),
+                  child:
+                      !kIsWeb && !Platform.isAndroid && !Platform.isIOS
+                          ? Image.asset(
+                            'assets/avatar.png',
+                            fit: BoxFit.cover,
+                          ) // For tests
+                          : ClipOval(
+                            child: Image.network(
+                              instructor.photo,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, _, _) {
+                                return Image.asset(
+                                  'assets/avatar.png',
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            ),
+                          ),
                 ),
                 SizedBox(width: 10),
                 Column(
@@ -172,9 +180,20 @@ class _NewActivityState extends State<NewActivity> {
   }
 
   void _navigateToInstructors() {
+    final instructorProvider = Provider.of<InstructorProvider>(
+      context,
+      listen: false,
+    );
+
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => InstructorsPage()),
+      MaterialPageRoute(
+        builder:
+            (context) => ChangeNotifierProvider<InstructorProvider>.value(
+              value: instructorProvider,
+              child: InstructorsPage(),
+            ),
+      ),
     );
   }
 
@@ -197,6 +216,7 @@ class _NewActivityState extends State<NewActivity> {
           child: Column(
             children: [
               TextFormField(
+                key: Key('titleField'),
                 controller: titleCtrl,
                 decoration: InputDecoration(
                   labelText: 'Title',
@@ -214,6 +234,7 @@ class _NewActivityState extends State<NewActivity> {
               ),
               SizedBox(height: 20),
               TextFormField(
+                key: Key('priceField'),
                 controller: priceCtrl,
                 decoration: InputDecoration(
                   labelText: 'Price',

@@ -9,7 +9,6 @@ import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart
 import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/foundation.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class PlatformService {
   bool get isWeb => kIsWeb;
@@ -146,8 +145,7 @@ class BookingsProvider extends ChangeNotifier {
           '&dates=$startUtc/$endUtc'
           '&location=${Uri.encodeComponent(booking.gymName)}';
 
-      launchUrl(Uri.parse(url));
-      return;
+      return _bookingsService.addToCalendarWeb(url);
     }
 
     final Event event = Event(
@@ -158,7 +156,8 @@ class BookingsProvider extends ChangeNotifier {
       endDate: booking.endTime,
       allDay: false,
     );
-    Add2Calendar.addEvent2Cal(event);
+
+    return _bookingsService.addToCalendarMobile(event);
   }
 
   /// Fetches all booking updates from the user's bookings

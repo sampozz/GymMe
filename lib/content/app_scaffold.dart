@@ -115,7 +115,7 @@ class _AppScaffoldState extends State<AppScaffold> {
 
     // TODO: setup internationalization
 
-    if (user?.isAdmin == true) {
+    if (user?.isAdmin ?? false) {
       _createAdminPagesList();
     } else {
       _createUserPagesList();
@@ -143,6 +143,7 @@ class _AppScaffoldState extends State<AppScaffold> {
                   currentIndex: _currentIndex,
                   onTapCallback: _navigateTab,
                   navigatorKey: navigatorKey,
+                  isLoading: user == null,
                 )
                 : Container(),
             Expanded(

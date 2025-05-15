@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dima_project/content/home/gym/activity/activity_model.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/admin_slot_modal.dart';
 import 'package:dima_project/content/home/gym/activity/book_slot/confirm_booking_modal.dart';
@@ -12,6 +14,7 @@ import 'package:dima_project/content/instructors/instructor_provider.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -256,18 +259,24 @@ class _BookSlotPageState extends State<BookSlotPage>
                   children: [
                     CircleAvatar(
                       radius: 20,
-                      child: ClipOval(
-                        child: Image.network(
-                          instructor?.photo ?? '',
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, _, _) {
-                            return Image.asset(
-                              'assets/avatar.png',
-                              fit: BoxFit.cover,
-                            );
-                          },
-                        ),
-                      ),
+                      child:
+                          !kIsWeb && !Platform.isAndroid && !Platform.isIOS
+                              ? Image.asset(
+                                'assets/avatar.png',
+                                fit: BoxFit.cover,
+                              ) // For tests
+                              : ClipOval(
+                                child: Image.network(
+                                  instructor?.photo ?? '',
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, _, _) {
+                                    return Image.asset(
+                                      'assets/avatar.png',
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                ),
+                              ),
                     ),
                     SizedBox(width: 10),
                     Column(
