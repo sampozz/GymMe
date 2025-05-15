@@ -92,9 +92,9 @@ class _NewMyDataState extends State<NewMyData> {
         SnackBar(
           content: Row(
             children: [
-              Icon(Icons.check_circle, color: Colors.white),
+              Icon(Icons.check_circle_outlined, color: Colors.white),
               SizedBox(width: 12),
-              Expanded(child: Text('Dati aggiornati con successo')),
+              Expanded(child: Text('Changes saved successfully!')),
             ],
           ),
           backgroundColor: Colors.green,
@@ -121,11 +121,151 @@ class _NewMyDataState extends State<NewMyData> {
       // Gestisci eventuali errori
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Errore durante l\'aggiornamento: $e'),
+          content: Text('There\'s been an issue during the update: $e'),
           backgroundColor: Colors.red,
         ),
       );
     }
+  }
+
+  Widget buildFormField(
+    String label,
+    IconData icon,
+    TextEditingController controller,
+    bool isMandatory,
+  ) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          icon: Icon(icon),
+          border: InputBorder.none,
+        ),
+        validator: isMandatory ? (value) => _validateMandatory(value) : null,
+      ),
+    );
+  }
+
+  Widget buildFormCard() {
+    return Card(
+      elevation: 0,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 8),
+            buildFormField(
+              'Name and Surname',
+              Icons.person_outlined,
+              nameCtrl,
+              true,
+            ),
+            SizedBox(height: 10),
+
+            // Email (read-only)
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: TextFormField(
+                enabled: false,
+                decoration: InputDecoration(
+                  labelText: widget.user?.email,
+                  icon: Icon(Icons.email_outlined),
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+
+            buildFormField(
+              'Phone number',
+              Icons.phone_outlined,
+              phoneCtrl,
+              true,
+            ),
+            SizedBox(height: 10),
+            buildFormField('Address', Icons.home_outlined, addressCtrl, false),
+            SizedBox(height: 10),
+            buildFormField(
+              'Tax code',
+              Icons.badge_outlined,
+              taxCodeCtrl,
+              false,
+            ),
+            SizedBox(height: 10),
+
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey.shade50,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: TextFormField(
+                controller: birthDateCtrl,
+                decoration: InputDecoration(
+                  labelText: 'Birth date',
+                  icon: Icon(Icons.date_range_outlined),
+                  border: InputBorder.none,
+                ),
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(1900),
+                    lastDate: DateTime(2100),
+                  );
+                  if (pickedDate != null) {
+                    String formattedDate = DateFormat(
+                      'dd/MM/yyyy',
+                    ).format(pickedDate);
+                    birthDateCtrl.text = formattedDate;
+                  }
+                },
+              ),
+            ),
+
+            // Birth date
+            SizedBox(height: 10),
+
+            buildFormField(
+              'Birth place',
+              Icons.location_on_outlined,
+              birthPlaceCtrl,
+              false,
+            ),
+            SizedBox(height: 10),
+
+            // Save button
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    style: TextButton.styleFrom(alignment: Alignment.center),
+                    onPressed: _isSaving ? null : _saveChanges,
+                    child: Text("Save changes"),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -133,7 +273,7 @@ class _NewMyDataState extends State<NewMyData> {
     final user = widget.user ?? Provider.of<UserProvider>(context).user;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Modifica dati')),
+      appBar: AppBar(title: Text('Modify data')),
       body:
           _isSaving
               ? Center(
@@ -142,126 +282,13 @@ class _NewMyDataState extends State<NewMyData> {
                   children: [
                     CircularProgressIndicator(),
                     SizedBox(height: 16),
-                    Text('Salvataggio in corso...'),
+                    Text('Saving...'),
                   ],
                 ),
               )
               : SingleChildScrollView(
                 padding: EdgeInsets.all(16.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Nome
-                      TextFormField(
-                        controller: nameCtrl,
-                        decoration: InputDecoration(
-                          labelText: 'Nome e cognome',
-                          icon: Icon(Icons.person),
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) => _validateMandatory(value),
-                      ),
-                      SizedBox(height: 16),
-                      // Email (di sola lettura)
-                      TextFormField(
-                        enabled: false,
-                        decoration: InputDecoration(
-                          labelText: widget.user?.email,
-                          icon: Icon(Icons.email),
-                          border: OutlineInputBorder(),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade400),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 16),
-
-                      // Telefono
-                      TextFormField(
-                        controller: phoneCtrl,
-                        decoration: InputDecoration(
-                          labelText: 'Telefono',
-                          icon: Icon(Icons.phone),
-                          border: OutlineInputBorder(),
-                        ),
-                        keyboardType: TextInputType.phone,
-                        validator: (value) => _validateMandatory(value),
-                      ),
-                      SizedBox(height: 16),
-                      // Indirizzo
-                      TextFormField(
-                        controller: addressCtrl,
-                        decoration: InputDecoration(
-                          labelText: 'Indirizzo',
-                          icon: Icon(Icons.home),
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      // Codice fiscale
-                      TextFormField(
-                        controller: taxCodeCtrl,
-                        decoration: InputDecoration(
-                          labelText: 'Codice fiscale',
-                          icon: Icon(Icons.badge),
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      // Data di nascita
-                      TextFormField(
-                        controller: birthDateCtrl,
-                        decoration: InputDecoration(
-                          labelText: 'Data di nascita',
-                          icon: Icon(Icons.date_range),
-                          border: OutlineInputBorder(),
-                        ),
-                        onTap: () async {
-                          DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(1900),
-                            lastDate: DateTime(2100),
-                          );
-                          if (pickedDate != null) {
-                            String formattedDate = DateFormat(
-                              'dd/MM/yyyy',
-                            ).format(pickedDate);
-                            birthDateCtrl.text = formattedDate;
-                          }
-                        },
-                      ),
-                      SizedBox(height: 16),
-                      // Luogo di nascita
-                      TextFormField(
-                        controller: birthPlaceCtrl,
-                        decoration: InputDecoration(
-                          labelText: 'Luogo di nascita',
-                          icon: Icon(Icons.location_city),
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      // Salvataggio
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            TextButton(
-                              style: TextButton.styleFrom(
-                                alignment: Alignment.center,
-                              ),
-                              onPressed: _isSaving ? null : _saveChanges,
-                              child: Text("Salva"),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                child: Form(key: _formKey, child: buildFormCard()),
               ),
     );
   }

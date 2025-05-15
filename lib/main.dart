@@ -40,11 +40,16 @@ class App extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: Colors.blue, // Base primary swatch (closest to navy)
           accentColor: Color(0xFFFFC107), // Gold as secondary color
-          backgroundColor: Color(0xFFF5F5F5), // Light gray background
+          backgroundColor: Color(0xFFBEC4FF), // Light gray background
           cardColor: Color(0xFFFFFFFF), // White surface for cards
-          errorColor: Color(0xFFD32F2F), // Strong red for errors
+          errorColor: Color.fromARGB(255, 142, 76, 76), // Strong red for errors
         ).copyWith(
-          primary: Color(0xFF000080), // Navy Blue (custom primary)
+          primary: const Color.fromARGB(
+            255,
+            14,
+            57,
+            199,
+          ), // Navy Blue (custom primary)
           secondary: Color(0xFFFFC107), // Gold (custom secondary)
           tertiary: Color(0xFF4C9AFF), // Lighter Blue for accents
           surface: Color(0xFFF5F5F5), // White surface
@@ -69,6 +74,7 @@ class App extends StatelessWidget {
           ),
         ),
       ),
+
       home: const AuthGate(),
       // TODO: Add splash screen
       initialRoute: '/',

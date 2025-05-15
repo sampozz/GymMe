@@ -52,9 +52,11 @@ dependencies:
   geolocator_platform_interface: ^4.2.5
   geocoding: ^3.0.0
   google_sign_in: ^6.3.0
+  pointer_interceptor: ^0.10.1+2
   connectivity_plus: ^6.1.4
   fake_cloud_firestore: ^3.1.0
   shimmer: ^3.0.0
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:

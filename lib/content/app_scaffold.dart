@@ -5,6 +5,7 @@ import 'package:dima_project/content/favourites/favourites.dart';
 import 'package:dima_project/content/home/home.dart';
 import 'package:dima_project/content/profile/profile.dart';
 import 'package:dima_project/content/map/gym_map.dart';
+import 'package:dima_project/content/profile/subscription/fetch_subscription.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
@@ -85,10 +86,10 @@ class _AppScaffoldState extends State<AppScaffold> {
         "widget": GymMap(),
       },
       {
-        "title": "Subscriptions",
-        "description": "Subscription page",
+        "title": "Members",
+        "description": "Members page",
         "icon": Icons.edit_note_outlined,
-        "widget": null,
+        "widget": FetchSubscription(),
       },
       {
         "title": "Favourites",

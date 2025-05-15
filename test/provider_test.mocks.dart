@@ -361,6 +361,15 @@ class MockUserProvider extends _i1.Mock implements _i12.UserProvider {
           as _i4.Future<void>);
 
   @override
+  bool isGymInFavourites(String? gymId) =>
+      (super.noSuchMethod(
+            Invocation.method(#isGymInFavourites, [gymId]),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
+
+  @override
   _i4.Future<void> updateUserProfile({
     String? displayName,
     String? phoneNumber,

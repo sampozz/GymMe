@@ -94,9 +94,12 @@ class MockMapProvider extends _i1.Mock implements _i4.MapProvider {
           as _i5.Future<_i7.Position?>);
 
   @override
-  Map<String, _i2.Marker> getMarkers(_i3.Locations? gyms) =>
+  Map<String, _i2.Marker> getMarkers(
+    _i3.Locations? gyms, {
+    dynamic Function(String, String)? onMarkerTap,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#getMarkers, [gyms]),
+            Invocation.method(#getMarkers, [gyms], {#onMarkerTap: onMarkerTap}),
             returnValue: <String, _i2.Marker>{},
           )
           as Map<String, _i2.Marker>);

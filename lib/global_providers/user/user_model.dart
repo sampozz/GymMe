@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dima_project/content/profile/subscription/subscription_model.dart';
 
 class User {
   String uid;
@@ -12,7 +13,8 @@ class User {
   String taxCode;
   bool isAdmin;
   List<String> favouriteGyms;
-  //List<String> subscriptions;
+  DateTime? certificateExpDate;
+  List<Subscription> subscriptions;
 
   User({
     this.uid = '',
@@ -26,7 +28,8 @@ class User {
     this.taxCode = '',
     this.isAdmin = false,
     this.favouriteGyms = const [],
-    //this.subscriptions = const [],
+    this.certificateExpDate,
+    this.subscriptions = const [],
   });
 
   factory User.fromFirestore(
@@ -46,7 +49,16 @@ class User {
       taxCode: data['taxCode'] ?? User().taxCode,
       isAdmin: data['isAdmin'] ?? User().isAdmin,
       favouriteGyms: List<String>.from(data['favouriteGyms'] ?? []),
-      //subscriptions: List<String>.from(data['subscriptions'] ?? []),
+      certificateExpDate:
+          data['certificateExpDate']?.toDate() ?? User().certificateExpDate,
+      subscriptions:
+          data['subscriptions'] == null
+              ? []
+              : data['subscriptions']
+                  .map<Subscription>(
+                    (subscription) => Subscription.fromFirestore(subscription),
+                  )
+                  .toList(),
     );
   }
 
@@ -63,7 +75,11 @@ class User {
       'taxCode': taxCode,
       'isAdmin': isAdmin,
       'favouriteGyms': favouriteGyms,
-      //'subscriptions': subscriptions,
+      'certificateExpDate': certificateExpDate,
+      'subscriptions':
+          subscriptions
+              .map((subscription) => subscription.toFirestore())
+              .toList(),
     };
   }
 }

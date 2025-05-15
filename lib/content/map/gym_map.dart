@@ -1,10 +1,14 @@
 import 'package:dima_project/global_providers/screen_provider.dart';
+import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:pointer_interceptor/pointer_interceptor.dart';
 import 'package:dima_project/global_providers/gym_provider.dart';
 import 'package:dima_project/global_providers/map_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:dima_project/content/home/gym/gym_model.dart';
+import 'package:dima_project/content/map/gym_bottom_sheet.dart';
+import 'package:flutter/foundation.dart';
 
 class GymMap extends StatefulWidget {
   const GymMap({super.key});
@@ -36,9 +40,21 @@ class _GymAppState extends State<GymMap> {
       _currentPosition = mapProvider?.savedPosition ?? _currentPosition;
       _currentZoom = mapProvider?.savedZoom ?? _currentZoom;
     }
+
+    _initializeUserLocation();
     _loadGymList();
-    _getUserLocation();
+
     searchBarController.addListener(_searchList);
+  }
+
+  @override
+  void deactivate() {
+    if (mapController != null) {
+      mapProvider?.saveMapState(_currentPosition, _currentZoom);
+      mapController = null;
+    }
+
+    super.deactivate();
   }
 
   @override
@@ -46,33 +62,40 @@ class _GymAppState extends State<GymMap> {
     searchBarController.removeListener(_searchList);
     searchBarController.dispose();
 
-    mapProvider?.saveMapState(_currentPosition, _currentZoom);
-
     super.dispose();
   }
 
-  Future<void> _getUserLocation() async {
+  Future<void> _initializeUserLocation() async {
     try {
       final position = await mapProvider?.getUserLocation();
 
-      if (position != null) {
-        if (!initialized) {
-          setState(() {
+      if (position != null && mounted) {
+        setState(() {
+          if (!initialized) {
             _currentPosition = LatLng(position.latitude, position.longitude);
-            _locationGranted = true;
-          });
-        } else {
-          setState(() {
-            _locationGranted = true;
-          });
+          }
+          _locationGranted = true;
+        });
+
+        if (mapController != null) {
+          _updateCameraPosition();
         }
       } else {
         setState(() {
           _locationGranted = false;
         });
-      }
 
-      _updateCameraPosition();
+        if (mounted && !initialized) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Location permission denied. Go to settings to enable it.',
+              ),
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
+      }
     } catch (e) {
       setState(() {
         _locationGranted = false;
@@ -90,12 +113,33 @@ class _GymAppState extends State<GymMap> {
     }
   }
 
-  Future<void> _onMapCreated(GoogleMapController controller) async {
-    mapController = controller;
+  void _showGymDetails(String gymId) {
+    int gymIndex = gymList!.indexWhere((gym) => gym.id == gymId);
+    if (gymIndex != -1) {
+      Future.microtask(() {
+        if (mounted) {
+          showModalBottomSheet(
+            context: context,
+            backgroundColor: Colors.transparent,
+            barrierColor: kIsWeb ? Colors.transparent : Colors.black26,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            builder: (context) {
+              final Gym gym = gymList![gymIndex];
 
-    if (_locationGranted) {
-      _updateCameraPosition();
+              return PointerInterceptor(child: GymBottomSheet(gymId: gym.id!));
+            },
+          );
+        }
+      });
     }
+  }
+
+  Future<void> _onMapCreated(GoogleMapController controller) async {
+    setState(() {
+      mapController = controller;
+    });
 
     try {
       if (mapProvider != null) {
@@ -103,7 +147,12 @@ class _GymAppState extends State<GymMap> {
 
         if (mounted) {
           setState(() {
-            _markers = mapProvider!.getMarkers(gyms);
+            _markers = mapProvider!.getMarkers(
+              gyms,
+              onMarkerTap: (gymName, gymId) {
+                _showGymDetails(gymId);
+              },
+            );
           });
         }
       }
@@ -113,6 +162,10 @@ class _GymAppState extends State<GymMap> {
           context,
         ).showSnackBar(SnackBar(content: Text('Unable to load gym locations')));
       }
+    }
+
+    if (!initialized) {
+      _updateCameraPosition();
     }
   }
 
@@ -124,12 +177,16 @@ class _GymAppState extends State<GymMap> {
   }
 
   void _updateCameraPosition() {
-    if (mapController != null) {
-      mapController!.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(target: _currentPosition, zoom: _currentZoom),
-        ),
-      );
+    if (mapController != null && mounted) {
+      try {
+        mapController!.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(target: _currentPosition, zoom: _currentZoom),
+          ),
+        );
+      } catch (e) {
+        print('Error updating camera position: $e');
+      }
     }
   }
 
@@ -171,6 +228,7 @@ class _GymAppState extends State<GymMap> {
           ),
           markers: _markers.values.toSet(),
           myLocationEnabled: _locationGranted,
+          myLocationButtonEnabled: false,
           zoomControlsEnabled: false,
           mapToolbarEnabled: false,
           minMaxZoomPreference: const MinMaxZoomPreference(11, 20),
@@ -192,10 +250,28 @@ class _GymAppState extends State<GymMap> {
                             position.longitude,
                           );
                         });
+                        _updateCameraPosition();
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Location permission denied. Go to settings to enable it.',
+                            ),
+                            duration: Duration(seconds: 3),
+                          ),
+                        );
                       }
-                      _updateCameraPosition();
                     }
-                    : null,
+                    : () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Location permission denied. Go to settings to enable it.',
+                          ),
+                          duration: Duration(seconds: 3),
+                        ),
+                      );
+                    },
             backgroundColor: _locationGranted ? Colors.blue : Colors.grey,
             foregroundColor:
                 _locationGranted ? Colors.white : Colors.grey.shade300,
@@ -227,68 +303,83 @@ class _GymAppState extends State<GymMap> {
   }
 
   Widget _buildSearchBar() {
-    return SearchAnchor(
-      builder: (BuildContext context, SearchController controller) {
-        controller.addListener(() {
-          searchBarController.text = controller.text;
-        });
-        return SearchBar(
-          controller: controller,
-          onChanged: (value) {
-            controller.openView();
-            _searchList();
-          },
-          trailing:
-              controller.text.isNotEmpty
-                  ? [
-                    IconButton(
-                      icon: Icon(Icons.clear),
-                      onPressed: () {
-                        controller.clear();
-                        searchBarController.clear();
-                      },
-                    ),
-                  ]
-                  : null,
-          padding: const WidgetStatePropertyAll<EdgeInsets>(
-            EdgeInsets.symmetric(horizontal: 16.0),
-          ),
-          leading: const Icon(Icons.search),
-          elevation: WidgetStateProperty.all(0),
-          hintText: 'Search for gyms or locations...',
-          hintStyle: WidgetStatePropertyAll<TextStyle>(
-            TextStyle(color: Colors.grey.shade400, fontStyle: FontStyle.italic),
-          ),
-        );
-      },
-      suggestionsBuilder: (BuildContext context, SearchController controller) {
-        if (searchList == null || searchList!.isEmpty) {
-          return [const ListTile(title: Text('No results found'))];
-        }
-
-        return searchList!
-            .map(
-              (gym) => ListTile(
-                title: Text(gym.name),
-                subtitle: Text(gym.address),
-                onTap: () {
-                  setState(() {
-                    if (_markers.isNotEmpty && _markers.containsKey(gym.id)) {
-                      _currentPosition = _markers[gym.id]!.position;
-                    }
-                  });
-                  _updateCameraPosition();
-                  Future.delayed(const Duration(milliseconds: 500), () {
-                    if (gym.id != null) {
-                      mapController?.showMarkerInfoWindow(MarkerId(gym.id!));
-                    }
-                  });
-                  controller.closeView(gym.name);
-                },
+    return PointerInterceptor(
+      child: SearchAnchor(
+        builder: (BuildContext context, SearchController controller) {
+          controller.addListener(() {
+            searchBarController.text = controller.text;
+          });
+          return SearchBar(
+            controller: controller,
+            onChanged: (value) {
+              controller.openView();
+              _searchList();
+            },
+            trailing:
+                controller.text.isNotEmpty
+                    ? [
+                      IconButton(
+                        icon: Icon(Icons.clear),
+                        onPressed: () {
+                          controller.clear();
+                          searchBarController.clear();
+                        },
+                      ),
+                    ]
+                    : null,
+            padding: const WidgetStatePropertyAll<EdgeInsets>(
+              EdgeInsets.symmetric(horizontal: 16.0),
+            ),
+            leading: const Icon(Icons.search),
+            elevation: WidgetStateProperty.all(0),
+            hintText: 'Search for gyms or locations...',
+            hintStyle: WidgetStatePropertyAll<TextStyle>(
+              TextStyle(
+                color: Colors.grey.shade400,
+                fontStyle: FontStyle.italic,
               ),
-            )
-            .toList();
-      },
+            ),
+          );
+        },
+        suggestionsBuilder: (
+          BuildContext context,
+          SearchController controller,
+        ) {
+          if (searchList == null || searchList!.isEmpty) {
+            return [
+              PointerInterceptor(
+                child: const ListTile(title: Text('No results found')),
+              ),
+            ];
+          }
+
+          return searchList!
+              .map(
+                (gym) => PointerInterceptor(
+                  child: ListTile(
+                    title: Text(gym.name),
+                    subtitle: Text(gym.address),
+                    onTap: () {
+                      setState(() {
+                        if (_markers.isNotEmpty &&
+                            _markers.containsKey(gym.id)) {
+                          _currentPosition = _markers[gym.id]!.position;
+                        }
+                      });
+                      _updateCameraPosition();
+                      Future.delayed(const Duration(milliseconds: 500), () {
+                        if (gym.id != null) {
+                          _showGymDetails(gym.id!);
+                        }
+                      });
+                      controller.closeView(gym.name);
+                    },
+                  ),
+                ),
+              )
+              .toList();
+        },
+      ),
     );
   }
 }
