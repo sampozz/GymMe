@@ -181,6 +181,14 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
+  // This method verifies the presence of a gym in the favourite gyms list of the user
+  bool isGymInFavourites(String gymId) {
+    if (_user == null) {
+      return false;
+    }
+    return _user!.favouriteGyms.contains(gymId);
+  }
+  
   /// This method will update the user profile with the provided data
   Future<void> updateUserProfile({
     String? displayName,
