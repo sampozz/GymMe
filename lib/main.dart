@@ -33,23 +33,18 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // TODO: Decide App name
-      title: 'Flutter Demo',
+      title: 'GymMe',
       // TODO: Decide App theme
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.blue, // Base primary swatch (closest to navy)
+          primarySwatch:
+              Colors.deepPurple, // Base primary swatch (closest to navy)
           accentColor: Color(0xFFFFC107), // Gold as secondary color
           backgroundColor: Color(0xFFBEC4FF), // Light gray background
           cardColor: Color(0xFFFFFFFF), // White surface for cards
           errorColor: Color.fromARGB(255, 142, 76, 76), // Strong red for errors
         ).copyWith(
-          primary: const Color.fromARGB(
-            255,
-            14,
-            57,
-            199,
-          ), // Navy Blue (custom primary)
+          primary: Colors.pink, // Navy Blue (custom primary)
           secondary: Color(0xFFFFC107), // Gold (custom secondary)
           tertiary: Color(0xFF4C9AFF), // Lighter Blue for accents
           surface: Color(0xFFF5F5F5), // White surface

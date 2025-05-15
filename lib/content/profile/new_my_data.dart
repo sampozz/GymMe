@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:dima_project/global_providers/user/user_model.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +20,7 @@ class NewMyData extends StatefulWidget {
 
 class _NewMyDataState extends State<NewMyData> {
   final _formKey = GlobalKey<FormState>();
+  Uint8List? imageBytes;
 
   late TextEditingController nameCtrl;
   late TextEditingController phoneCtrl;
@@ -41,6 +47,27 @@ class _NewMyDataState extends State<NewMyData> {
     );
   }
 
+  void _showFilePicker() async {
+    final result = await FilePicker.platform.pickFiles(type: FileType.image);
+
+    if (result != null) {
+      if (result.files.first.bytes != null) {
+        // Use bytes if available
+        setState(() {
+          imageBytes = result.files.first.bytes;
+        });
+      } else if (result.files.first.path != null) {
+        // Fallback: Read bytes from the file path
+        final filePath = result.files.first.path!;
+        final file = File(filePath);
+        final bytes = await file.readAsBytes();
+        setState(() {
+          imageBytes = bytes;
+        });
+      }
+    }
+  }
+
   @override
   void dispose() {
     nameCtrl.dispose();
@@ -63,6 +90,16 @@ class _NewMyDataState extends State<NewMyData> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
+    String imageUrl = widget.user?.photoURL ?? '';
+    if (imageBytes != null) {
+      final base64Image = base64Encode(imageBytes!);
+
+      imageUrl = await Provider.of<UserProvider>(
+        context,
+        listen: false,
+      ).uploadImage(base64Image);
+    }
+
     setState(() {
       _isSaving = true;
     });
@@ -157,10 +194,62 @@ class _NewMyDataState extends State<NewMyData> {
     return Card(
       elevation: 0,
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Center(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  // CircleAvatar che mostra l'immagine
+                  GestureDetector(
+                    onTap: _showFilePicker,
+                    child: CircleAvatar(
+                      radius: 60,
+                      backgroundColor: Colors.grey[200],
+                      backgroundImage:
+                          imageBytes != null
+                              ? MemoryImage(imageBytes!)
+                              : (widget.user?.photoURL != null &&
+                                      widget.user!.photoURL.isNotEmpty
+                                  ? NetworkImage(widget.user!.photoURL)
+                                      as ImageProvider
+                                  : null),
+                      child:
+                          imageBytes == null &&
+                                  (widget.user?.photoURL == null ||
+                                      widget.user!.photoURL.isEmpty)
+                              ? Text(
+                                widget.user?.displayName != null &&
+                                        widget.user!.displayName.isNotEmpty
+                                    ? widget.user!.displayName[0].toUpperCase()
+                                    : '?',
+                                style: TextStyle(
+                                  fontSize: 42,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              )
+                              : null,
+                    ),
+                  ),
+                  // Overlay semitrasparente con icona matita
+                  Positioned.fill(
+                    child: GestureDetector(
+                      onTap: _showFilePicker,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black.withOpacity(0.3),
+                        ),
+                        child: Icon(Icons.edit, color: Colors.white, size: 24),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 30),
             SizedBox(height: 8),
             buildFormField(
               'Name and Surname',
@@ -247,21 +336,6 @@ class _NewMyDataState extends State<NewMyData> {
               false,
             ),
             SizedBox(height: 10),
-
-            // Save button
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                    style: TextButton.styleFrom(alignment: Alignment.center),
-                    onPressed: _isSaving ? null : _saveChanges,
-                    child: Text("Save changes"),
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
       ),
@@ -287,9 +361,23 @@ class _NewMyDataState extends State<NewMyData> {
                 ),
               )
               : SingleChildScrollView(
-                padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(12.0),
                 child: Form(key: _formKey, child: buildFormCard()),
               ),
+      // Save button
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(color: Colors.transparent),
+        padding: EdgeInsets.all(16.0),
+        child: SizedBox(
+          width: double.infinity,
+          height: 50,
+          child: ElevatedButton.icon(
+            onPressed: _saveChanges,
+            icon: Icon(Icons.save_outlined),
+            label: Text("Save changes", style: TextStyle(fontSize: 16)),
+          ),
+        ),
+      ),
     );
   }
 }

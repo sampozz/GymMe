@@ -225,4 +225,10 @@ class UserProvider extends ChangeNotifier {
     await _userService.updateMedicalCertificate(uid, certificateExpDate);
     notifyListeners();
   }
+
+  /// Uploads an image to the gym service and returns the URL.
+  Future<String> uploadImage(String base64Image) async {
+    String imageUrl = await _userService.uploadImage(base64Image);
+    return imageUrl;
+  }
 }
