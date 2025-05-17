@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima_project/content/profile/subscription/subscription_model.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
 import 'package:dima_project/global_providers/user/user_service.dart';
@@ -194,7 +193,7 @@ class UserProvider extends ChangeNotifier {
     }
     return _user!.favouriteGyms.contains(gymId);
   }
-  
+
   /// This method will update the user profile with the provided data
   Future<void> updateUserProfile({
     String? displayName,

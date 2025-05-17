@@ -324,6 +324,17 @@ class MockUserService extends _i1.Mock implements _i15.UserService {
           as _i6.Future<void>);
 
   @override
+  _i6.Future<List<_i16.User>> fetchUserList() =>
+      (super.noSuchMethod(
+            Invocation.method(#fetchUserList, []),
+            returnValue: _i6.Future<List<_i16.User>>.value(<_i16.User>[]),
+            returnValueForMissingStub: _i6.Future<List<_i16.User>>.value(
+              <_i16.User>[],
+            ),
+          )
+          as _i6.Future<List<_i16.User>>);
+
+  @override
   _i6.Future<_i16.User?> fetchUser(_i3.User? firebaseUser) =>
       (super.noSuchMethod(
             Invocation.method(#fetchUser, [firebaseUser]),
@@ -374,6 +385,39 @@ class MockUserService extends _i1.Mock implements _i15.UserService {
   _i6.Future<void> updateUserProfile(_i16.User? user) =>
       (super.noSuchMethod(
             Invocation.method(#updateUserProfile, [user]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> setSubscription(_i16.User? user) =>
+      (super.noSuchMethod(
+            Invocation.method(#setSubscription, [user]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> updateMedicalCertificate(
+    String? uid,
+    DateTime? certificateExpDate,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateMedicalCertificate, [
+              uid,
+              certificateExpDate,
+            ]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> removeAccount(String? uid) =>
+      (super.noSuchMethod(
+            Invocation.method(#removeAccount, [uid]),
             returnValue: _i6.Future<void>.value(),
             returnValueForMissingStub: _i6.Future<void>.value(),
           )
