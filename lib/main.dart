@@ -35,12 +35,19 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'GymMe',
       // TODO: Decide App theme
+
+      /*LAVANDA #FFAE94FC RGB: 174 148 252
+          MIRTILLO #FF221743 RGB: 34 23 67
+          GIALLO #FFFFD73C RGB: 255 255 215 60
+          SABBIA #FFFDF7EA RGB: 255 253 247 234 
+          ROSA #FFFEACF0
+          CORALLO #FFFB5C1C*/
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch:
               Colors.deepPurple, // Base primary swatch (closest to navy)
           accentColor: Color(0xFFFFC107), // Gold as secondary color
-          backgroundColor: Color(0xFFBEC4FF), // Light gray background
+          backgroundColor: Color(0xFFFDF7EA), // Light gray background
           cardColor: Color(0xFFFFFFFF), // White surface for cards
           errorColor: Color.fromARGB(255, 142, 76, 76), // Strong red for errors
         ).copyWith(

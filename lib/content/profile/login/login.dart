@@ -122,7 +122,7 @@ class _LoginState extends State<Login> {
   }
 
   Widget _buildLoginHeader() {
-    return Image.asset('assets/logo_dark.png', width: 300, height: 160);
+    return Image.asset('assets/logo_dark.png', width: 250, height: 160);
   }
 
   Widget _buildLoginForm() {
@@ -302,7 +302,12 @@ class _LoginState extends State<Login> {
   Widget _buildLoginScreenContent() {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+        padding: const EdgeInsets.only(
+          top: 30.0,
+          left: 20,
+          right: 20,
+          bottom: 20,
+        ),
         child: Column(children: [_buildLoginHeader(), _buildLoginForm()]),
       ),
     );
@@ -320,7 +325,10 @@ class _LoginState extends State<Login> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     if (useMobileLayout) {
-      return Scaffold(backgroundColor: Colors.white, body: _buildLoginScreen());
+      return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+        body: _buildLoginScreen(),
+      );
     } else {
       return Scaffold(
         body: Center(
