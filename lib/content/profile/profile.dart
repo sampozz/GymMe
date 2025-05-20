@@ -218,7 +218,12 @@ class _ProfileState extends State<Profile> {
   // User Profile Card
   Widget _buildUserProfileCard(User user, bool isExpired) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+      padding: const EdgeInsets.only(
+        top: 30.0,
+        left: 20.0,
+        right: 20.0,
+        bottom: 10.0,
+      ),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
         decoration: BoxDecoration(
@@ -231,11 +236,19 @@ class _ProfileState extends State<Profile> {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundImage:
-                      (user.photoURL == null || user.photoURL.isEmpty)
-                          ? const AssetImage('assets/avatar.png')
-                          : NetworkImage(user.photoURL) as ImageProvider,
                   radius: 40,
+                  child: ClipOval(
+                    child: Image.network(
+                      user?.photoURL ?? '',
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) {
+                        return Image.asset(
+                          'assets/avatar.png',
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                  ),
                 ),
                 SizedBox(width: 16),
                 Expanded(

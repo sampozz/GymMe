@@ -31,11 +31,16 @@ class MyData extends StatelessWidget {
 
   Widget buildProfilePicture(String photoURL, bool isMobile) {
     return CircleAvatar(
-      backgroundImage:
-          photoURL.isEmpty
-              ? AssetImage('assets/avatar.png')
-              : NetworkImage(photoURL),
       radius: isMobile ? 50 : 80,
+      child: ClipOval(
+        child: Image.network(
+          photoURL,
+          fit: BoxFit.cover,
+          errorBuilder: (_, _, _) {
+            return Image.asset('assets/avatar.png', fit: BoxFit.cover);
+          },
+        ),
+      ),
     );
   }
 
@@ -65,26 +70,29 @@ class MyData extends StatelessWidget {
                           user,
                         ), // Layout desktop con foto a sinistra (attuale)
               ),
-
-      // Modify button
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(color: Colors.transparent),
-        padding: EdgeInsets.all(16.0),
-        child: SizedBox(
-          width: double.infinity,
-          height: 50,
-          child: ElevatedButton.icon(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => NewMyData(user: user)),
-              );
-            },
-            icon: Icon(Icons.edit_outlined),
-            label: Text('Modify', style: TextStyle(fontSize: 16)),
-          ),
-        ),
-      ),
+      bottomNavigationBar:
+          (user != null && !user.isAdmin)
+              ? Container(
+                decoration: BoxDecoration(color: Colors.transparent),
+                padding: EdgeInsets.all(16.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NewMyData(user: user),
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.edit_outlined),
+                    label: Text('Modify', style: TextStyle(fontSize: 16)),
+                  ),
+                ),
+              )
+              : null,
     );
   }
 
@@ -94,10 +102,15 @@ class MyData extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // Immagine del profilo centrata in alto
-        Container(
-          padding: EdgeInsets.symmetric(vertical: 20),
-          child: Column(children: [buildProfilePicture(user.photoURL, true)]),
-        ),
+        // solo se non è un admin
+        if (!(user.isAdmin)) ...[
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              children: [buildProfilePicture(user?.photoURL ?? '', true)],
+            ),
+          ),
+        ],
         // Lista dei dettagli utente
         Expanded(child: ListView(children: _buildUserDetailsList(user))),
       ],
@@ -110,14 +123,17 @@ class MyData extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Colonna sinistra con l'immagine del profilo
-        Container(
-          width: 200,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [buildProfilePicture(user.photoURL, false)],
+        // solo se non è un admin
+        if (!(user.isAdmin)) ...[
+          Container(
+            width: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [buildProfilePicture(user?.photoURL ?? '', false)],
+            ),
           ),
-        ),
+        ],
         SizedBox(width: 16),
         // Colonna destra con l'elenco delle ListTile
         Expanded(child: ListView(children: _buildUserDetailsList(user))),

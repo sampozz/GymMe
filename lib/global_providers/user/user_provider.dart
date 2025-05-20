@@ -184,6 +184,7 @@ class UserProvider extends ChangeNotifier {
   /// This method will update the user profile with the provided data
   Future<void> updateUserProfile({
     String? displayName,
+    String? photoURL,
     String? phoneNumber,
     String? address,
     String? taxCode,
@@ -192,6 +193,7 @@ class UserProvider extends ChangeNotifier {
   }) async {
     if (_user != null) {
       _user!.displayName = displayName ?? _user!.displayName;
+      _user!.photoURL = photoURL ?? _user!.photoURL;
       _user!.phoneNumber = phoneNumber ?? _user!.phoneNumber;
       _user!.address = address ?? _user!.address;
       _user!.taxCode = taxCode ?? _user!.taxCode;

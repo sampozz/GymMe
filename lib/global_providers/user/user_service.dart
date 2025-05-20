@@ -173,6 +173,7 @@ class UserService {
     try {
       await firestore.collection('users').doc(user.uid).update({
         'displayName': user.displayName,
+        'photoURL': user.photoURL,
         'phoneNumber': user.phoneNumber,
         'address': user.address,
         'taxCode': user.taxCode,

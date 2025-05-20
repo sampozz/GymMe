@@ -110,6 +110,7 @@ class _NewMyDataState extends State<NewMyData> {
       // Aggiorna i dati dell'utente nel provider e su Firestore
       await userProvider.updateUserProfile(
         displayName: nameCtrl.text,
+        photoURL: imageUrl,
         phoneNumber: phoneCtrl.text,
         address: addressCtrl.text,
         taxCode: taxCodeCtrl.text,
@@ -190,6 +191,38 @@ class _NewMyDataState extends State<NewMyData> {
     );
   }
 
+  Widget buildProfilePicture() {
+    return CircleAvatar(
+      radius: 60,
+      backgroundColor: Colors.grey[200],
+      child: ClipOval(
+        child:
+            imageBytes != null
+                ? Image.memory(
+                  imageBytes!,
+                  width: 120,
+                  height: 120,
+                  fit: BoxFit.cover,
+                )
+                : (widget.user?.photoURL != null &&
+                        widget.user!.photoURL.isNotEmpty
+                    ? Image.network(
+                      widget.user!.photoURL,
+                      width: 120,
+                      height: 120,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) {
+                        return Image.asset(
+                          'assets/avatar.png',
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    )
+                    : Icon(Icons.person, size: 60, color: Colors.grey[400])),
+      ),
+    );
+  }
+
   Widget buildFormCard() {
     return Card(
       elevation: 0,
@@ -202,38 +235,10 @@ class _NewMyDataState extends State<NewMyData> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  // CircleAvatar che mostra l'immagine
                   GestureDetector(
                     onTap: _showFilePicker,
-                    child: CircleAvatar(
-                      radius: 60,
-                      backgroundColor: Colors.grey[200],
-                      backgroundImage:
-                          imageBytes != null
-                              ? MemoryImage(imageBytes!)
-                              : (widget.user?.photoURL != null &&
-                                      widget.user!.photoURL.isNotEmpty
-                                  ? NetworkImage(widget.user!.photoURL)
-                                      as ImageProvider
-                                  : null),
-                      child:
-                          imageBytes == null &&
-                                  (widget.user?.photoURL == null ||
-                                      widget.user!.photoURL.isEmpty)
-                              ? Text(
-                                widget.user?.displayName != null &&
-                                        widget.user!.displayName.isNotEmpty
-                                    ? widget.user!.displayName[0].toUpperCase()
-                                    : '?',
-                                style: TextStyle(
-                                  fontSize: 42,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )
-                              : null,
-                    ),
+                    child: buildProfilePicture(),
                   ),
-                  // Overlay semitrasparente con icona matita
                   Positioned.fill(
                     child: GestureDetector(
                       onTap: _showFilePicker,

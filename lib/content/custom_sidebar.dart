@@ -21,17 +21,7 @@ class CustomSidebar extends StatelessWidget {
     return SizedBox(
       height: 100,
       width: double.infinity,
-      child: Center(
-        child: Text(
-          'App Logo',
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onPrimary,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            decoration: TextDecoration.none,
-          ),
-        ),
-      ),
+      child: Center(child: Image.asset('assets/logo_light.png', width: 200)),
     );
   }
 
