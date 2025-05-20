@@ -77,7 +77,7 @@ class _RegisterState extends State<Register> {
   }
 
   Widget _buildLoginHeader() {
-    return Image.asset('assets/logo.png', width: 300, height: 220);
+    return Image.asset('assets/logo_dark.png', width: 300, height: 160);
   }
 
   Widget _buildLoginForm() {

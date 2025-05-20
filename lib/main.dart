@@ -33,12 +33,19 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // TODO: Decide App name
-      title: 'Flutter Demo',
+      title: 'GymMe',
       // TODO: Decide App theme
+
+      /*LAVANDA #FFAE94FC RGB: 174 148 252
+          MIRTILLO #FF221743 RGB: 34 23 67
+          GIALLO #FFFFD73C RGB: 255 255 215 60
+          SABBIA #FFFDF7EA RGB: 255 253 247 234 
+          ROSA #FFFEACF0
+          CORALLO #FFFB5C1C*/
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.blue, // Base primary swatch (closest to navy)
+          primarySwatch:
+              Colors.deepPurple, // Base primary swatch (closest to navy)
           accentColor: Color(0xFFFFC107), // Gold as secondary color
           backgroundColor: Color(0xFFBEC4FF), // Light gray background
           cardColor: Color(0xFFFFFFFF), // White surface for cards
@@ -55,8 +62,13 @@ class App extends StatelessWidget {
           surface: Color(0xFFF5F5F5), // White surface
           primaryContainer: Color(0xFFFFFFFF), // White for primary container
           error: Color(0xFFD32F2F), // Standard material red for errors
-          onPrimary: Colors.white, // White text/icons on primary (navy)
-          onSecondary: Colors.black, // Black text/icons on secondary (gold)
+          onPrimary: Color(0xFFFDF7EA), // White text/icons on primary (navy)
+          onSecondary: Color.fromARGB(
+            255,
+            34,
+            23,
+            67,
+          ), // Black text/icons on secondary (gold)
           onTertiary: Colors.white, // White text/icons on lighter blue
           onSurface: Colors.black, // Black text on white surfaces
           onError: Colors.white, // White text on red error color

@@ -140,272 +140,225 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     final User? user = context.watch<UserProvider>().user;
-    final List<String> fields = <String>[
-      "Chip", // case 0
-      "My data", // case 1
-      "Subscriptions", // case 2
-      "Logout", // case 3
-      "Delete account", // case 4
-    ];
     final DateTime today = DateTime.now();
     final bool isExpired =
         user?.certificateExpDate != null
             ? user!.certificateExpDate!.isBefore(today)
             : false;
 
-    final bool isDark = false; // Replace with actual theme check
+    if (user == null) {
+      return Center(child: CircularProgressIndicator());
+    }
 
-    return user == null
-        ? Center(child: CircularProgressIndicator())
-        : SingleChildScrollView(
-          child: Column(
-            children: [
-              for (int i = 0; i < fields.length; i++) ...[
-                // Salta il tile delle sottoscrizioni se l'utente è admin
-                if (!(i == 2 && user.isAdmin))
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      switch (i) {
-                        case 0: // "Chip"
-                          break;
-                        case 1: // "My data"
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => MyData()),
-                          );
-                          break;
-                        case 2: // "Subscriptions"
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Subscriptions(),
-                            ),
-                          );
-                          break;
-                        case 3: // "Logout"
-                          _signOutConfirm(context);
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          // User Profile Card (was case 0: "Chip")
+          _buildUserProfileCard(user, isExpired),
 
-                          break;
-                        case 4: // Delete account
-                          _deleteAccountConfirm(user);
-                          break;
-                      }
-                    },
-                    child:
-                        i == 0
-                            ? Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20.0,
-                                vertical: 8.0,
-                              ),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                  vertical: 10.0,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 10.0,
-                                  vertical: 4.0,
-                                ),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        CircleAvatar(
-                                          backgroundImage:
-                                              user.photoURL.isEmpty
-                                                  ? AssetImage(
-                                                    'assets/avatar.png',
-                                                  )
-                                                  : NetworkImage(user.photoURL),
-                                          radius: 40,
-                                        ),
-                                        SizedBox(width: 16),
-                                        Expanded(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                user.displayName,
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              SizedBox(height: 4),
-                                              Text(
-                                                user.email,
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.grey[700],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Spacer(),
-                                        AnimatedSwitcher(
-                                          duration: const Duration(
-                                            milliseconds: 300,
-                                          ),
-                                          transitionBuilder:
-                                              (child, animation) =>
-                                                  RotationTransition(
-                                                    turns: animation,
-                                                    child: child,
-                                                  ),
-                                          child: IconButton(
-                                            key: ValueKey(isDark),
-                                            icon: Icon(
-                                              isDark
-                                                  ? Icons
-                                                      .nightlight_round_outlined
-                                                  : Icons.wb_sunny_outlined,
-                                            ),
-                                            onPressed: onToggleTheme,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    if (!user.isAdmin) ...[
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 16.0,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                right: 8.0,
-                                              ),
-                                              child: Container(
-                                                width: 10,
-                                                height: 10,
-                                                decoration: BoxDecoration(
-                                                  color:
-                                                      user.certificateExpDate !=
-                                                              null
-                                                          ? isExpired
-                                                              ? Colors.red
-                                                              : Colors.green
-                                                          : Colors.grey,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                              ),
-                                            ),
+          // My Data option
+          _buildNavigationTile(
+            "My data",
+            onTap:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyData()),
+                ),
+          ),
 
-                                            Text(
-                                              'Medical certificate exp:',
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.grey[700],
-                                              ),
-                                            ),
-                                            SizedBox(width: 8),
-                                            Text(
-                                              user.certificateExpDate != null
-                                                  ? '${user.certificateExpDate!.day}/${user.certificateExpDate!.month}/${user.certificateExpDate!.year}'
-                                                  : 'Unspecified',
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.grey[700],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ],
-                                ),
-                              ),
-                            )
-                            : i == fields.length - 1
-                            ? Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 38.0,
-                                vertical: 12.0,
-                              ),
-                              child: Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  fields[i],
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.blueGrey,
-                                    decorationColor:
-                                        Theme.of(context).primaryColor,
-                                    decorationThickness: 1,
-                                  ),
-                                ),
-                              ),
-                            )
-                            : Padding(
-                              // Altri elementi - Mantieni il codice esistente
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20.0,
-                              ),
-                              child: Container(
-                                height: 50,
-                                width: double.infinity,
-                                alignment: Alignment.centerLeft,
-                                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12.0),
-                                ),
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: 10.0,
-                                  vertical: 4.0,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      fields[i],
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.normal,
-                                        color:
-                                            i == fields.length - 1
-                                                ? Colors.red
-                                                : i ==
-                                                    4 // Logout item
-                                                ? Colors.red
-                                                : null,
-                                      ),
-                                    ),
-                                    // Sostituisci questa condizione
-                                    if (i == 3) // Logout item
-                                      Icon(
-                                        Icons.logout_outlined,
-                                        size: 20,
-                                        color: Colors.red,
-                                      )
-                                    else if (i > 0 && i < fields.length - 1)
-                                      Icon(
-                                        Icons.arrow_forward_ios_outlined,
-                                        size: 16,
-                                        color: Colors.grey,
-                                      ),
-                                  ],
-                                ),
-                              ),
-                            ),
+          // Subscriptions (only for non-admin users)
+          if (!user.isAdmin)
+            _buildNavigationTile(
+              "Subscriptions",
+              onTap:
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Subscriptions()),
                   ),
+            ),
+
+          // Logout option
+          _buildNavigationTile(
+            "Logout",
+            isLogout: true,
+            onTap: () => _signOutConfirm(context),
+          ),
+
+          // Delete account option
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 38.0,
+              vertical: 12.0,
+            ),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => _deleteAccountConfirm(user),
+              child: Container(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Delete account",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueGrey,
+                    decorationColor: Theme.of(context).primaryColor,
+                    decorationThickness: 1,
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          SizedBox(height: 100),
+        ],
+      ),
+    );
+  }
+
+  // User Profile Card
+  Widget _buildUserProfileCard(User user, bool isExpired) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 30.0,
+        left: 20.0,
+        right: 20.0,
+        bottom: 10.0,
+      ),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 40,
+                  child: ClipOval(
+                    child: Image.network(
+                      user?.photoURL ?? '',
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) {
+                        return Image.asset(
+                          'assets/avatar.png',
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 8),
+                      Text(
+                        user.displayName,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        user.email,
+                        style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                      ),
+                    ],
+                  ),
+                ),
               ],
-              SizedBox(height: 100),
+            ),
+            if (!user.isAdmin) ...[
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color:
+                              user.certificateExpDate != null
+                                  ? isExpired
+                                      ? Colors.red
+                                      : Colors.green
+                                  : Colors.grey,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      'Medical certificate exp:',
+                      style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      user.certificateExpDate != null
+                          ? '${user.certificateExpDate!.day}/${user.certificateExpDate!.month}/${user.certificateExpDate!.year}'
+                          : 'Unspecified',
+                      style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Navigation Tile for options
+  Widget _buildNavigationTile(
+    String title, {
+    required VoidCallback onTap,
+    bool isLogout = false,
+  }) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Container(
+          height: 50,
+          width: double.infinity,
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.symmetric(horizontal: 16.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.normal,
+                  color: isLogout ? Colors.red : null,
+                ),
+              ),
+              isLogout
+                  ? Icon(Icons.logout_outlined, size: 20, color: Colors.red)
+                  : Icon(
+                    Icons.arrow_forward_ios_outlined,
+                    size: 16,
+                    color: Colors.grey,
+                  ),
             ],
           ),
-        );
+        ),
+      ),
+    );
   }
 }
