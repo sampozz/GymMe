@@ -363,6 +363,7 @@ class MockUserProvider extends _i1.Mock implements _i12.UserProvider {
   @override
   _i4.Future<void> updateUserProfile({
     String? displayName,
+    String? photoURL,
     String? phoneNumber,
     String? address,
     String? taxCode,
@@ -372,6 +373,7 @@ class MockUserProvider extends _i1.Mock implements _i12.UserProvider {
       (super.noSuchMethod(
             Invocation.method(#updateUserProfile, [], {
               #displayName: displayName,
+              #photoURL: photoURL,
               #phoneNumber: phoneNumber,
               #address: address,
               #taxCode: taxCode,
