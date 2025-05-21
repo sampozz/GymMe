@@ -144,9 +144,9 @@ class _NewSubscriptionState extends State<NewSubscription>
           title: titleCtrl.text,
           description: descriptionCtrl.text,
           startTime: DateTime.now(),
+          paymentDate: DateTime.now(),
           expiryDate: addMonths(DateTime.now(), selectedDuration),
           price: double.tryParse(priceCtrl.text) ?? 0.0,
-          paymentDate: DateTime.now(),
           duration: selectedDuration,
         );
 
@@ -385,15 +385,25 @@ class _NewSubscriptionState extends State<NewSubscription>
             SizedBox(height: 8),
 
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.info_outline, color: Colors.blue[300], size: 16),
+                Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Icon(
+                    Icons.info_outline,
+                    color: Colors.yellow,
+                    size: 16,
+                  ),
+                ),
                 SizedBox(width: 8),
-                Text(
-                  'Full payment required at the time of subscription.',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 12,
-                    fontStyle: FontStyle.italic,
+                Expanded(
+                  child: Text(
+                    'Full payment required at the time of subscription.',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 12,
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 ),
               ],
@@ -503,12 +513,15 @@ class _NewSubscriptionState extends State<NewSubscription>
                   'Expiry Date:',
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-                TextButton.icon(
+                OutlinedButton.icon(
                   onPressed: () => _selectDate(context),
-                  icon: Icon(Icons.calendar_today_outlined),
-                  label: Text('Select Date'),
-                  style: TextButton.styleFrom(
+                  icon: Icon(Icons.calendar_today_outlined, size: 18),
+                  label: Text('Select date', style: TextStyle(fontSize: 12)),
+                  style: OutlinedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    minimumSize: Size(0, 36),
                     foregroundColor: Theme.of(context).primaryColor,
+                    side: BorderSide(color: Theme.of(context).primaryColor),
                   ),
                 ),
               ],
@@ -568,10 +581,16 @@ class _NewSubscriptionState extends State<NewSubscription>
     return Row(
       children: [
         CircleAvatar(
-          backgroundImage:
-              user!.photoURL.isEmpty
-                  ? AssetImage('assets/avatar.png')
-                  : NetworkImage(user!.photoURL),
+          radius: 40,
+          child: ClipOval(
+            child: Image.network(
+              user?.photoURL ?? '',
+              fit: BoxFit.cover,
+              errorBuilder: (_, _, _) {
+                return Image.asset('assets/avatar.png', fit: BoxFit.cover);
+              },
+            ),
+          ),
         ),
         SizedBox(width: 16),
         Expanded(

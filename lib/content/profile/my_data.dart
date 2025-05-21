@@ -8,9 +8,47 @@ class MyData extends StatelessWidget {
   final User? user;
   const MyData({super.key, this.user});
 
+  Widget buildListTile(IconData icon, String title, String subtitle) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        child: ListTile(
+          contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+          leading: Icon(icon, color: Colors.grey[700], size: 22),
+          title: Text(title, style: TextStyle(fontSize: 16)),
+          subtitle: Text(
+            subtitle,
+            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildProfilePicture(String photoURL, bool isMobile) {
+    return CircleAvatar(
+      radius: isMobile ? 50 : 80,
+      child: ClipOval(
+        child: Image.network(
+          photoURL,
+          fit: BoxFit.cover,
+          errorBuilder: (_, _, _) {
+            return Image.asset('assets/avatar.png', fit: BoxFit.cover);
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final User? user = context.watch<UserProvider>().user;
+    // Controlla se è un dispositivo mobile basandosi sulla larghezza dello schermo
+    final bool isMobile = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
       appBar: AppBar(title: Text('My data'), elevation: 0),
@@ -18,329 +56,128 @@ class MyData extends StatelessWidget {
           user == null
               ? Center(child: CircularProgressIndicator())
               : Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: ListView(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 4.0,
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 2,
-                              offset: Offset(0, 1),
-                            ),
-                          ],
-                        ),
-                        child: ListTile(
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16.0,
-                          ),
-                          leading: Icon(
-                            Icons.person_outlined,
-                            color: Colors.grey[700],
-                            size: 22,
-                          ),
-                          title: Text('Name', style: TextStyle(fontSize: 16)),
-                          subtitle: Text(
-                            user.displayName.isNotEmpty
-                                ? user.displayName
-                                : 'Unspecified',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 4.0,
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 2,
-                              offset: Offset(0, 1),
-                            ),
-                          ],
-                        ),
-                        child: ListTile(
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16.0,
-                          ),
-                          leading: Icon(
-                            Icons.email_outlined,
-                            color: Colors.grey[700],
-                            size: 22,
-                          ),
-                          title: Text('Email', style: TextStyle(fontSize: 16)),
-                          subtitle: Text(
-                            user.email,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    if (!(user.isAdmin)) ...[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 4.0,
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12.0),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 2,
-                                offset: Offset(0, 1),
-                              ),
-                            ],
-                          ),
-                          child: ListTile(
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                            ),
-                            leading: Icon(
-                              Icons.phone_outlined,
-                              color: Colors.grey[700],
-                              size: 22,
-                            ),
-                            title: Text(
-                              'Phone number',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            subtitle: Text(
-                              user.phoneNumber.isNotEmpty
-                                  ? user.phoneNumber
-                                  : 'Unspecified',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 4.0,
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12.0),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 2,
-                                offset: Offset(0, 1),
-                              ),
-                            ],
-                          ),
-                          child: ListTile(
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                            ),
-                            leading: Icon(
-                              Icons.home_outlined,
-                              color: Colors.grey[700],
-                              size: 22,
-                            ),
-                            title: Text(
-                              'Address',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            subtitle: Text(
-                              user.address.isNotEmpty
-                                  ? user.address
-                                  : 'Unspecified',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 4.0,
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12.0),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 2,
-                                offset: Offset(0, 1),
-                              ),
-                            ],
-                          ),
-                          child: ListTile(
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                            ),
-                            leading: Icon(
-                              Icons.badge_outlined,
-                              color: Colors.grey[700],
-                              size: 22,
-                            ),
-                            title: Text(
-                              'Tax code',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            subtitle: Text(
-                              user.taxCode.isNotEmpty
-                                  ? user.taxCode
-                                  : 'Unspecified',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 4.0,
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12.0),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 2,
-                                offset: Offset(0, 1),
-                              ),
-                            ],
-                          ),
-                          child: ListTile(
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                            ),
-                            leading: Icon(
-                              Icons.calendar_today_outlined,
-                              color: Colors.grey[700],
-                              size: 22,
-                            ),
-                            title: Text(
-                              'Birth date',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            subtitle: Text(
-                              user.birthDate != null
-                                  ? '${user.birthDate!.day}/${user.birthDate!.month}/${user.birthDate!.year}'
-                                  : 'Unspecified',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 4.0,
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12.0),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 2,
-                                offset: Offset(0, 1),
-                              ),
-                            ],
-                          ),
-                          child: ListTile(
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                            ),
-                            leading: Icon(
-                              Icons.location_on_outlined,
-                              color: Colors.grey[700],
-                              size: 22,
-                            ),
-                            title: Text(
-                              'Birth place',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            subtitle: Text(
-                              user.birthPlace.isNotEmpty
-                                  ? user.birthPlace
-                                  : 'Unspecified',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => NewMyData(user: user),
-                                  ),
-                                );
-                              },
-                              child: Text(
-                                'Modify',
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ],
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 16.0,
                 ),
+                // Usa un layout diverso in base alla dimensione dello schermo
+                child:
+                    isMobile
+                        ? _buildMobileLayout(
+                          user,
+                        ) // Layout mobile con foto sopra
+                        : _buildDesktopLayout(
+                          user,
+                        ), // Layout desktop con foto a sinistra (attuale)
               ),
+      bottomNavigationBar:
+          (user != null && !user.isAdmin)
+              ? Container(
+                decoration: BoxDecoration(color: Colors.transparent),
+                padding: EdgeInsets.all(16.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => NewMyData(user: user),
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.edit_outlined),
+                    label: Text('Modify', style: TextStyle(fontSize: 16)),
+                  ),
+                ),
+              )
+              : null,
     );
+  }
+
+  // Layout mobile con foto sopra
+  Widget _buildMobileLayout(User user) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        // Immagine del profilo centrata in alto
+        // solo se non è un admin
+        if (!(user.isAdmin)) ...[
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              children: [buildProfilePicture(user?.photoURL ?? '', true)],
+            ),
+          ),
+        ],
+        // Lista dei dettagli utente
+        Expanded(child: ListView(children: _buildUserDetailsList(user))),
+      ],
+    );
+  }
+
+  // Layout desktop con foto a sinistra (layout attuale)
+  Widget _buildDesktopLayout(User user) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Colonna sinistra con l'immagine del profilo
+        // solo se non è un admin
+        if (!(user.isAdmin)) ...[
+          Container(
+            width: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [buildProfilePicture(user?.photoURL ?? '', false)],
+            ),
+          ),
+        ],
+        SizedBox(width: 16),
+        // Colonna destra con l'elenco delle ListTile
+        Expanded(child: ListView(children: _buildUserDetailsList(user))),
+      ],
+    );
+  }
+
+  List<Widget> _buildUserDetailsList(User user) {
+    return [
+      buildListTile(
+        Icons.person_outlined,
+        'Name',
+        user.displayName.isNotEmpty ? user.displayName : 'Unspecified',
+      ),
+      buildListTile(Icons.email_outlined, 'Email', user.email),
+      if (!(user.isAdmin)) ...[
+        buildListTile(
+          Icons.phone_outlined,
+          'Phone number',
+          user.phoneNumber.isNotEmpty ? user.phoneNumber : 'Unspecified',
+        ),
+        buildListTile(
+          Icons.home_outlined,
+          'Address',
+          user.address.isNotEmpty ? user.address : 'Unspecified',
+        ),
+        buildListTile(
+          Icons.badge_outlined,
+          'Tax code',
+          user.taxCode.isNotEmpty ? user.taxCode : 'Unspecified',
+        ),
+        buildListTile(
+          Icons.calendar_today_outlined,
+          'Birth date',
+          user.birthDate != null
+              ? '${user.birthDate!.day}/${user.birthDate!.month}/${user.birthDate!.year}'
+              : 'Unspecified',
+        ),
+        buildListTile(
+          Icons.location_on_outlined,
+          'Birth place',
+          user.birthPlace.isNotEmpty ? user.birthPlace : 'Unspecified',
+        ),
+      ],
+    ];
   }
 }
