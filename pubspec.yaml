@@ -57,6 +57,9 @@ dependencies:
   fake_cloud_firestore: ^3.1.0
   shimmer: ^3.0.0
   google_fonts: ^6.2.1
+  lottie: ^3.3.1
+  flutter_native_splash: ^2.4.6
+  flutter_launcher_icons: ^0.14.3
 
 dev_dependencies:
   flutter_test:
@@ -84,6 +87,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
+    - assets/animations/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -111,3 +115,25 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_native_splash:
+    color: "#221743"
+    image: assets/logo_splash.png
+    android: true
+    ios: true
+    android_gravity: center
+    ios_content_mode: center
+    fullscreen: true
+    android_12:
+      icon_background_color: "#221743"
+      image: assets/logo_splash.png
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon.png"
+  remove_alpha_ios: true
+  adaptive_icon_background: "#221743"
+  adaptive_icon_foreground: "assets/icon.png"
+  android_adaptive_icon_background: "#221743"
+  android_adaptive_icon_foreground: "assets/icon.png"

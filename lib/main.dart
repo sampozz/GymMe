@@ -1,4 +1,5 @@
-import 'package:dima_project/auth_gate/auth_gate.dart';
+//import 'package:dima_project/auth_gate/auth_gate.dart';
+import 'package:dima_project/intro/intro_animation.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -33,8 +34,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // TODO: Decide App name
-      title: 'Flutter Demo',
+      title: 'GymMe',
       // TODO: Decide App theme
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch(
@@ -75,8 +75,7 @@ class App extends StatelessWidget {
         ),
       ),
 
-      home: const AuthGate(),
-      // TODO: Add splash screen
+      home: const IntroAnimation(),
       initialRoute: '/',
     );
   }
