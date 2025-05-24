@@ -63,10 +63,6 @@ flutter_icons:
   android: true
   image_path: "assets/icon/icon.png"
 
-flutter_icons:
-  android: true
-  image_path: "assets/icon/icon.png"
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
