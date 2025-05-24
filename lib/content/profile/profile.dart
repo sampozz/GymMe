@@ -1,5 +1,6 @@
 import 'package:dima_project/content/profile/my_data.dart';
 import 'package:dima_project/content/profile/subscription/subscriptions.dart';
+import 'package:dima_project/global_providers/theme_provider.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -13,12 +14,16 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  bool get _isDark =>
+      Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
+
   void _signOut(BuildContext context) async {
     await Provider.of<UserProvider>(context, listen: false).signOut();
   }
 
   void onToggleTheme() {
-    // Implement theme toggle logic here
+    Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+    setState(() {}); // Aggiorna l'UI per mostrare l'icona corretta
   }
 
   void _deleteAccountConfirm(User user) {
@@ -153,7 +158,6 @@ class _ProfileState extends State<Profile> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          // User Profile Card (was case 0: "Chip")
           _buildUserProfileCard(user, isExpired),
 
           // My Data option
@@ -200,9 +204,7 @@ class _ProfileState extends State<Profile> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blueGrey,
-                    decorationColor: Theme.of(context).primaryColor,
-                    decorationThickness: 1,
+                    color: Theme.of(context).colorScheme.outline,
                   ),
                 ),
               ),
@@ -227,7 +229,7 @@ class _ProfileState extends State<Profile> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surfaceContainerLow,
           borderRadius: BorderRadius.circular(10.0),
         ),
         margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
@@ -236,16 +238,13 @@ class _ProfileState extends State<Profile> {
             Row(
               children: [
                 CircleAvatar(
-                  radius: 40,
+                  radius: 50,
                   child: ClipOval(
                     child: Image.network(
                       user?.photoURL ?? '',
                       fit: BoxFit.cover,
                       errorBuilder: (_, _, _) {
-                        return Image.asset(
-                          'assets/avatar.png',
-                          fit: BoxFit.cover,
-                        );
+                        return Image.asset('assets/avatar.png');
                       },
                     ),
                   ),
@@ -260,6 +259,7 @@ class _ProfileState extends State<Profile> {
                       Text(
                         user.displayName,
                         style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -267,9 +267,32 @@ class _ProfileState extends State<Profile> {
                       SizedBox(height: 4),
                       Text(
                         user.email,
-                        style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).colorScheme.outline,
+                        ),
                       ),
                     ],
+                  ),
+                ),
+                // Aggiungi qui l'icona animata con AnimatedSwitcher
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  transitionBuilder:
+                      (child, animation) =>
+                          RotationTransition(turns: animation, child: child),
+                  child: IconButton(
+                    key: ValueKey(_isDark), // Importante per l'animazione
+                    icon: Icon(
+                      _isDark
+                          ? Icons.dark_mode_outlined
+                          : Icons.wb_sunny_outlined,
+                      color:
+                          _isDark
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.secondary,
+                    ),
+                    onPressed: onToggleTheme,
                   ),
                 ),
               ],
@@ -297,14 +320,20 @@ class _ProfileState extends State<Profile> {
                     ),
                     Text(
                       'Medical certificate exp:',
-                      style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
                     ),
                     SizedBox(width: 8),
                     Text(
                       user.certificateExpDate != null
                           ? '${user.certificateExpDate!.day}/${user.certificateExpDate!.month}/${user.certificateExpDate!.year}'
                           : 'Unspecified',
-                      style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
                     ),
                   ],
                 ),
@@ -333,7 +362,7 @@ class _ProfileState extends State<Profile> {
           alignment: Alignment.centerLeft,
           padding: EdgeInsets.symmetric(horizontal: 16.0),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.surfaceContainerLow,
             borderRadius: BorderRadius.circular(12.0),
           ),
           margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
@@ -345,11 +374,18 @@ class _ProfileState extends State<Profile> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.normal,
-                  color: isLogout ? Colors.red : null,
+                  color:
+                      isLogout
+                          ? Theme.of(context).colorScheme.errorContainer
+                          : null,
                 ),
               ),
               isLogout
-                  ? Icon(Icons.logout_outlined, size: 20, color: Colors.red)
+                  ? Icon(
+                    Icons.logout_outlined,
+                    size: 20,
+                    color: Theme.of(context).colorScheme.errorContainer,
+                  )
                   : Icon(
                     Icons.arrow_forward_ios_outlined,
                     size: 16,

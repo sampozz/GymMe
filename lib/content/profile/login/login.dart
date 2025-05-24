@@ -122,7 +122,11 @@ class _LoginState extends State<Login> {
   }
 
   Widget _buildLoginHeader() {
-    return Image.asset('assets/logo_dark.png', width: 250, height: 160);
+    // check if the theme is dark or light
+    bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    return isDarkTheme
+        ? Image.asset('assets/logo_dark.png', width: 250, height: 160)
+        : Image.asset('assets/logo_light.png', width: 250, height: 160);
   }
 
   Widget _buildLoginForm() {
@@ -139,9 +143,12 @@ class _LoginState extends State<Login> {
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
+          Text(
             "Enter valid email and password to continue",
-            style: TextStyle(fontSize: 16, color: Colors.black38),
+            style: TextStyle(
+              fontSize: 16,
+              color: Theme.of(context).colorScheme.outline,
+            ),
           ),
           const SizedBox(height: 20),
           TextFormField(
@@ -150,13 +157,20 @@ class _LoginState extends State<Login> {
             textInputAction: TextInputAction.next,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.email_outlined),
-              prefixIconColor: Colors.black26,
+              prefixIconColor: Theme.of(context).colorScheme.outline,
               labelText: "Email address",
-              hintStyle: TextStyle(color: Colors.black26),
-              labelStyle: TextStyle(color: Colors.black26),
+              hintStyle: TextStyle(
+                color: Theme.of(context).colorScheme.outline,
+              ),
+              labelStyle: TextStyle(
+                color: Theme.of(context).colorScheme.outline,
+              ),
               border: OutlineInputBorder(),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black26, width: 1.0),
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.outline,
+                  width: 1.0,
+                ),
                 borderRadius: BorderRadius.circular(15.0),
               ),
             ),
@@ -170,13 +184,20 @@ class _LoginState extends State<Login> {
             onFieldSubmitted: (_) => _signIn(),
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.lock_outline),
-              prefixIconColor: Colors.black26,
+              prefixIconColor: Theme.of(context).colorScheme.outline,
               labelText: "Password",
-              hintStyle: TextStyle(color: Colors.black26),
-              labelStyle: TextStyle(color: Colors.black26),
+              hintStyle: TextStyle(
+                color: Theme.of(context).colorScheme.outline,
+              ),
+              labelStyle: TextStyle(
+                color: Theme.of(context).colorScheme.outline,
+              ),
               border: OutlineInputBorder(),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black26, width: 1.0),
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.outline,
+                  width: 1.0,
+                ),
                 borderRadius: BorderRadius.circular(15.0),
               ),
             ),
@@ -184,11 +205,14 @@ class _LoginState extends State<Login> {
             validator: (value) => _validateMandatory(value),
           ),
           if (_invalidUser)
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(top: 10.0),
               child: Text(
                 "Invalid email or password",
-                style: TextStyle(color: Colors.red, fontSize: 14),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.error,
+                  fontSize: 14,
+                ),
               ),
             ),
           const SizedBox(height: 10),
@@ -196,6 +220,11 @@ class _LoginState extends State<Login> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide.none,
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: Theme.of(context).colorScheme.tertiary,
+                ),
                 onPressed: () => _onForgotPressed(),
                 child: Text('Forgot Password?'),
               ),
@@ -206,15 +235,6 @@ class _LoginState extends State<Login> {
             const CircularProgressIndicator()
           else
             Container(
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(context).colorScheme.primary.withAlpha(50),
-                    blurRadius: 50.0,
-                    offset: Offset(0, 0),
-                  ),
-                ],
-              ),
               width: double.infinity,
               height: 50,
               child: TextButton(
@@ -235,21 +255,27 @@ class _LoginState extends State<Login> {
             width: 250,
             child: Row(
               children: [
-                const Expanded(
-                  child: Divider(color: Colors.black38, height: 50),
+                Expanded(
+                  child: Divider(
+                    color: Theme.of(context).colorScheme.outline,
+                    height: 50,
+                  ),
                 ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10.0),
                   child: Text(
                     "Or Continue with",
                     style: TextStyle(
-                      color: Colors.black38,
+                      color: Theme.of(context).colorScheme.outline,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                const Expanded(
-                  child: Divider(color: Colors.black38, height: 50),
+                Expanded(
+                  child: Divider(
+                    color: Theme.of(context).colorScheme.outline,
+                    height: 50,
+                  ),
                 ),
               ],
             ),
@@ -266,8 +292,8 @@ class _LoginState extends State<Login> {
                 icon: Image.asset('assets/google.png', width: 24, height: 24),
                 style: TextButton.styleFrom(
                   elevation: 0,
-                  foregroundColor: Theme.of(context).colorScheme.primary,
-                  backgroundColor: Color.fromARGB(255, 242, 242, 242),
+                  foregroundColor: Theme.of(context).colorScheme.onSurface,
+                  backgroundColor: Theme.of(context).colorScheme.surfaceDim,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
                   ),
@@ -288,8 +314,16 @@ class _LoginState extends State<Login> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Don't have an account?"),
+            Text(
+              "Don't have an account?",
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+            ),
             OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                side: BorderSide.none,
+                backgroundColor: Colors.transparent,
+                foregroundColor: Theme.of(context).colorScheme.tertiary,
+              ),
               onPressed: () => _navigateToSignUp(),
               child: const Text("Sign Up"),
             ),
@@ -326,16 +360,21 @@ class _LoginState extends State<Login> {
 
     if (useMobileLayout) {
       return Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.secondary,
+        backgroundColor: Theme.of(context).colorScheme.surfaceBright,
         body: _buildLoginScreen(),
       );
     } else {
       return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
         body: Center(
           child: SizedBox(
             width: 500,
             height: screenHeight * 0.9,
-            child: Card(elevation: 0, child: _buildLoginScreen()),
+            child: Card(
+              elevation: 0,
+              color: Theme.of(context).colorScheme.surfaceContainerLowest,
+              child: _buildLoginScreen(),
+            ),
           ),
         ),
       );

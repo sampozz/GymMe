@@ -43,16 +43,29 @@ class GymPage extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Delete Gym'),
-          content: const Text('Are you sure you want to delete this gym?'),
+          backgroundColor: Theme.of(context).colorScheme.error,
+          title: Text(
+            'Delete Gym',
+            style: TextStyle(color: Theme.of(context).colorScheme.onError),
+          ),
+          content: Text(
+            'Are you sure you want to delete this gym?',
+            style: TextStyle(color: Theme.of(context).colorScheme.onError),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel'),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Theme.of(context).colorScheme.onError),
+              ),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('Delete'),
+              child: Text(
+                'Delete',
+                style: TextStyle(color: Theme.of(context).colorScheme.onError),
+              ),
             ),
           ],
         );
@@ -66,11 +79,16 @@ class GymPage extends StatelessWidget {
             const Duration(seconds: 5),
             onTimeout: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Error while deleting gym. Please try again.'),
+                SnackBar(
+                  content: Text(
+                    'Error while deleting gym. Please try again.',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onError,
+                    ),
+                  ),
                   duration: Duration(seconds: 2),
                   behavior: SnackBarBehavior.floating,
-                  backgroundColor: Colors.red,
+                  backgroundColor: Theme.of(context).colorScheme.error,
                 ),
               );
             },
@@ -280,8 +298,13 @@ class GymPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: TextButton(
             onPressed: () => _deleteGym(context, gym),
-            style: TextButton.styleFrom(backgroundColor: Colors.red),
-            child: Text('Delete gym', style: TextStyle(color: Colors.white)),
+            style: TextButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: Text(
+              'Delete gym',
+              style: TextStyle(color: Theme.of(context).colorScheme.onError),
+            ),
           ),
         ),
       ),
@@ -294,6 +317,7 @@ class GymPage extends StatelessWidget {
     Gym gym = context.watch<GymProvider>().gymList![gymIndex];
 
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
       body: CustomScrollView(
         slivers: [
           _buildSliverAppBar(context, gym),

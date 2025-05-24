@@ -55,7 +55,7 @@ class CustomBottomNavBar extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(200)),
               color: Theme.of(
                 context,
-              ).colorScheme.primaryContainer.withValues(alpha: 50),
+              ).colorScheme.inversePrimary.withValues(alpha: 80),
             ),
             child:
                 isLoading
@@ -125,7 +125,7 @@ class _NavBarItemState extends State<NavBarItem> {
                 color:
                     widget.isSelected || _isHovered
                         ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.onSecondary,
+                        : Theme.of(context).colorScheme.onPrimaryContainer,
               ),
               widget.isSelected
                   ? Text(
