@@ -14,12 +14,14 @@ import 'package:dima_project/content/home/gym/activity/activity_model.dart'
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart'
     as _i8;
 import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart'
-    as _i18;
+    as _i19;
 import 'package:dima_project/content/home/gym/gym_model.dart' as _i6;
-import 'package:dima_project/content/instructors/instructor_model.dart' as _i17;
+import 'package:dima_project/content/instructors/instructor_model.dart' as _i18;
 import 'package:dima_project/content/instructors/instructor_provider.dart'
-    as _i16;
-import 'package:dima_project/global_providers/gym_provider.dart' as _i14;
+    as _i17;
+import 'package:dima_project/content/profile/subscription/subscription_model.dart'
+    as _i14;
+import 'package:dima_project/global_providers/gym_provider.dart' as _i16;
 import 'package:dima_project/global_providers/screen_provider.dart' as _i11;
 import 'package:dima_project/global_providers/user/user_model.dart' as _i13;
 import 'package:dima_project/global_providers/user/user_provider.dart' as _i12;
@@ -265,6 +267,17 @@ class MockUserProvider extends _i1.Mock implements _i12.UserProvider {
           as bool);
 
   @override
+  _i4.Future<List<_i13.User>> getUserList() =>
+      (super.noSuchMethod(
+            Invocation.method(#getUserList, []),
+            returnValue: _i4.Future<List<_i13.User>>.value(<_i13.User>[]),
+            returnValueForMissingStub: _i4.Future<List<_i13.User>>.value(
+              <_i13.User>[],
+            ),
+          )
+          as _i4.Future<List<_i13.User>>);
+
+  @override
   _i4.Future<_i13.User?> signIn(String? email, String? password) =>
       (super.noSuchMethod(
             Invocation.method(#signIn, [email, password]),
@@ -395,6 +408,61 @@ class MockUserProvider extends _i1.Mock implements _i12.UserProvider {
           as _i4.Future<void>);
 
   @override
+  _i4.Future<void> addSubscription(
+    _i13.User? user,
+    _i14.Subscription? subscription,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#addSubscription, [user, subscription]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> deleteAccount(String? uid) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteAccount, [uid]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<void> updateMedicalCertificate(
+    String? uid,
+    DateTime? certificateExpDate,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateMedicalCertificate, [
+              uid,
+              certificateExpDate,
+            ]),
+            returnValue: _i4.Future<void>.value(),
+            returnValueForMissingStub: _i4.Future<void>.value(),
+          )
+          as _i4.Future<void>);
+
+  @override
+  _i4.Future<String> uploadImage(String? base64Image) =>
+      (super.noSuchMethod(
+            Invocation.method(#uploadImage, [base64Image]),
+            returnValue: _i4.Future<String>.value(
+              _i15.dummyValue<String>(
+                this,
+                Invocation.method(#uploadImage, [base64Image]),
+              ),
+            ),
+            returnValueForMissingStub: _i4.Future<String>.value(
+              _i15.dummyValue<String>(
+                this,
+                Invocation.method(#uploadImage, [base64Image]),
+              ),
+            ),
+          )
+          as _i4.Future<String>);
+
+  @override
   void addListener(_i10.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#addListener, [listener]),
     returnValueForMissingStub: null,
@@ -422,7 +490,7 @@ class MockUserProvider extends _i1.Mock implements _i12.UserProvider {
 /// A class which mocks [GymProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockGymProvider extends _i1.Mock implements _i14.GymProvider {
+class MockGymProvider extends _i1.Mock implements _i16.GymProvider {
   @override
   bool get isLoading =>
       (super.noSuchMethod(
@@ -563,7 +631,7 @@ class MockGymProvider extends _i1.Mock implements _i14.GymProvider {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockInstructorProvider extends _i1.Mock
-    implements _i16.InstructorProvider {
+    implements _i17.InstructorProvider {
   @override
   bool get isLoading =>
       (super.noSuchMethod(
@@ -583,17 +651,17 @@ class MockInstructorProvider extends _i1.Mock
           as bool);
 
   @override
-  _i4.Future<List<_i17.Instructor>?> getInstructorList() =>
+  _i4.Future<List<_i18.Instructor>?> getInstructorList() =>
       (super.noSuchMethod(
             Invocation.method(#getInstructorList, []),
-            returnValue: _i4.Future<List<_i17.Instructor>?>.value(),
+            returnValue: _i4.Future<List<_i18.Instructor>?>.value(),
             returnValueForMissingStub:
-                _i4.Future<List<_i17.Instructor>?>.value(),
+                _i4.Future<List<_i18.Instructor>?>.value(),
           )
-          as _i4.Future<List<_i17.Instructor>?>);
+          as _i4.Future<List<_i18.Instructor>?>);
 
   @override
-  _i4.Future<void> deleteInstructor(_i17.Instructor? instructor) =>
+  _i4.Future<void> deleteInstructor(_i18.Instructor? instructor) =>
       (super.noSuchMethod(
             Invocation.method(#deleteInstructor, [instructor]),
             returnValue: _i4.Future<void>.value(),
@@ -602,7 +670,7 @@ class MockInstructorProvider extends _i1.Mock
           as _i4.Future<void>);
 
   @override
-  _i4.Future<String?> addInstructor(_i17.Instructor? instructor) =>
+  _i4.Future<String?> addInstructor(_i18.Instructor? instructor) =>
       (super.noSuchMethod(
             Invocation.method(#addInstructor, [instructor]),
             returnValue: _i4.Future<String?>.value(),
@@ -638,7 +706,7 @@ class MockInstructorProvider extends _i1.Mock
 /// A class which mocks [SlotProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSlotProvider extends _i1.Mock implements _i18.SlotProvider {
+class MockSlotProvider extends _i1.Mock implements _i19.SlotProvider {
   @override
   String get gymId =>
       (super.noSuchMethod(

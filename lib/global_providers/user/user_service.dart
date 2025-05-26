@@ -8,15 +8,23 @@ import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
+class PlatformService {
+  bool get isWeb => kIsWeb;
+  bool get isMobile => !kIsWeb;
+}
+
 class UserService {
+  final PlatformService _platformService;
   auth.FirebaseAuth firebaseAuth;
   FirebaseFirestore firestore;
 
   UserService({
     auth.FirebaseAuth? firebaseAuth,
     FirebaseFirestore? firebaseFirestore,
+    PlatformService? platformService,
   }) : firebaseAuth = firebaseAuth ?? auth.FirebaseAuth.instance,
-       firestore = firebaseFirestore ?? FirebaseFirestore.instance;
+       firestore = firebaseFirestore ?? FirebaseFirestore.instance,
+       _platformService = platformService ?? PlatformService();
 
   /// This method will sign in the user with the provided email and password
   Future<auth.UserCredential?> signInWithEmailAndPassword(
@@ -31,7 +39,7 @@ class UserService {
   }
 
   Future<auth.UserCredential?> signInWithGoogle() async {
-    if (kIsWeb) {
+    if (_platformService.isWeb) {
       // Web sign-in
       final auth.GoogleAuthProvider googleProvider = auth.GoogleAuthProvider();
       googleProvider.addScope('email');
@@ -61,15 +69,10 @@ class UserService {
     String password,
   ) async {
     auth.UserCredential? userCredential;
-    try {
-      userCredential = await firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } catch (e) {
-      print('Error signing up: $e');
-      rethrow;
-    }
+    userCredential = await firebaseAuth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
     return userCredential;
   }
 
@@ -81,24 +84,17 @@ class UserService {
   /// This method will fetch all the user from Firestore
   Future<List<User>> fetchUserList() async {
     List<User> userList = [];
-    try {
-      var usersRef =
-          await FirebaseFirestore.instance
-              .collection('users')
-              .withConverter(
-                fromFirestore: User.fromFirestore,
-                toFirestore: (User user, options) => user.toFirestore(),
-              )
-              .get();
-      for (var doc in usersRef.docs) {
-        userList.add(doc.data());
-      }
-    } catch (e) {
-      // TODO: Handle error
-      print(e);
-      rethrow;
+    var usersRef =
+        await firestore
+            .collection('users')
+            .withConverter(
+              fromFirestore: User.fromFirestore,
+              toFirestore: (User user, options) => user.toFirestore(),
+            )
+            .get();
+    for (var doc in usersRef.docs) {
+      userList.add(doc.data());
     }
-
     return userList;
   }
 
@@ -139,12 +135,7 @@ class UserService {
 
   /// This method will reset the password for the user with the provided email
   Future<void> resetPassword(String email) async {
-    try {
-      await firebaseAuth.sendPasswordResetEmail(email: email);
-    } catch (e) {
-      print(e);
-      rethrow;
-    }
+    await firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
   /// This method will update the user favourite gyms in Firestore
@@ -190,34 +181,25 @@ class UserService {
   /// Throws a FirebaseException if there is an error during the set operation.
   /// Returns the id of the set subscription.
   Future<void> setSubscription(User user) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .update({
-            'subscriptions':
-                user.subscriptions
-                    .map((subscription) => subscription.toFirestore())
-                    .toList(),
-          });
-    } catch (e) {
-      // TODO: Handle error
-      print(e);
-      rethrow;
-    }
+    await firestore.collection('users').doc(user.uid).update({
+      'subscriptions':
+          user.subscriptions
+              .map((subscription) => subscription.toFirestore())
+              .toList(),
+    });
   }
 
   Future<void> updateMedicalCertificate(
     String uid,
     DateTime certificateExpDate,
   ) async {
-    FirebaseFirestore.instance.collection('users').doc(uid).update({
+    firestore.collection('users').doc(uid).update({
       'certificateExpDate': certificateExpDate,
     });
   }
 
   Future<void> removeAccount(String uid) async {
-    await FirebaseFirestore.instance.collection('users').doc(uid).delete();
+    await firestore.collection('users').doc(uid).delete();
   }
 
   /// Uploads an image to Imgur and returns the URL
