@@ -21,13 +21,13 @@ import 'package:dima_project/content/instructors/instructor_provider.dart'
     as _i17;
 import 'package:dima_project/content/profile/subscription/subscription_model.dart'
     as _i14;
-import 'package:dima_project/global_providers/gym_provider.dart' as _i15;
+import 'package:dima_project/global_providers/gym_provider.dart' as _i16;
 import 'package:dima_project/global_providers/screen_provider.dart' as _i11;
 import 'package:dima_project/global_providers/user/user_model.dart' as _i13;
 import 'package:dima_project/global_providers/user/user_provider.dart' as _i12;
 import 'package:flutter/material.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i16;
+import 'package:mockito/src/dummies.dart' as _i15;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -444,6 +444,25 @@ class MockUserProvider extends _i1.Mock implements _i12.UserProvider {
           as _i4.Future<void>);
 
   @override
+  _i4.Future<String> uploadImage(String? base64Image) =>
+      (super.noSuchMethod(
+            Invocation.method(#uploadImage, [base64Image]),
+            returnValue: _i4.Future<String>.value(
+              _i15.dummyValue<String>(
+                this,
+                Invocation.method(#uploadImage, [base64Image]),
+              ),
+            ),
+            returnValueForMissingStub: _i4.Future<String>.value(
+              _i15.dummyValue<String>(
+                this,
+                Invocation.method(#uploadImage, [base64Image]),
+              ),
+            ),
+          )
+          as _i4.Future<String>);
+
+  @override
   void addListener(_i10.VoidCallback? listener) => super.noSuchMethod(
     Invocation.method(#addListener, [listener]),
     returnValueForMissingStub: null,
@@ -471,7 +490,7 @@ class MockUserProvider extends _i1.Mock implements _i12.UserProvider {
 /// A class which mocks [GymProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockGymProvider extends _i1.Mock implements _i15.GymProvider {
+class MockGymProvider extends _i1.Mock implements _i16.GymProvider {
   @override
   bool get isLoading =>
       (super.noSuchMethod(
@@ -569,13 +588,13 @@ class MockGymProvider extends _i1.Mock implements _i15.GymProvider {
       (super.noSuchMethod(
             Invocation.method(#uploadImage, [base64Image]),
             returnValue: _i4.Future<String>.value(
-              _i16.dummyValue<String>(
+              _i15.dummyValue<String>(
                 this,
                 Invocation.method(#uploadImage, [base64Image]),
               ),
             ),
             returnValueForMissingStub: _i4.Future<String>.value(
-              _i16.dummyValue<String>(
+              _i15.dummyValue<String>(
                 this,
                 Invocation.method(#uploadImage, [base64Image]),
               ),
@@ -692,11 +711,11 @@ class MockSlotProvider extends _i1.Mock implements _i19.SlotProvider {
   String get gymId =>
       (super.noSuchMethod(
             Invocation.getter(#gymId),
-            returnValue: _i16.dummyValue<String>(
+            returnValue: _i15.dummyValue<String>(
               this,
               Invocation.getter(#gymId),
             ),
-            returnValueForMissingStub: _i16.dummyValue<String>(
+            returnValueForMissingStub: _i15.dummyValue<String>(
               this,
               Invocation.getter(#gymId),
             ),
@@ -707,11 +726,11 @@ class MockSlotProvider extends _i1.Mock implements _i19.SlotProvider {
   String get activityId =>
       (super.noSuchMethod(
             Invocation.getter(#activityId),
-            returnValue: _i16.dummyValue<String>(
+            returnValue: _i15.dummyValue<String>(
               this,
               Invocation.getter(#activityId),
             ),
-            returnValueForMissingStub: _i16.dummyValue<String>(
+            returnValueForMissingStub: _i15.dummyValue<String>(
               this,
               Invocation.getter(#activityId),
             ),
