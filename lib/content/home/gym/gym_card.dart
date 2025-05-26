@@ -56,13 +56,14 @@ class GymCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Card(
+          color: Theme.of(context).colorScheme.surfaceContainerLow,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
             side: BorderSide(
               color:
                   isSelected
-                      ? Theme.of(context).colorScheme.primary
+                      ? Theme.of(context).colorScheme.tertiary
                       : Colors.transparent,
               width: 2.0,
             ),
@@ -109,10 +110,7 @@ class GymCard extends StatelessWidget {
                       child: IconButton(
                         icon: Icon(
                           isFavourite ? Icons.favorite : Icons.favorite_border,
-                          color:
-                              isFavourite
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Colors.grey,
+                          color: isFavourite ? Color(0xFFFB5C1C) : Colors.grey,
                           size: 20,
                         ),
                         onPressed: () => _onFavoriteIconTap(context, gym.id!),

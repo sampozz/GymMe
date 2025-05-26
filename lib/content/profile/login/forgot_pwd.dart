@@ -99,7 +99,10 @@ class _ForgotPwdState extends State<ForgotPwd> {
   }
 
   Widget _buildLoginHeader() {
-    return Image.asset('assets/logo.png', width: 300, height: 300);
+    bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    return isDarkTheme
+        ? Image.asset('assets/logo_dark.png', width: 250, height: 160)
+        : Image.asset('assets/logo_light.png', width: 250, height: 160);
   }
 
   Widget _buildLoginForm() {
@@ -116,9 +119,12 @@ class _ForgotPwdState extends State<ForgotPwd> {
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
+          Text(
             "Don't worry, it happens. Please enter the address associated with your account",
-            style: TextStyle(fontSize: 16, color: Colors.black38),
+            style: TextStyle(
+              fontSize: 16,
+              color: Theme.of(context).colorScheme.outline,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 20),
@@ -127,13 +133,20 @@ class _ForgotPwdState extends State<ForgotPwd> {
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.email_outlined),
-              prefixIconColor: Colors.black26,
+              prefixIconColor: Theme.of(context).colorScheme.outline,
               labelText: "Email address",
-              hintStyle: TextStyle(color: Colors.black26),
-              labelStyle: TextStyle(color: Colors.black26),
+              hintStyle: TextStyle(
+                color: Theme.of(context).colorScheme.outline,
+              ),
+              labelStyle: TextStyle(
+                color: Theme.of(context).colorScheme.outline,
+              ),
               border: OutlineInputBorder(),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black26, width: 1.0),
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.outline,
+                  width: 1.0,
+                ),
                 borderRadius: BorderRadius.circular(15.0),
               ),
             ),
@@ -199,8 +212,16 @@ class _ForgotPwdState extends State<ForgotPwd> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Do you remember your password?"),
+            Text(
+              "Do you remember your password?",
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+            ),
             OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                side: BorderSide.none,
+                backgroundColor: Colors.transparent,
+                foregroundColor: Theme.of(context).colorScheme.tertiary,
+              ),
               onPressed: () => _navigateToLogin(),
               child: const Text("Sign In"),
             ),
@@ -213,7 +234,12 @@ class _ForgotPwdState extends State<ForgotPwd> {
   Widget _buildForgotPwdScreenContent() {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+        padding: const EdgeInsets.only(
+          top: 30.0,
+          left: 20,
+          right: 20,
+          bottom: 20,
+        ),
         child: Column(children: [_buildLoginHeader(), _buildLoginForm()]),
       ),
     );
@@ -234,14 +260,22 @@ class _ForgotPwdState extends State<ForgotPwd> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     if (useMobileLayout) {
-      return Scaffold(backgroundColor: Colors.white, body: _buildLoginScreen());
+      return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
+        body: _buildLoginScreen(),
+      );
     } else {
       return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
         body: Center(
           child: SizedBox(
             width: 500,
             height: screenHeight * 0.9,
-            child: Card(elevation: 0, child: _buildLoginScreen()),
+            child: Card(
+              elevation: 0,
+              color: Theme.of(context).colorScheme.surfaceContainerLowest,
+              child: _buildLoginScreen(),
+            ),
           ),
         ),
       );

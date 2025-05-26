@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+
+import '../provider_test.mocks.dart';
+import 'package:mockito/mockito.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../provider_test.mocks.dart';
@@ -16,7 +20,23 @@ void main() {
     ) async {
       final mockUserProvider = MockUserProvider();
       when(mockUserProvider.user).thenReturn(User());
+      final mockUserProvider = MockUserProvider();
+      when(mockUserProvider.user).thenReturn(User());
       await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
+          ],
+          child: MaterialApp(
+            home: Scaffold(
+              bottomNavigationBar: CustomBottomNavBar(
+                pages: [
+                  {"icon": Icons.home, "title": "Home"},
+                  {"icon": Icons.search, "title": "Search"},
+                ],
+                currentIndex: 0,
+                onTapCallback: (index) {},
+              ),
         MultiProvider(
           providers: [
             ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),

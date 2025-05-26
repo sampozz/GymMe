@@ -197,6 +197,7 @@ class UserProvider extends ChangeNotifier {
   /// This method will update the user profile with the provided data
   Future<void> updateUserProfile({
     String? displayName,
+    String? photoURL,
     String? phoneNumber,
     String? address,
     String? taxCode,
@@ -205,6 +206,7 @@ class UserProvider extends ChangeNotifier {
   }) async {
     if (_user != null) {
       _user!.displayName = displayName ?? _user!.displayName;
+      _user!.photoURL = photoURL ?? _user!.photoURL;
       _user!.phoneNumber = phoneNumber ?? _user!.phoneNumber;
       _user!.address = address ?? _user!.address;
       _user!.taxCode = taxCode ?? _user!.taxCode;
@@ -237,5 +239,11 @@ class UserProvider extends ChangeNotifier {
   ) async {
     await _userService.updateMedicalCertificate(uid, certificateExpDate);
     notifyListeners();
+  }
+
+  /// Uploads an image to the user service and returns the URL.
+  Future<String> uploadImage(String base64Image) async {
+    String imageUrl = await _userService.uploadImage(base64Image);
+    return imageUrl;
   }
 }

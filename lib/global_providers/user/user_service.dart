@@ -1,8 +1,12 @@
+import 'dart:convert';
+
+import 'package:dima_project/content/profile/subscription/subscription_model.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dima_project/global_providers/user/user_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 
 class PlatformService {
   bool get isWeb => kIsWeb;
@@ -157,14 +161,20 @@ class UserService {
 
   /// This method will update the user profile in Firestore
   Future<void> updateUserProfile(User user) async {
-    await firestore.collection('users').doc(user.uid).update({
-      'displayName': user.displayName,
-      'phoneNumber': user.phoneNumber,
-      'address': user.address,
-      'taxCode': user.taxCode,
-      'birthPlace': user.birthPlace,
-      'birthDate': user.birthDate,
-    });
+    try {
+      await firestore.collection('users').doc(user.uid).update({
+        'displayName': user.displayName,
+        'photoURL': user.photoURL,
+        'phoneNumber': user.phoneNumber,
+        'address': user.address,
+        'taxCode': user.taxCode,
+        'birthPlace': user.birthPlace,
+        'birthDate': user.birthDate,
+      });
+    } catch (e) {
+      // TODO: Handle error
+      print('Error updating user profile: $e');
+    }
   }
 
   /// Updates the user document in the Firestore 'user' collection with the new subscription.
@@ -190,5 +200,32 @@ class UserService {
 
   Future<void> removeAccount(String uid) async {
     await firestore.collection('users').doc(uid).delete();
+  }
+
+  /// Uploads an image to Imgur and returns the URL
+  Future<String> uploadImage(String base64Image) async {
+    String clientId = 'f48b0bfb16767e7';
+
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('https://api.imgur.com/3/upload'),
+    );
+
+    request.headers['Authorization'] = 'Client-ID $clientId';
+    request.fields['type'] = 'base64';
+    request.fields['image'] = base64Image;
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    final responseData = json.decode(response.body);
+
+    if (response.statusCode == 200 && responseData['success'] == true) {
+      return responseData['data']['link'];
+    } else {
+      throw Exception(
+        'Failed to upload image: ${responseData['data']['error']}',
+      );
+    }
   }
 }

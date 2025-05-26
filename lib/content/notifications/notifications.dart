@@ -50,6 +50,7 @@ class _NotificationsState extends State<Notifications> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
       appBar: AppBar(title: Text('Notifications')),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,7 +77,7 @@ class _NotificationsState extends State<Notifications> {
                               onTap: () => _markAsRead(notification),
                               child: Icon(
                                 Icons.circle_outlined,
-                                color: Theme.of(context).primaryColor,
+                                color: Theme.of(context).colorScheme.primary,
                               ),
                             ),
                     title: Text(
