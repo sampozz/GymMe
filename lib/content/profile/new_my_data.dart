@@ -131,9 +131,7 @@ class _NewMyDataState extends State<NewMyData> {
           content: Row(
             children: [
               Icon(Icons.check_circle_outlined, color: Colors.white),
-              Icon(Icons.check_circle_outlined, color: Colors.white),
               SizedBox(width: 12),
-              Expanded(child: Text('Changes saved successfully!')),
               Expanded(child: Text('Changes saved successfully!')),
             ],
           ),
@@ -176,16 +174,16 @@ class _NewMyDataState extends State<NewMyData> {
   ) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: Theme.of(context).colorScheme.primary),
       ),
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
-          icon: Icon(icon),
+          icon: Icon(icon, color: Theme.of(context).colorScheme.secondary),
           border: InputBorder.none,
         ),
         validator: isMandatory ? (value) => _validateMandatory(value) : null,
@@ -269,16 +267,21 @@ class _NewMyDataState extends State<NewMyData> {
             // Email (read-only)
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey.shade50,
+                color: Theme.of(context).colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: TextFormField(
                 enabled: false,
                 decoration: InputDecoration(
                   labelText: widget.user?.email,
-                  icon: Icon(Icons.email_outlined),
+                  icon: Icon(
+                    Icons.email_outlined,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
                   border: InputBorder.none,
                 ),
               ),
@@ -304,16 +307,21 @@ class _NewMyDataState extends State<NewMyData> {
 
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey.shade50,
+                color: Theme.of(context).colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: TextFormField(
                 controller: birthDateCtrl,
                 decoration: InputDecoration(
                   labelText: 'Birth date',
-                  icon: Icon(Icons.date_range_outlined),
+                  icon: Icon(
+                    Icons.calendar_today_outlined,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
                   border: InputBorder.none,
                 ),
                 onTap: () async {
@@ -354,7 +362,11 @@ class _NewMyDataState extends State<NewMyData> {
     final user = widget.user ?? Provider.of<UserProvider>(context).user;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Modify data')),
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+      appBar: AppBar(
+        title: Text('Modify data'),
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+      ),
       body:
           _isSaving
               ? Center(

@@ -134,7 +134,9 @@ class _AppScaffoldState extends State<AppScaffold> {
         }
       },
       child: Container(
-        decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        ),
         child: Row(
           children: [
             // Sidebar only if the screen is not mobile
