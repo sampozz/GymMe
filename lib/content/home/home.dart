@@ -86,7 +86,7 @@ class _HomeState extends State<Home> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to refresh gym list'),
-            backgroundColor: Colors.red,
+            backgroundColor: Theme.of(context).colorScheme.error,
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -136,7 +136,7 @@ class _HomeState extends State<Home> {
         child: Text(
           title,
           style: TextStyle(
-            color: Colors.black,
+            color: Theme.of(context).colorScheme.onSurface,
             fontSize: 24.0,
             fontWeight: FontWeight.bold,
           ),
@@ -149,6 +149,9 @@ class _HomeState extends State<Home> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: SearchBar(
+        backgroundColor: WidgetStatePropertyAll<Color>(
+          Theme.of(context).colorScheme.surfaceContainerLow,
+        ),
         hintText: 'Search for a gym...',
         controller: _controller,
         trailing:
@@ -167,8 +170,17 @@ class _HomeState extends State<Home> {
         ),
         leading: const Icon(Icons.search),
         elevation: WidgetStateProperty.all(0),
+        overlayColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+        surfaceTintColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+        shadowColor: MaterialStatePropertyAll<Color>(Colors.transparent),
         hintStyle: WidgetStatePropertyAll<TextStyle>(
-          TextStyle(color: Colors.grey.shade400, fontStyle: FontStyle.italic),
+          TextStyle(
+            color: Theme.of(context).colorScheme.outlineVariant,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+        textStyle: WidgetStatePropertyAll<TextStyle>(
+          TextStyle(color: Theme.of(context).colorScheme.onSurface),
         ),
       ),
     );
@@ -185,12 +197,12 @@ class _HomeState extends State<Home> {
                 horizontal: 20.0,
                 vertical: 10.0,
               ),
-              backgroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             ),
             child: Text(
               'Add a new gym',
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimary,
+                color: Theme.of(context).colorScheme.primary,
                 fontSize: 16.0,
               ),
             ),
@@ -361,7 +373,7 @@ class _HomeState extends State<Home> {
 
     // TODO: sort the gym list by distance
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
       appBar: _useMobileLayout ? CustomAppBar(user: _user) : null,
       body: RefreshIndicator(
         backgroundColor: Theme.of(context).colorScheme.primary,

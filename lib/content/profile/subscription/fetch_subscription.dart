@@ -126,10 +126,19 @@ class _FetchSubscriptionState extends State<FetchSubscription> {
                   vertical: 8.0,
                 ),
                 leading: CircleAvatar(
-                  backgroundImage:
-                      user.photoURL.isEmpty
-                          ? AssetImage('assets/avatar.png')
-                          : NetworkImage(user.photoURL),
+                  radius: 35,
+                  child: ClipOval(
+                    child: Image.network(
+                      user?.photoURL ?? '',
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) {
+                        return Image.asset(
+                          'assets/avatar.png',
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
+                  ),
                 ),
                 title: Text(
                   user.displayName.isNotEmpty ? user.displayName : "No Name",

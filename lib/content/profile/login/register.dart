@@ -77,7 +77,10 @@ class _RegisterState extends State<Register> {
   }
 
   Widget _buildLoginHeader() {
-    return Image.asset('assets/logo.png', width: 300, height: 220);
+    bool isDarkTheme = Theme.of(context).brightness == Brightness.dark;
+    return isDarkTheme
+        ? Image.asset('assets/logo_dark.png', width: 250, height: 160)
+        : Image.asset('assets/logo_light.png', width: 250, height: 160);
   }
 
   Widget _buildLoginForm() {
@@ -88,15 +91,18 @@ class _RegisterState extends State<Register> {
           Text(
             "Sign Up",
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Theme.of(context).colorScheme.primary,
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
+          Text(
             "Enter your information to continue",
-            style: TextStyle(fontSize: 16, color: Colors.black38),
+            style: TextStyle(
+              fontSize: 16,
+              color: Theme.of(context).colorScheme.outline,
+            ),
           ),
           const SizedBox(height: 20),
           TextFormField(
@@ -104,13 +110,20 @@ class _RegisterState extends State<Register> {
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.person_2_outlined),
-              prefixIconColor: Colors.black26,
+              prefixIconColor: Theme.of(context).colorScheme.outline,
               labelText: "Full name",
-              hintStyle: TextStyle(color: Colors.black26),
-              labelStyle: TextStyle(color: Colors.black26),
+              hintStyle: TextStyle(
+                color: Theme.of(context).colorScheme.outline,
+              ),
+              labelStyle: TextStyle(
+                color: Theme.of(context).colorScheme.outline,
+              ),
               border: OutlineInputBorder(),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black26, width: 1.0),
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.outline,
+                  width: 1.0,
+                ),
                 borderRadius: BorderRadius.circular(15.0),
               ),
             ),
@@ -122,13 +135,20 @@ class _RegisterState extends State<Register> {
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.email_outlined),
-              prefixIconColor: Colors.black26,
+              prefixIconColor: Theme.of(context).colorScheme.outline,
               labelText: "Email address",
-              hintStyle: TextStyle(color: Colors.black26),
-              labelStyle: TextStyle(color: Colors.black26),
+              hintStyle: TextStyle(
+                color: Theme.of(context).colorScheme.outline,
+              ),
+              labelStyle: TextStyle(
+                color: Theme.of(context).colorScheme.outline,
+              ),
               border: OutlineInputBorder(),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black26, width: 1.0),
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.outline,
+                  width: 1.0,
+                ),
                 borderRadius: BorderRadius.circular(15.0),
               ),
             ),
@@ -140,13 +160,20 @@ class _RegisterState extends State<Register> {
             keyboardType: TextInputType.visiblePassword,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.lock_outline),
-              prefixIconColor: Colors.black26,
+              prefixIconColor: Theme.of(context).colorScheme.outline,
               labelText: "Password",
-              hintStyle: TextStyle(color: Colors.black26),
-              labelStyle: TextStyle(color: Colors.black26),
+              hintStyle: TextStyle(
+                color: Theme.of(context).colorScheme.outline,
+              ),
+              labelStyle: TextStyle(
+                color: Theme.of(context).colorScheme.outline,
+              ),
               border: OutlineInputBorder(),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black26, width: 1.0),
+                borderSide: BorderSide(
+                  color: Theme.of(context).colorScheme.outline,
+                  width: 1.0,
+                ),
                 borderRadius: BorderRadius.circular(15.0),
               ),
             ),
@@ -156,7 +183,7 @@ class _RegisterState extends State<Register> {
           const SizedBox(height: 20),
           Text(
             'By signing up, you agree to our Terms of Service and Privacy Policy',
-            style: TextStyle(color: Colors.black38),
+            style: TextStyle(color: Theme.of(context).colorScheme.outline),
           ),
           const SizedBox(height: 20),
           if (_isLoading)
@@ -199,8 +226,16 @@ class _RegisterState extends State<Register> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Already have an Account?"),
+            Text(
+              "Already have an Account?",
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+            ),
             OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                side: BorderSide.none,
+                backgroundColor: Colors.transparent,
+                foregroundColor: Theme.of(context).colorScheme.tertiary,
+              ),
               onPressed: () => _navigateToLogin(),
               child: const Text("Sign In"),
             ),
@@ -213,7 +248,12 @@ class _RegisterState extends State<Register> {
   Widget _buildRegisterScreenContent() {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+        padding: const EdgeInsets.only(
+          top: 30.0,
+          left: 20,
+          right: 20,
+          bottom: 20,
+        ),
         child: Column(children: [_buildLoginHeader(), _buildLoginForm()]),
       ),
     );
@@ -234,14 +274,22 @@ class _RegisterState extends State<Register> {
     final screenHeight = MediaQuery.of(context).size.height;
 
     if (useMobileLayout) {
-      return Scaffold(backgroundColor: Colors.white, body: _buildLoginScreen());
+      return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerLowest,
+        body: _buildLoginScreen(),
+      );
     } else {
       return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
         body: Center(
           child: SizedBox(
             width: 500,
             height: screenHeight * 0.9,
-            child: Card(elevation: 0, child: _buildLoginScreen()),
+            child: Card(
+              elevation: 0,
+              color: Theme.of(context).colorScheme.surfaceContainerLowest,
+              child: _buildLoginScreen(),
+            ),
           ),
         ),
       );

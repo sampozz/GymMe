@@ -24,7 +24,7 @@ class Subscription {
        startTime = startTime ?? DateTime.now(),
        expiryDate = expiryDate ?? DateTime.now(),
        price = price ?? 0.0,
-       paymentDate = expiryDate ?? DateTime.now(),
+       paymentDate = paymentDate ?? DateTime.now(),
        duration = duration ?? 0;
 
   factory Subscription.fromFirestore(Map<String, dynamic> data) {
