@@ -40,7 +40,6 @@ class MapService {
         return null;
       }
     } catch (e) {
-      print('Error fetching user location: $e');
       return null;
     }
   }
@@ -74,7 +73,6 @@ class MapService {
       // Create a Locations object
       return Locations(gyms: gymLocationsList);
     } catch (e) {
-      print('Error getting gym locations: $e');
       // Return empty locations if error occurs
       return Locations(gyms: []);
     }
@@ -102,7 +100,6 @@ class MapService {
       }
       return {'lat': 0, 'lng': 0}; // Default coordinates if geocoding fails
     } catch (e) {
-      print('Error geocoding address on mobile: $e');
       return {'lat': 0, 'lng': 0}; // Default coordinates if geocoding fails
     }
   }
@@ -130,7 +127,6 @@ class MapService {
 
       return {'lat': 0, 'lng': 0}; // Default coordinates if geocoding fails
     } catch (e) {
-      print('Error geocoding address on web: $e');
       return {'lat': 0, 'lng': 0}; // Default coordinates if geocoding fails
     }
   }

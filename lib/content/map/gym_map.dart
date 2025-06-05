@@ -1,5 +1,4 @@
 import 'package:dima_project/global_providers/screen_provider.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
@@ -100,7 +99,6 @@ class _GymAppState extends State<GymMap> {
       setState(() {
         _locationGranted = false;
       });
-      print('Error getting user location: $e');
     }
   }
 
@@ -185,7 +183,9 @@ class _GymAppState extends State<GymMap> {
           ),
         );
       } catch (e) {
-        print('Error updating camera position: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Unable to update camera position')),
+        );
       }
     }
   }
@@ -272,9 +272,14 @@ class _GymAppState extends State<GymMap> {
                         ),
                       );
                     },
-            backgroundColor: _locationGranted ? Colors.blue : Colors.grey,
+            backgroundColor:
+                _locationGranted
+                    ? Theme.of(context).colorScheme.secondary
+                    : Theme.of(context).colorScheme.surfaceContainerHighest,
             foregroundColor:
-                _locationGranted ? Colors.white : Colors.grey.shade300,
+                _locationGranted
+                    ? Theme.of(context).colorScheme.onSecondary
+                    : Theme.of(context).colorScheme.secondary,
             tooltip:
                 _locationGranted
                     ? 'Go to user location'
@@ -330,14 +335,20 @@ class _GymAppState extends State<GymMap> {
             padding: const WidgetStatePropertyAll<EdgeInsets>(
               EdgeInsets.symmetric(horizontal: 16.0),
             ),
+            backgroundColor: WidgetStatePropertyAll<Color>(
+              Theme.of(context).colorScheme.surfaceContainerLow,
+            ),
             leading: const Icon(Icons.search),
             elevation: WidgetStateProperty.all(0),
             hintText: 'Search for gyms or locations...',
             hintStyle: WidgetStatePropertyAll<TextStyle>(
               TextStyle(
-                color: Colors.grey.shade400,
+                color: Theme.of(context).colorScheme.outlineVariant,
                 fontStyle: FontStyle.italic,
               ),
+            ),
+            textStyle: WidgetStatePropertyAll<TextStyle>(
+              TextStyle(color: Theme.of(context).colorScheme.onSurface),
             ),
           );
         },

@@ -160,8 +160,7 @@ class GymBottomSheet extends StatelessWidget {
                               _onFavoriteIconTap(context, gym.id!, isFavourite),
                       child: Icon(
                         isFavourite ? Icons.favorite : Icons.favorite_border,
-                        color:
-                            Theme.of(context).colorScheme.onSecondaryContainer,
+                        color: Color(0xFFFB5C1C),
                         size: 20,
                       ),
                     ),
