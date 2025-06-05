@@ -58,7 +58,7 @@ dependencies:
   shimmer: ^3.0.0
   google_fonts: ^6.2.1
   lottie: ^3.3.1
-  shared_preferences: ^2.2.0 
+  shared_preferences: ^2.2.0
 
 dev_dependencies:
   flutter_test:
@@ -116,15 +116,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
-
-flutter_native_splash:
-    color: "#221743"
-    image: assets/logo_splash.png
-    android: true
-    # ios: true
-    android_gravity: center
-    # ios_content_mode: center
-    fullscreen: true
-    android_12:
-      icon_background_color: "#221743"
-      image: assets/logo_splash.png

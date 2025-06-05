@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:dima_project/auth_gate/auth_gate.dart';
+import 'package:dima_project/global_providers/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class IntroAnimation extends StatefulWidget {
   const IntroAnimation({super.key});
@@ -20,7 +22,7 @@ class _IntroAnimationState extends State<IntroAnimation>
     // Controller per l'animazione Lottie (durata basata sul file: 153 frame a 60fps)
     _lottieController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1530), // 153/60*1000
+      duration: const Duration(milliseconds: 2383), // 143/60*1000
     );
 
     // Avvia l'animazione Lottie
@@ -56,16 +58,31 @@ class _IntroAnimationState extends State<IntroAnimation>
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDarkMode = themeProvider.isDarkMode;
+
     return Scaffold(
-      backgroundColor: const Color(0xFF221743),
+      backgroundColor:
+          isDarkMode
+              ? Theme.of(context).colorScheme.surface
+              : Theme.of(context).colorScheme.primaryContainer,
       body: Center(
-        child: Lottie.asset(
-          'assets/animations/splash_animation.json',
-          controller: _lottieController,
-          fit: BoxFit.fitWidth,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-        ),
+        child:
+            isDarkMode
+                ? Lottie.asset(
+                  'assets/animations/splash_animation_dark.json',
+                  controller: _lottieController,
+                  fit: BoxFit.fitWidth,
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                )
+                : Lottie.asset(
+                  'assets/animations/splash_animation.json',
+                  controller: _lottieController,
+                  fit: BoxFit.fitWidth,
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                ),
       ),
     );
   }

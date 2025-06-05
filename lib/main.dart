@@ -1,9 +1,11 @@
 import 'package:dima_project/intro/intro_animation.dart';
+import 'package:dima_project/auth_gate/auth_gate.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:dima_project/theme/theme.dart';
 import 'package:dima_project/theme/theme_utility.dart';
 import 'package:dima_project/global_providers/theme_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -45,8 +47,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'GymMe',
       theme: themeProvider.isDarkMode ? theme.dark() : theme.light(),
-      home: const IntroAnimation(),
-      // TODO: Add splash screen
+      home: kIsWeb ? const AuthGate() : const IntroAnimation(),
       initialRoute: '/',
     );
   }
