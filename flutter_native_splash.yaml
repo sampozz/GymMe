@@ -20,8 +20,8 @@ flutter_native_splash:
 
     android_12:
       icon_background_color: "#221743"
-      image: assets/splash_icon/splash_light.png
+      image: assets/splash_icon/splash_12_light.png
       icon_background_color_dark: "#141312"
-      image_dark: assets/splash_icon/splash_dark.png
+      image_dark: assets/splash_icon/splash_12_dark.png
 
     fullscreen: true
