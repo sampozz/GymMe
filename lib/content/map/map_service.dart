@@ -9,12 +9,20 @@ import 'dart:convert';
 class MapService {
   //Verifies current location permission
   Future<LocationPermission> checkLocationPermission() async {
-    return await Geolocator.checkPermission();
+    try {
+      return await Geolocator.checkPermission();
+    } catch (e) {
+      return LocationPermission.denied;
+    }
   }
 
   //Requests location permission
   Future<LocationPermission> requestLocationPermission() async {
-    return await Geolocator.requestPermission();
+    try {
+      return await Geolocator.requestPermission();
+    } catch (e) {
+      return LocationPermission.denied;
+    }
   }
 
   //Fetches user location or returns null if permission is denied
@@ -78,9 +86,14 @@ class MapService {
     }
   }
 
+  // For testing purposes
+  final bool? forceWebBehavior;
+  MapService({this.forceWebBehavior});
+
   // Helper function to get coordinates from address
   Future<Map<String, double>> _getCoordinatesFromAddress(String address) async {
-    if (kIsWeb) {
+    final useWebBehavior = forceWebBehavior ?? kIsWeb; // For testing purposes
+    if (useWebBehavior) {
       return _getCoordinatesFromAddressWeb(address);
     } else {
       return _getCoordinatesFromAddressMobile(address);

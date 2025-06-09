@@ -687,6 +687,7 @@ void main() {
     testWidgets('GymBottomSheet shows opening hours when gym is closed', (
       WidgetTester tester,
     ) async {
+      // Simulate closed gym
       final now = DateTime.now();
 
       final testGym = Gym(
@@ -801,7 +802,6 @@ void main() {
     testWidgets('GymMap uses default position when not initialized', (
       WidgetTester tester,
     ) async {
-      // Override per testare stato non inizializzato
       when(mockMapProvider.isInitialized).thenReturn(false);
       when(
         mockMapProvider.savedPosition,
@@ -821,7 +821,6 @@ void main() {
     testWidgets('GymMap uses saved position when initialized', (
       WidgetTester tester,
     ) async {
-      // Override per testare stato inizializzato
       when(mockMapProvider.isInitialized).thenReturn(true);
       when(mockMapProvider.savedPosition).thenReturn(const LatLng(45.5, 9.2));
       when(mockMapProvider.savedZoom).thenReturn(16.0);
@@ -830,8 +829,6 @@ void main() {
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
 
-      // Verifica che usi la posizione salvata invece di quella di default
-      // Note: Questo test potrebbe richiedere controlli più specifici
       expect(find.byType(GymMap), findsOneWidget);
     });
   });

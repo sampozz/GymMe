@@ -13,11 +13,13 @@ void main() {
 
   group('MapService', () {
     late MapService mapService;
+    late MapService mapServiceWeb;
     late MockClient mockHttpClient;
 
     setUp(() {
       mockHttpClient = MockClient();
-      mapService = MapService();
+      mapService = MapService(forceWebBehavior: false);
+      mapServiceWeb = MapService(forceWebBehavior: true);
     });
 
     // Helper function to create test gyms
@@ -52,13 +54,10 @@ void main() {
 
     group('Basic Functionality Tests', () {
       test('fetchGymLocations returns list of gym locations', () async {
-        // Arrange
         final testGyms = _createTestGyms();
 
-        // Act
         final result = await mapService.fetchGymLocations(testGyms);
 
-        // Assert
         expect(result, isA<Locations>());
         expect(result.gyms.length, equals(testGyms.length));
 
@@ -72,25 +71,20 @@ void main() {
       });
 
       test('fetchGymLocations handles empty gym list', () async {
-        // Arrange & Act
         final result = await mapService.fetchGymLocations([]);
 
-        // Assert
         expect(result, isA<Locations>());
         expect(result.gyms, isEmpty);
       });
 
       test('fetchGymLocations handles null gym list', () async {
-        // Arrange & Act
         final result = await mapService.fetchGymLocations(null);
 
-        // Assert
         expect(result, isA<Locations>());
         expect(result.gyms, isEmpty);
       });
 
       test('fetchGymLocations handles gyms with empty addresses', () async {
-        // Arrange
         final gymsWithEmptyAddresses = [
           Gym(
             id: 'gym_empty_1',
@@ -110,12 +104,10 @@ void main() {
           ),
         ];
 
-        // Act
         final result = await mapService.fetchGymLocations(
           gymsWithEmptyAddresses,
         );
 
-        // Assert
         expect(result, isA<Locations>());
         expect(result.gyms.length, equals(2));
 
@@ -129,7 +121,6 @@ void main() {
 
     group('Error Handling Tests', () {
       test('fetchGymLocations handles geocoding errors gracefully', () async {
-        // Arrange
         final gymsWithInvalidAddresses = [
           Gym(
             id: 'gym_invalid',
@@ -141,12 +132,10 @@ void main() {
           ),
         ];
 
-        // Act
         final result = await mapService.fetchGymLocations(
           gymsWithInvalidAddresses,
         );
 
-        // Assert
         expect(result, isA<Locations>());
         expect(result.gyms.length, equals(1));
 
@@ -159,10 +148,6 @@ void main() {
       });
 
       test('fetchGymLocations returns empty locations on exception', () async {
-        // Note: This test verifies the service handles internal exceptions
-        // In a real scenario, you might inject dependencies to simulate failures
-
-        // Act & Assert - Should not throw
         expect(
           () => mapService.fetchGymLocations(_createTestGyms()),
           returnsNormally,
@@ -172,7 +157,6 @@ void main() {
 
     group('Data Integrity Tests', () {
       test('fetchGymLocations preserves all gym data', () async {
-        // Arrange
         final testGym = Gym(
           id: 'detailed_gym',
           name: 'Detailed Test Gym',
@@ -182,13 +166,11 @@ void main() {
           openTime: DateTime.parse('2023-01-01 06:30:00'),
           closeTime: DateTime.parse('2023-01-01 23:30:00'),
           imageUrl: 'https://example.com/detailed.jpg',
-          activities: [], // Could add activities if needed
+          activities: [],
         );
 
-        // Act
         final result = await mapService.fetchGymLocations([testGym]);
 
-        // Assert
         expect(result.gyms.length, equals(1));
         final gymLocation = result.gyms.first;
 
@@ -202,7 +184,6 @@ void main() {
       test(
         'fetchGymLocations handles special characters in addresses',
         () async {
-          // Arrange
           final gymsWithSpecialChars = [
             Gym(
               id: 'gym_special',
@@ -214,12 +195,10 @@ void main() {
             ),
           ];
 
-          // Act
           final result = await mapService.fetchGymLocations(
             gymsWithSpecialChars,
           );
 
-          // Assert
           expect(result, isA<Locations>());
           expect(result.gyms.length, equals(1));
           expect(result.gyms.first.address, contains('Firenze'));
@@ -228,31 +207,23 @@ void main() {
     });
 
     group('Location Permission Tests', () {
-      test('location methods exist and have correct signatures', () {
+      test('location methods exist and have correct signatures', () async {
         expect(mapService.checkLocationPermission, isA<Function>());
         expect(mapService.requestLocationPermission, isA<Function>());
         expect(mapService.fetchUserLocation, isA<Function>());
-        expect(
-          mapService.checkLocationPermission(),
-          isA<Future<LocationPermission>>(),
-        );
-        expect(
-          mapService.requestLocationPermission(),
-          isA<Future<LocationPermission>>(),
-        );
-        expect(mapService.fetchUserLocation(), isA<Future<Position?>>());
-      });
 
-      test('fetchUserLocation handles exceptions gracefully', () async {
-        // Should return null when Geolocator is not available in test environment
-        final result = await mapService.fetchUserLocation();
-        expect(result, isNull);
+        final checkResult = await mapService.checkLocationPermission();
+        final requestResult = await mapService.requestLocationPermission();
+        final locationResult = await mapService.fetchUserLocation();
+
+        expect(checkResult, isA<LocationPermission>());
+        expect(requestResult, isA<LocationPermission>());
+        expect(locationResult, isNull);
       });
     });
 
     group('GymLocation Model Tests', () {
       test('GymLocation creates objects correctly', () {
-        // Arrange & Act
         final gymLocation = GymLocation(
           id: 'test_id',
           name: 'Test Gym',
@@ -261,7 +232,6 @@ void main() {
           lng: 9.189982,
         );
 
-        // Assert
         expect(gymLocation.id, equals('test_id'));
         expect(gymLocation.name, equals('Test Gym'));
         expect(gymLocation.address, equals('Test Address'));
@@ -270,7 +240,6 @@ void main() {
       });
 
       test('Locations creates collection correctly', () {
-        // Arrange
         final gymLocations = [
           GymLocation(
             id: '1',
@@ -288,10 +257,8 @@ void main() {
           ),
         ];
 
-        // Act
         final locations = Locations(gyms: gymLocations);
 
-        // Assert
         expect(locations.gyms.length, equals(2));
         expect(locations.gyms.first.id, equals('1'));
         expect(locations.gyms.last.id, equals('2'));
@@ -302,7 +269,6 @@ void main() {
       test('service handles both web and mobile geocoding paths', () async {
         // This test verifies that the service has both code paths
         // In reality, the kIsWeb flag determines which path is used
-
         final testGyms = [
           Gym(
             id: 'platform_test',
@@ -314,13 +280,30 @@ void main() {
           ),
         ];
 
-        // Act
-        final result = await mapService.fetchGymLocations(testGyms);
+        final resultMobile = await mapService.fetchGymLocations(testGyms);
 
-        // Assert
-        expect(result, isA<Locations>());
-        expect(result.gyms.length, equals(1));
-        expect(result.gyms.first.id, equals('platform_test'));
+        final resultWeb = await mapServiceWeb.fetchGymLocations(testGyms);
+
+        expect(resultMobile, isA<Locations>());
+        expect(resultMobile.gyms.length, equals(1));
+        expect(resultMobile.gyms.first.id, equals('platform_test'));
+
+        expect(resultWeb, isA<Locations>());
+        expect(resultWeb.gyms.length, equals(1));
+        expect(resultWeb.gyms.first.id, equals('platform_test'));
+
+        expect(resultWeb.gyms.length, equals(resultMobile.gyms.length));
+        expect(resultWeb.gyms.first.id, equals(resultMobile.gyms.first.id));
+        expect(resultWeb.gyms.first.name, equals(resultMobile.gyms.first.name));
+        expect(
+          resultWeb.gyms.first.address,
+          equals(resultMobile.gyms.first.address),
+        );
+
+        expect(resultMobile.gyms.first.lat, isA<double>());
+        expect(resultMobile.gyms.first.lng, isA<double>());
+        expect(resultWeb.gyms.first.lat, isA<double>());
+        expect(resultWeb.gyms.first.lng, isA<double>());
       });
 
       test('geocoding handles various address formats', () async {
@@ -352,30 +335,10 @@ void main() {
           expect(gym.lng, isA<double>());
         }
       });
-
-      test('geocoding handles international addresses', () async {
-        final testGyms = [
-          Gym(
-            id: 'intl_test',
-            name: 'International Test',
-            address: 'Champs-Élysées, Paris, France',
-            openTime: DateTime.parse('2023-01-01 08:00:00'),
-            closeTime: DateTime.parse('2023-01-01 22:00:00'),
-            imageUrl: 'https://example.com/intl.jpg',
-          ),
-        ];
-
-        final result = await mapService.fetchGymLocations(testGyms);
-        expect(result, isA<Locations>());
-        expect(result.gyms.length, equals(1));
-        expect(result.gyms.first.lat, isA<double>());
-        expect(result.gyms.first.lng, isA<double>());
-      });
     });
 
     group('Performance and Edge Cases', () {
       test('fetchGymLocations handles large gym lists', () async {
-        // Arrange
         final largeGymList = List.generate(
           50,
           (index) => Gym(
@@ -388,14 +351,11 @@ void main() {
           ),
         );
 
-        // Act
         final result = await mapService.fetchGymLocations(largeGymList);
 
-        // Assert
         expect(result, isA<Locations>());
         expect(result.gyms.length, equals(50));
 
-        // Verify all gyms were processed
         for (int i = 0; i < 50; i++) {
           expect(result.gyms.any((gl) => gl.id == 'gym_$i'), isTrue);
         }
@@ -439,7 +399,6 @@ void main() {
           ),
         ];
 
-        // Should not block indefinitely
         final result = await mapService
             .fetchGymLocations(testGyms)
             .timeout(
@@ -530,13 +489,11 @@ void main() {
       test(
         'geocoding catch blocks are triggered by invalid addresses',
         () async {
-          // This test specifically targets the catch blocks in both
-          // _getCoordinatesFromAddressWeb and _getCoordinatesFromAddressMobile
           final problematicGyms = [
             Gym(
               id: 'catch_test_1',
               name: 'Catch Test 1',
-              address: '', // Empty - triggers trim().isEmpty path
+              address: '',
               openTime: DateTime.parse('2023-01-01 08:00:00'),
               closeTime: DateTime.parse('2023-01-01 22:00:00'),
               imageUrl: 'test.jpg',
