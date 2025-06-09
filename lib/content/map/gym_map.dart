@@ -103,11 +103,19 @@ class _GymAppState extends State<GymMap> {
   }
 
   Future<void> _loadGymList() async {
-    final gyms = await context.read<GymProvider>().getGymList();
-    if (mounted) {
-      setState(() {
-        gymList = gyms;
-      });
+    try {
+      final gyms = await context.read<GymProvider>().getGymList();
+      if (mounted) {
+        setState(() {
+          gymList = gyms;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          gymList = [];
+        });
+      }
     }
   }
 
@@ -140,8 +148,8 @@ class _GymAppState extends State<GymMap> {
     });
 
     try {
-      if (mapProvider != null) {
-        final gyms = await mapProvider!.getGymLocations(gymList);
+      if (mapProvider != null && gymList != null) {
+        final gyms = await mapProvider!.getGymLocations(gymList!);
 
         if (mounted) {
           setState(() {
@@ -274,11 +282,11 @@ class _GymAppState extends State<GymMap> {
                     },
             backgroundColor:
                 _locationGranted
-                    ? Theme.of(context).colorScheme.secondary
+                    ? Theme.of(context).colorScheme.secondaryContainer
                     : Theme.of(context).colorScheme.surfaceContainerHighest,
             foregroundColor:
                 _locationGranted
-                    ? Theme.of(context).colorScheme.onSecondary
+                    ? Theme.of(context).colorScheme.onSecondaryContainer
                     : Theme.of(context).colorScheme.secondary,
             tooltip:
                 _locationGranted
@@ -340,6 +348,11 @@ class _GymAppState extends State<GymMap> {
             ),
             leading: const Icon(Icons.search),
             elevation: WidgetStateProperty.all(0),
+            overlayColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+            surfaceTintColor: MaterialStatePropertyAll<Color>(
+              Colors.transparent,
+            ),
+            shadowColor: MaterialStatePropertyAll<Color>(Colors.transparent),
             hintText: 'Search for gyms or locations...',
             hintStyle: WidgetStatePropertyAll<TextStyle>(
               TextStyle(
