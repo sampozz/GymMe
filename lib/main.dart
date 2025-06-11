@@ -33,22 +33,52 @@ void main() async {
   );
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({super.key});
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    // ✅ Aggiungi observer per i cambiamenti di sistema
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    // ✅ Rimuovi observer
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    // ✅ Chiamato quando il tema di sistema cambia
+    super.didChangePlatformBrightness();
+    final themeProvider = context.read<ThemeProvider>();
+    final systemBrightness =
+        WidgetsBinding.instance.platformDispatcher.platformBrightness;
+    themeProvider.updateSystemTheme(systemBrightness);
+  }
 
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = createTextTheme(context, "Lato");
     MaterialTheme theme = MaterialTheme(textTheme);
 
-    // Usa il tema in base allo stato in ThemeProvider
-    final themeProvider = Provider.of<ThemeProvider>(context);
-
-    return MaterialApp(
-      title: 'GymMe',
-      theme: themeProvider.isDarkMode ? theme.dark() : theme.light(),
-      home: kIsWeb ? const AuthGate() : const IntroAnimation(),
-      initialRoute: '/',
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          title: 'GymMe',
+          theme: themeProvider.isDarkMode ? theme.dark() : theme.light(),
+          home: kIsWeb ? const AuthGate() : const IntroAnimation(),
+          initialRoute: '/',
+        );
+      },
     );
   }
 }
