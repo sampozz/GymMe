@@ -1,7 +1,7 @@
 import 'package:dima_project/content/profile/new_my_data.dart';
 import 'package:flutter/material.dart';
-import 'package:dima_project/global_providers/user/user_model.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:dima_project/models/user_model.dart';
+import 'package:dima_project/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class MyData extends StatelessWidget {
@@ -122,9 +122,7 @@ class MyData extends StatelessWidget {
         if (!(user.isAdmin)) ...[
           Container(
             padding: EdgeInsets.symmetric(vertical: 20),
-            child: Column(
-              children: [buildProfilePicture(user?.photoURL ?? '', true)],
-            ),
+            child: Column(children: [buildProfilePicture(user.photoURL, true)]),
           ),
         ],
         // Lista dei dettagli utente
@@ -143,12 +141,12 @@ class MyData extends StatelessWidget {
         // Colonna sinistra con l'immagine del profilo
         // solo se non è un admin
         if (!(user.isAdmin)) ...[
-          Container(
+          SizedBox(
             width: 200,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: [buildProfilePicture(user?.photoURL ?? '', false)],
+              children: [buildProfilePicture(user.photoURL, false)],
             ),
           ),
         ],

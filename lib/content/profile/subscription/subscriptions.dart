@@ -1,5 +1,5 @@
-import 'package:dima_project/content/profile/subscription/subscription_model.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:dima_project/models/subscription_model.dart';
+import 'package:dima_project/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +12,7 @@ class Subscriptions extends StatefulWidget {
 
 class _SubscriptionsState extends State<Subscriptions> {
   // Set to track which subscriptions are expanded
-  Set<String> _expandedSubscriptions = {};
+  final Set<String> _expandedSubscriptions = {};
 
   // Toggle the expanded state of a subscription
   void _toggleExpansion(String subscriptionId) {
@@ -26,14 +26,13 @@ class _SubscriptionsState extends State<Subscriptions> {
   }
 
   Future<void> _refreshSubscriptions(BuildContext context) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final snackBar = ScaffoldMessenger.of(context);
     try {
-      final scaffoldMessenger = ScaffoldMessenger.of(context);
-      final userProvider = Provider.of<UserProvider>(context, listen: false);
-
       await userProvider.fetchUser();
 
       // Optional: show success message
-      scaffoldMessenger.showSnackBar(
+      snackBar.showSnackBar(
         const SnackBar(
           content: Text('Subscriptions updated successfully'),
           duration: Duration(seconds: 2),
@@ -41,7 +40,7 @@ class _SubscriptionsState extends State<Subscriptions> {
       );
     } catch (e) {
       // Show error message
-      ScaffoldMessenger.of(context).showSnackBar(
+      snackBar.showSnackBar(
         SnackBar(
           content: Text('Error refreshing subscriptions: ${e.toString()}'),
           backgroundColor: Colors.red,
@@ -181,7 +180,7 @@ class _SubscriptionsState extends State<Subscriptions> {
                   ),
 
                   AnimatedCrossFade(
-                    firstChild: Container(height: 0, width: double.infinity),
+                    firstChild: SizedBox(height: 0, width: double.infinity),
                     secondChild: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Row(

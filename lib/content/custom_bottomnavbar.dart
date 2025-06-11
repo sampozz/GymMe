@@ -1,4 +1,4 @@
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:dima_project/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:ui';

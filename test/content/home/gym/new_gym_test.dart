@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:dima_project/content/home/gym/gym_model.dart';
-import 'package:dima_project/global_providers/gym_provider.dart';
+import 'package:dima_project/models/gym_model.dart';
+import 'package:dima_project/providers/gym_provider.dart';
 import 'package:dima_project/content/home/gym/new_gym.dart'; // Update with correct import path
 import 'package:provider/provider.dart';
 import 'package:mockito/mockito.dart';

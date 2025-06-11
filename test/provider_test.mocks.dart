@@ -6,28 +6,22 @@
 import 'dart:async' as _i6;
 import 'dart:ui' as _i12;
 
-import 'package:dima_project/content/bookings/booking_model.dart' as _i7;
-import 'package:dima_project/content/bookings/booking_update_model.dart'
-    as _i11;
-import 'package:dima_project/content/bookings/bookings_provider.dart' as _i5;
-import 'package:dima_project/content/home/gym/activity/activity_model.dart'
-    as _i9;
-import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart'
-    as _i10;
-import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart'
-    as _i21;
-import 'package:dima_project/content/home/gym/gym_model.dart' as _i8;
-import 'package:dima_project/content/instructors/instructor_model.dart' as _i20;
-import 'package:dima_project/content/instructors/instructor_provider.dart'
-    as _i19;
-import 'package:dima_project/content/map/location_model.dart' as _i4;
-import 'package:dima_project/content/profile/subscription/subscription_model.dart'
-    as _i16;
-import 'package:dima_project/global_providers/gym_provider.dart' as _i18;
-import 'package:dima_project/global_providers/map_provider.dart' as _i22;
-import 'package:dima_project/global_providers/screen_provider.dart' as _i13;
-import 'package:dima_project/global_providers/user/user_model.dart' as _i15;
-import 'package:dima_project/global_providers/user/user_provider.dart' as _i14;
+import 'package:dima_project/models/booking_model.dart' as _i7;
+import 'package:dima_project/models/booking_update_model.dart' as _i11;
+import 'package:dima_project/providers/bookings_provider.dart' as _i5;
+import 'package:dima_project/models/activity_model.dart' as _i9;
+import 'package:dima_project/models/slot_model.dart' as _i10;
+import 'package:dima_project/providers/slot_provider.dart' as _i21;
+import 'package:dima_project/models/gym_model.dart' as _i8;
+import 'package:dima_project/models/instructor_model.dart' as _i20;
+import 'package:dima_project/providers/instructor_provider.dart' as _i19;
+import 'package:dima_project/models/location_model.dart' as _i4;
+import 'package:dima_project/models/subscription_model.dart' as _i16;
+import 'package:dima_project/providers/gym_provider.dart' as _i18;
+import 'package:dima_project/providers/map_provider.dart' as _i22;
+import 'package:dima_project/providers/screen_provider.dart' as _i13;
+import 'package:dima_project/models/user_model.dart' as _i15;
+import 'package:dima_project/providers/user_provider.dart' as _i14;
 import 'package:flutter/material.dart' as _i2;
 import 'package:geolocator/geolocator.dart' as _i23;
 import 'package:google_maps_flutter/google_maps_flutter.dart' as _i3;

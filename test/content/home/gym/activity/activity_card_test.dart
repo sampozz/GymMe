@@ -1,11 +1,11 @@
 import 'package:dima_project/content/home/gym/activity/activity_card.dart';
-import 'package:dima_project/content/home/gym/activity/activity_model.dart';
-import 'package:dima_project/content/home/gym/activity/book_slot/book_slot_page.dart';
-import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart';
-import 'package:dima_project/content/home/gym/gym_model.dart';
-import 'package:dima_project/content/instructors/instructor_provider.dart';
-import 'package:dima_project/global_providers/gym_provider.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:dima_project/models/activity_model.dart';
+import 'package:dima_project/content/home/gym/activity/slots/slots_page.dart';
+import 'package:dima_project/providers/slot_provider.dart';
+import 'package:dima_project/models/gym_model.dart';
+import 'package:dima_project/providers/instructor_provider.dart';
+import 'package:dima_project/providers/gym_provider.dart';
+import 'package:dima_project/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -131,7 +131,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Verify that the navigation occurred
-      expect(find.byType(BookSlotPage), findsOneWidget);
+      expect(find.byType(SlotsPage), findsOneWidget);
     });
   });
 }

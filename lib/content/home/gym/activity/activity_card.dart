@@ -1,8 +1,8 @@
-import 'package:dima_project/content/home/gym/activity/activity_model.dart';
-import 'package:dima_project/content/home/gym/activity/book_slot/book_slot_page.dart';
-import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart';
-import 'package:dima_project/content/home/gym/gym_model.dart';
-import 'package:dima_project/global_providers/gym_provider.dart';
+import 'package:dima_project/models/activity_model.dart';
+import 'package:dima_project/content/home/gym/activity/slots/slots_page.dart';
+import 'package:dima_project/providers/slot_provider.dart';
+import 'package:dima_project/models/gym_model.dart';
+import 'package:dima_project/providers/gym_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -42,10 +42,8 @@ class ActivityCard extends StatelessWidget {
         context,
         MaterialPageRoute(
           builder:
-              (context) => BookSlotPage(
-                gymIndex: gymIndex,
-                activityIndex: activityIndex,
-              ),
+              (context) =>
+                  SlotsPage(gymIndex: gymIndex, activityIndex: activityIndex),
         ),
       );
     } else {
@@ -57,7 +55,7 @@ class ActivityCard extends StatelessWidget {
               (context) => ChangeNotifierProvider(
                 create:
                     (_) => SlotProvider(gymId: gymId, activityId: activityId),
-                child: BookSlotPage(
+                child: SlotsPage(
                   gymIndex: gymIndex,
                   activityIndex: activityIndex,
                 ),

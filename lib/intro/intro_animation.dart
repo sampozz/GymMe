@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:dima_project/auth_gate/auth_gate.dart';
-import 'package:dima_project/global_providers/theme_provider.dart';
+import 'package:dima_project/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class IntroAnimation extends StatefulWidget {

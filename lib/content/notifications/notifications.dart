@@ -1,6 +1,6 @@
-import 'package:dima_project/content/bookings/booking_update_model.dart';
-import 'package:dima_project/content/bookings/bookings_provider.dart';
-import 'package:dima_project/content/bookings/widgets/booking_page.dart';
+import 'package:dima_project/models/booking_update_model.dart';
+import 'package:dima_project/providers/bookings_provider.dart';
+import 'package:dima_project/content/bookings/booking_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
