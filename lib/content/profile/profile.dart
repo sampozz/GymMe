@@ -23,7 +23,7 @@ class _ProfileState extends State<Profile> {
 
   void onCycleTheme() {
     Provider.of<ThemeProvider>(context, listen: false).cycleTheme();
-    setState(() {}); // Aggiorna l'UI per mostrare l'icona corretta
+    setState(() {});
   }
 
   void _deleteAccountConfirm(User user) {
@@ -275,26 +275,6 @@ class _ProfileState extends State<Profile> {
                     ],
                   ),
                 ),
-                /*// Aggiungi qui l'icona animata con AnimatedSwitcher
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  transitionBuilder:
-                      (child, animation) =>
-                          RotationTransition(turns: animation, child: child),
-                  child: IconButton(
-                    key: ValueKey(_isDark), // Importante per l'animazione
-                    icon: Icon(
-                      _isDark
-                          ? Icons.dark_mode_outlined
-                          : Icons.wb_sunny_outlined,
-                      color:
-                          _isDark
-                              ? Theme.of(context).colorScheme.primary
-                              : Theme.of(context).colorScheme.secondary,
-                    ),
-                    onPressed: onToggleTheme,
-                  ),
-                ),*/
                 _buildThemeToggleButton(),
               ],
             ),
