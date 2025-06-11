@@ -14,16 +14,16 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  bool get _isDark =>
-      Provider.of<ThemeProvider>(context, listen: false).isDarkMode;
+  String get _currentThemeMode =>
+      Provider.of<ThemeProvider>(context, listen: false).currentThemeMode;
 
   void _signOut(BuildContext context) async {
     await Provider.of<UserProvider>(context, listen: false).signOut();
   }
 
-  void onToggleTheme() {
-    Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
-    setState(() {}); // Aggiorna l'UI per mostrare l'icona corretta
+  void onCycleTheme() {
+    Provider.of<ThemeProvider>(context, listen: false).cycleTheme();
+    setState(() {});
   }
 
   void _deleteAccountConfirm(User user) {
@@ -275,26 +275,7 @@ class _ProfileState extends State<Profile> {
                     ],
                   ),
                 ),
-                // Aggiungi qui l'icona animata con AnimatedSwitcher
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  transitionBuilder:
-                      (child, animation) =>
-                          RotationTransition(turns: animation, child: child),
-                  child: IconButton(
-                    key: ValueKey(_isDark), // Importante per l'animazione
-                    icon: Icon(
-                      _isDark
-                          ? Icons.dark_mode_outlined
-                          : Icons.wb_sunny_outlined,
-                      color:
-                          _isDark
-                              ? Theme.of(context).colorScheme.primary
-                              : Theme.of(context).colorScheme.secondary,
-                    ),
-                    onPressed: onToggleTheme,
-                  ),
-                ),
+                _buildThemeToggleButton(),
               ],
             ),
             if (!user.isAdmin) ...[
@@ -343,6 +324,59 @@ class _ProfileState extends State<Profile> {
         ),
       ),
     );
+  }
+
+  Widget _buildThemeToggleButton() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          transitionBuilder:
+              (child, animation) =>
+                  RotationTransition(turns: animation, child: child),
+          child: IconButton(
+            key: ValueKey(_currentThemeMode),
+            icon: _getThemeIcon(),
+            onPressed: onCycleTheme,
+            tooltip: 'Theme: $_currentThemeMode',
+          ),
+        ),
+        Text(
+          _currentThemeMode,
+          style: TextStyle(
+            fontSize: 10,
+            color: Theme.of(context).colorScheme.outline,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _getThemeIcon() {
+    switch (_currentThemeMode) {
+      case 'Auto':
+        return Icon(
+          Icons.brightness_auto_outlined,
+          color: Theme.of(context).colorScheme.primary,
+        );
+      case 'Light':
+        return Icon(
+          Icons.wb_sunny_outlined,
+          color: Theme.of(context).colorScheme.secondary,
+        );
+      case 'Dark':
+        return Icon(
+          Icons.dark_mode_outlined,
+          color: Theme.of(context).colorScheme.primary,
+        );
+      default:
+        return Icon(
+          Icons.brightness_auto_outlined,
+          color: Theme.of(context).colorScheme.primary,
+        );
+    }
   }
 
   // Navigation Tile for options

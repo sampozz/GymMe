@@ -7,7 +7,7 @@
     <application
         android:label="dima_project"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/ic_launcher">
 
         <!-- Google Maps API key for Android -->
         <meta-data android:name="com.google.android.geo.API_KEY"

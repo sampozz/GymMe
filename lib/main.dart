@@ -1,9 +1,11 @@
+import 'package:dima_project/intro/intro_animation.dart';
 import 'package:dima_project/auth_gate/auth_gate.dart';
 import 'package:dima_project/global_providers/screen_provider.dart';
 import 'package:dima_project/global_providers/user/user_provider.dart';
 import 'package:dima_project/theme/theme.dart';
 import 'package:dima_project/theme/theme_utility.dart';
 import 'package:dima_project/global_providers/theme_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
@@ -31,23 +33,52 @@ void main() async {
   );
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({super.key});
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    // ✅ Aggiungi observer per i cambiamenti di sistema
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    // ✅ Rimuovi observer
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    // ✅ Chiamato quando il tema di sistema cambia
+    super.didChangePlatformBrightness();
+    final themeProvider = context.read<ThemeProvider>();
+    final systemBrightness =
+        WidgetsBinding.instance.platformDispatcher.platformBrightness;
+    themeProvider.updateSystemTheme(systemBrightness);
+  }
 
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = createTextTheme(context, "Lato");
     MaterialTheme theme = MaterialTheme(textTheme);
 
-    // Usa il tema in base allo stato in ThemeProvider
-    final themeProvider = Provider.of<ThemeProvider>(context);
-
-    return MaterialApp(
-      title: 'GymMe',
-      theme: themeProvider.isDarkMode ? theme.dark() : theme.light(),
-      home: const AuthGate(),
-      // TODO: Add splash screen
-      initialRoute: '/',
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          title: 'GymMe',
+          theme: themeProvider.isDarkMode ? theme.dark() : theme.light(),
+          home: kIsWeb ? const AuthGate() : const IntroAnimation(),
+          initialRoute: '/',
+        );
+      },
     );
   }
 }

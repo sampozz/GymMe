@@ -9,12 +9,20 @@ import 'dart:convert';
 class MapService {
   //Verifies current location permission
   Future<LocationPermission> checkLocationPermission() async {
-    return await Geolocator.checkPermission();
+    try {
+      return await Geolocator.checkPermission();
+    } catch (e) {
+      return LocationPermission.denied;
+    }
   }
 
   //Requests location permission
   Future<LocationPermission> requestLocationPermission() async {
-    return await Geolocator.requestPermission();
+    try {
+      return await Geolocator.requestPermission();
+    } catch (e) {
+      return LocationPermission.denied;
+    }
   }
 
   //Fetches user location or returns null if permission is denied
@@ -40,7 +48,6 @@ class MapService {
         return null;
       }
     } catch (e) {
-      print('Error fetching user location: $e');
       return null;
     }
   }
@@ -74,15 +81,19 @@ class MapService {
       // Create a Locations object
       return Locations(gyms: gymLocationsList);
     } catch (e) {
-      print('Error getting gym locations: $e');
       // Return empty locations if error occurs
       return Locations(gyms: []);
     }
   }
 
+  // For testing purposes
+  final bool? forceWebBehavior;
+  MapService({this.forceWebBehavior});
+
   // Helper function to get coordinates from address
   Future<Map<String, double>> _getCoordinatesFromAddress(String address) async {
-    if (kIsWeb) {
+    final useWebBehavior = forceWebBehavior ?? kIsWeb; // For testing purposes
+    if (useWebBehavior) {
       return _getCoordinatesFromAddressWeb(address);
     } else {
       return _getCoordinatesFromAddressMobile(address);
@@ -102,7 +113,6 @@ class MapService {
       }
       return {'lat': 0, 'lng': 0}; // Default coordinates if geocoding fails
     } catch (e) {
-      print('Error geocoding address on mobile: $e');
       return {'lat': 0, 'lng': 0}; // Default coordinates if geocoding fails
     }
   }
@@ -130,7 +140,6 @@ class MapService {
 
       return {'lat': 0, 'lng': 0}; // Default coordinates if geocoding fails
     } catch (e) {
-      print('Error geocoding address on web: $e');
       return {'lat': 0, 'lng': 0}; // Default coordinates if geocoding fails
     }
   }
