@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dima_project/content/app_scaffold.dart';
-import 'package:dima_project/content/bookings/bookings_provider.dart';
-import 'package:dima_project/content/instructors/instructor_provider.dart';
-import 'package:dima_project/content/profile/login/login.dart';
-import 'package:dima_project/global_providers/gym_provider.dart';
-import 'package:dima_project/global_providers/map_provider.dart';
+import 'package:dima_project/providers/bookings_provider.dart';
+import 'package:dima_project/providers/instructor_provider.dart';
+import 'package:dima_project/content/login/login.dart';
+import 'package:dima_project/providers/gym_provider.dart';
+import 'package:dima_project/providers/map_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:dima_project/content/home/gym/activity/activity_card.dart';
 import 'package:dima_project/content/home/gym/activity/new_activity.dart';
-import 'package:dima_project/content/home/gym/gym_model.dart';
+import 'package:dima_project/models/gym_model.dart';
 import 'package:dima_project/content/home/gym/new_gym.dart';
-import 'package:dima_project/global_providers/gym_provider.dart';
-import 'package:dima_project/global_providers/screen_provider.dart';
-import 'package:dima_project/global_providers/user/user_model.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:dima_project/providers/gym_provider.dart';
+import 'package:dima_project/providers/screen_provider.dart';
+import 'package:dima_project/models/user_model.dart';
+import 'package:dima_project/providers/user_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -38,6 +38,10 @@ class GymPage extends StatelessWidget {
 
   /// Delete the gym from the database
   Future<void> _deleteGym(BuildContext context, Gym gym) async {
+    var gymProvider = Provider.of<GymProvider>(context, listen: false);
+    var snackBar = ScaffoldMessenger.of(context);
+    var theme = Theme.of(context);
+
     // Show confirmation dialog
     bool? confirm = await showDialog<bool>(
       context: context,
@@ -73,22 +77,20 @@ class GymPage extends StatelessWidget {
     );
     // If the user confirmed, delete the gym
     if (confirm == true) {
-      await Provider.of<GymProvider>(context, listen: false)
+      await gymProvider
           .removeGym(gym)
           .timeout(
             const Duration(seconds: 5),
             onTimeout: () {
-              ScaffoldMessenger.of(context).showSnackBar(
+              snackBar.showSnackBar(
                 SnackBar(
                   content: Text(
                     'Error while deleting gym. Please try again.',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.onError,
-                    ),
+                    style: TextStyle(color: theme.colorScheme.onError),
                   ),
                   duration: Duration(seconds: 2),
                   behavior: SnackBarBehavior.floating,
-                  backgroundColor: Theme.of(context).colorScheme.error,
+                  backgroundColor: theme.colorScheme.error,
                 ),
               );
             },

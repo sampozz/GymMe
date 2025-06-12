@@ -9,25 +9,20 @@ import 'dart:typed_data' as _i23;
 
 import 'package:add_2_calendar/add_2_calendar.dart' as _i12;
 import 'package:cloud_firestore/cloud_firestore.dart' as _i2;
-import 'package:dima_project/content/bookings/booking_model.dart' as _i9;
-import 'package:dima_project/content/bookings/booking_update_model.dart'
-    as _i11;
-import 'package:dima_project/content/bookings/bookings_service.dart' as _i7;
-import 'package:dima_project/content/home/gym/activity/activity_model.dart'
-    as _i16;
-import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart'
-    as _i10;
-import 'package:dima_project/content/home/gym/activity/book_slot/slot_service.dart'
-    as _i21;
-import 'package:dima_project/content/home/gym/gym_model.dart' as _i14;
-import 'package:dima_project/content/home/gym/gym_service.dart' as _i13;
-import 'package:dima_project/content/instructors/instructor_model.dart' as _i20;
-import 'package:dima_project/content/instructors/instructor_service.dart'
-    as _i19;
-import 'package:dima_project/content/map/location_model.dart' as _i5;
+import 'package:dima_project/models/booking_model.dart' as _i9;
+import 'package:dima_project/models/booking_update_model.dart' as _i11;
+import 'package:dima_project/services/bookings_service.dart' as _i7;
+import 'package:dima_project/models/activity_model.dart' as _i16;
+import 'package:dima_project/models/slot_model.dart' as _i10;
+import 'package:dima_project/services/slot_service.dart' as _i21;
+import 'package:dima_project/models/gym_model.dart' as _i14;
+import 'package:dima_project/services/gym_service.dart' as _i13;
+import 'package:dima_project/models/instructor_model.dart' as _i20;
+import 'package:dima_project/services/instructor_service.dart' as _i19;
+import 'package:dima_project/models/location_model.dart' as _i5;
 import 'package:dima_project/content/map/map_service.dart' as _i24;
-import 'package:dima_project/global_providers/user/user_model.dart' as _i18;
-import 'package:dima_project/global_providers/user/user_service.dart' as _i17;
+import 'package:dima_project/models/user_model.dart' as _i18;
+import 'package:dima_project/services/user_service.dart' as _i17;
 import 'package:firebase_auth/firebase_auth.dart' as _i3;
 import 'package:geolocator/geolocator.dart' as _i6;
 import 'package:http/http.dart' as _i4;

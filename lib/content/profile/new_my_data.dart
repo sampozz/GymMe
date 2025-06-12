@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:dima_project/global_providers/user/user_model.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:dima_project/models/user_model.dart';
+import 'package:dima_project/providers/user_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -12,10 +12,10 @@ import 'package:provider/provider.dart';
 class NewMyData extends StatefulWidget {
   final User? user;
 
-  const NewMyData({Key? key, this.user}) : super(key: key);
+  const NewMyData({super.key, this.user});
 
   @override
-  _NewMyDataState createState() => _NewMyDataState();
+  State<NewMyData> createState() => _NewMyDataState();
 }
 
 class _NewMyDataState extends State<NewMyData> {
@@ -90,6 +90,10 @@ class _NewMyDataState extends State<NewMyData> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
+
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+    var snackBar = ScaffoldMessenger.of(context);
+
     String imageUrl = widget.user?.photoURL ?? '';
     if (imageBytes != null) {
       final base64Image = base64Encode(imageBytes!);
@@ -103,8 +107,6 @@ class _NewMyDataState extends State<NewMyData> {
     setState(() {
       _isSaving = true;
     });
-
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
 
     try {
       // Aggiorna i dati dell'utente nel provider e su Firestore
@@ -126,7 +128,7 @@ class _NewMyDataState extends State<NewMyData> {
       });
 
       // Mostra un messaggio di successo
-      ScaffoldMessenger.of(context).showSnackBar(
+      snackBar.showSnackBar(
         SnackBar(
           content: Row(
             children: [
@@ -149,7 +151,7 @@ class _NewMyDataState extends State<NewMyData> {
       birthDateCtrl.clear();
 
       // Torna alla pagina precedente
-      if (context.mounted) {
+      if (mounted) {
         Navigator.pop(context);
       }
     } catch (e) {
@@ -157,7 +159,7 @@ class _NewMyDataState extends State<NewMyData> {
         _isSaving = false;
       });
       // Gestisci eventuali errori
-      ScaffoldMessenger.of(context).showSnackBar(
+      snackBar.showSnackBar(
         SnackBar(
           content: Text('There\'s been an issue during the update: $e'),
           backgroundColor: Colors.red,
@@ -245,7 +247,7 @@ class _NewMyDataState extends State<NewMyData> {
                       child: Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.black.withOpacity(0.3),
+                          color: Colors.black.withAlpha(75),
                         ),
                         child: Icon(Icons.edit, color: Colors.white, size: 24),
                       ),
@@ -359,8 +361,6 @@ class _NewMyDataState extends State<NewMyData> {
 
   @override
   Widget build(BuildContext context) {
-    final user = widget.user ?? Provider.of<UserProvider>(context).user;
-
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
       appBar: AppBar(

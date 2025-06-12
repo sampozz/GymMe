@@ -1,16 +1,16 @@
-import 'package:dima_project/content/bookings/booking_model.dart';
-import 'package:dima_project/content/bookings/bookings_provider.dart';
-import 'package:dima_project/content/bookings/widgets/booking_card.dart';
+import 'package:dima_project/models/booking_model.dart';
+import 'package:dima_project/providers/bookings_provider.dart';
+import 'package:dima_project/content/bookings/booking_card.dart';
 import 'package:dima_project/content/custom_appbar.dart';
-import 'package:dima_project/content/home/gym/gym_model.dart';
+import 'package:dima_project/models/gym_model.dart';
 import 'package:dima_project/content/home/gym/gym_page.dart';
 import 'package:dima_project/content/home/gym/new_gym.dart';
 import 'package:dima_project/content/home/home_loading.dart';
-import 'package:dima_project/global_providers/gym_provider.dart';
+import 'package:dima_project/providers/gym_provider.dart';
 import 'package:dima_project/content/home/gym/gym_card.dart';
-import 'package:dima_project/global_providers/screen_provider.dart';
-import 'package:dima_project/global_providers/user/user_model.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:dima_project/providers/screen_provider.dart';
+import 'package:dima_project/models/user_model.dart';
+import 'package:dima_project/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -76,6 +76,13 @@ class _HomeState extends State<Home> {
 
   /// Refreshes the gym list by fetching it from the provider
   Future<void> _onRefresh() async {
+    var snackBar = ScaffoldMessenger.of(context);
+    var theme = Theme.of(context);
+    var bookingsProvider = Provider.of<BookingsProvider>(
+      context,
+      listen: false,
+    );
+
     // Get gym list
     final list = await Provider.of<GymProvider>(
       context,
@@ -83,10 +90,10 @@ class _HomeState extends State<Home> {
     ).getGymList().timeout(
       Duration(seconds: 5),
       onTimeout: () {
-        ScaffoldMessenger.of(context).showSnackBar(
+        snackBar.showSnackBar(
           SnackBar(
             content: Text('Failed to refresh gym list'),
-            backgroundColor: Theme.of(context).colorScheme.error,
+            backgroundColor: theme.colorScheme.error,
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -98,11 +105,7 @@ class _HomeState extends State<Home> {
       _filteredGymList = list;
     });
 
-    final value =
-        await Provider.of<BookingsProvider>(
-          context,
-          listen: false,
-        ).getTodaysBookings();
+    final value = await bookingsProvider.getTodaysBookings();
 
     setState(() {
       _todaysBookings = value;
@@ -170,9 +173,9 @@ class _HomeState extends State<Home> {
         ),
         leading: const Icon(Icons.search),
         elevation: WidgetStateProperty.all(0),
-        overlayColor: MaterialStatePropertyAll<Color>(Colors.transparent),
-        surfaceTintColor: MaterialStatePropertyAll<Color>(Colors.transparent),
-        shadowColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+        overlayColor: WidgetStatePropertyAll<Color>(Colors.transparent),
+        surfaceTintColor: WidgetStatePropertyAll<Color>(Colors.transparent),
+        shadowColor: WidgetStatePropertyAll<Color>(Colors.transparent),
         hintStyle: WidgetStatePropertyAll<TextStyle>(
           TextStyle(
             color: Theme.of(context).colorScheme.outlineVariant,

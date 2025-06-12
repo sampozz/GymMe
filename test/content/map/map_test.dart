@@ -6,12 +6,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:dima_project/content/map/gym_map.dart';
 import 'package:dima_project/content/map/gym_bottom_sheet.dart';
 import 'package:dima_project/content/home/gym/gym_page.dart';
-import 'package:dima_project/global_providers/map_provider.dart';
-import 'package:dima_project/global_providers/gym_provider.dart';
-import 'package:dima_project/global_providers/screen_provider.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
-import 'package:dima_project/content/home/gym/gym_model.dart';
-import 'package:dima_project/content/map/location_model.dart';
+import 'package:dima_project/providers/map_provider.dart';
+import 'package:dima_project/providers/gym_provider.dart';
+import 'package:dima_project/providers/screen_provider.dart';
+import 'package:dima_project/providers/user_provider.dart';
+import 'package:dima_project/models/gym_model.dart';
+import 'package:dima_project/models/location_model.dart';
 import '../../provider_test.mocks.dart';
 
 void main() {

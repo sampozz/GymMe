@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:dima_project/content/home/gym/gym_model.dart';
+import 'package:dima_project/models/gym_model.dart';
 import 'package:provider/provider.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
-import 'package:dima_project/global_providers/gym_provider.dart';
+import 'package:dima_project/providers/user_provider.dart';
+import 'package:dima_project/providers/gym_provider.dart';
 import 'package:dima_project/content/home/gym/gym_page.dart';
 
 class GymBottomSheet extends StatelessWidget {
@@ -91,7 +91,7 @@ class GymBottomSheet extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Theme.of(
                     context,
-                  ).colorScheme.onSurfaceVariant.withOpacity(0.4),
+                  ).colorScheme.onSurfaceVariant.withAlpha(100),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -246,7 +246,7 @@ class GymBottomSheet extends StatelessWidget {
                     !Platform.isAndroid &&
                     !Platform
                         .isIOS // for tests
-                ? Container(
+                ? SizedBox(
                   height: 100,
                   width: double.infinity,
                   child: Image.asset('assets/avatar.png', fit: BoxFit.cover),
@@ -262,7 +262,7 @@ class GymBottomSheet extends StatelessWidget {
                     width: double.infinity,
                     height: 120,
                     errorBuilder: (context, error, stackTrace) {
-                      return Container(
+                      return SizedBox(
                         height: 120,
                         width: double.infinity,
                         child: Image.asset(

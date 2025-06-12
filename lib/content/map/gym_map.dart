@@ -1,11 +1,11 @@
-import 'package:dima_project/global_providers/screen_provider.dart';
+import 'package:dima_project/models/gym_model.dart';
+import 'package:dima_project/providers/gym_provider.dart';
+import 'package:dima_project/providers/map_provider.dart';
+import 'package:dima_project/providers/screen_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
-import 'package:dima_project/global_providers/gym_provider.dart';
-import 'package:dima_project/global_providers/map_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:dima_project/content/home/gym/gym_model.dart';
 import 'package:dima_project/content/map/gym_bottom_sheet.dart';
 import 'package:flutter/foundation.dart';
 

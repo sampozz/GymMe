@@ -1,15 +1,14 @@
-import 'package:dima_project/content/bookings/widgets/bookings.dart';
+import 'package:dima_project/content/bookings/bookings.dart';
 import 'package:dima_project/content/custom_bottomnavbar.dart';
 import 'package:dima_project/content/custom_sidebar.dart';
 import 'package:dima_project/content/favourites/favourites.dart';
 import 'package:dima_project/content/home/home.dart';
-import 'package:dima_project/content/profile/profile.dart';
+import 'package:dima_project/content/profile/profile_page.dart';
 import 'package:dima_project/content/map/gym_map.dart';
 import 'package:dima_project/content/profile/subscription/fetch_subscription.dart';
-import 'package:dima_project/content/profile/subscription/fetch_subscription.dart';
-import 'package:dima_project/global_providers/screen_provider.dart';
-import 'package:dima_project/global_providers/user/user_model.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:dima_project/providers/screen_provider.dart';
+import 'package:dima_project/models/user_model.dart';
+import 'package:dima_project/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -67,7 +66,7 @@ class _AppScaffoldState extends State<AppScaffold> {
         "title": "Profile",
         "description": "Profile page",
         "icon": Icons.person_outline,
-        "widget": Profile(),
+        "widget": ProfilePage(),
       },
     ];
   }
@@ -102,7 +101,7 @@ class _AppScaffoldState extends State<AppScaffold> {
         "title": "Profile",
         "description": "Profile page",
         "icon": Icons.person_outline,
-        "widget": Profile(),
+        "widget": ProfilePage(),
       },
     ];
   }

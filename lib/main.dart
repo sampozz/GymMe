@@ -1,20 +1,15 @@
 import 'package:dima_project/intro/intro_animation.dart';
 import 'package:dima_project/auth_gate/auth_gate.dart';
-import 'package:dima_project/global_providers/screen_provider.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:dima_project/providers/screen_provider.dart';
+import 'package:dima_project/providers/user_provider.dart';
 import 'package:dima_project/theme/theme.dart';
 import 'package:dima_project/theme/theme_utility.dart';
-import 'package:dima_project/global_providers/theme_provider.dart';
+import 'package:dima_project/providers/theme_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
-
-// TODO?? add activities to favourites -> create new activity card that can be shown in the home
-// -- > make it a horizontal list of cards in the gym page
-// TODO: when an activity is removed, cosa facciamo??
-// TODO: introduction screen
 
 void main() async {
   // Initialize Firebase
@@ -44,20 +39,17 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    // ✅ Aggiungi observer per i cambiamenti di sistema
     WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    // ✅ Rimuovi observer
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   void didChangePlatformBrightness() {
-    // ✅ Chiamato quando il tema di sistema cambia
     super.didChangePlatformBrightness();
     final themeProvider = context.read<ThemeProvider>();
     final systemBrightness =

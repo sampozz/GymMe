@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:io';
 
-import 'package:dima_project/content/home/gym/gym_model.dart';
-import 'package:dima_project/global_providers/gym_provider.dart';
+import 'package:dima_project/models/gym_model.dart';
+import 'package:dima_project/providers/gym_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -64,6 +64,8 @@ class _NewGymState extends State<NewGym> {
       return;
     }
 
+    var gymProvider = Provider.of<GymProvider>(context, listen: false);
+
     String imageUrl = widget.gym?.imageUrl ?? '';
     if (imageBytes != null) {
       final base64Image = base64Encode(imageBytes!);
@@ -96,9 +98,9 @@ class _NewGymState extends State<NewGym> {
         );
 
     if (widget.gym == null) {
-      await Provider.of<GymProvider>(context, listen: false).addGym(newGym);
+      await gymProvider.addGym(newGym);
     } else {
-      await Provider.of<GymProvider>(context, listen: false).updateGym(newGym);
+      await gymProvider.updateGym(newGym);
     }
 
     if (mounted) {
