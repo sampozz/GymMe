@@ -1,7 +1,7 @@
-import 'package:dima_project/providers/bookings_provider.dart';
-import 'package:dima_project/models/activity_model.dart';
-import 'package:dima_project/models/slot_model.dart';
-import 'package:dima_project/models/gym_model.dart';
+import 'package:gymme/providers/bookings_provider.dart';
+import 'package:gymme/models/activity_model.dart';
+import 'package:gymme/models/slot_model.dart';
+import 'package:gymme/models/gym_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -33,18 +33,21 @@ class _ConfirmBookingModalState extends State<ConfirmBookingModal> {
       _confirmationLoading = true;
     });
 
-    bool res = await Provider.of<BookingsProvider>(
-      context,
-      listen: false,
-    ).createBooking(widget.gym, widget.activity, widget.slot);
+    var bookingsProvider = context.read<BookingsProvider>();
+    var booking = await bookingsProvider.createBooking(
+      widget.gym,
+      widget.activity,
+      widget.slot,
+    );
 
-    if (res) {
-      widget.onBookingConfirmed(widget.slot.id);
-    }
+    if (booking == null) return;
+
+    await bookingsProvider.goToPayment(booking);
+    widget.onBookingConfirmed(widget.slot.id);
 
     setState(() {
       _confirmationLoading = false;
-      _isBookingConfirmed = res;
+      _isBookingConfirmed = true;
     });
   }
 
@@ -85,7 +88,7 @@ class _ConfirmBookingModalState extends State<ConfirmBookingModal> {
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
-              'Payment at the gym ${widget.activity.price} €',
+              'Price ${widget.activity.price} €',
               style: const TextStyle(fontSize: 16),
             ),
           ),
@@ -110,7 +113,7 @@ class _ConfirmBookingModalState extends State<ConfirmBookingModal> {
                     vertical: 10,
                   ),
                 ),
-                child: const Text('Confirm'),
+                child: const Text('Go to payment'),
                 onPressed: () => _confirmBooking(),
               ),
             ),

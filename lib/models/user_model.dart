@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dima_project/models/subscription_model.dart';
+import 'package:gymme/models/subscription_model.dart';
 
 class User {
   String uid;

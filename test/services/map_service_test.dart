@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:dima_project/content/map/map_service.dart';
-import 'package:dima_project/models/gym_model.dart';
-import 'package:dima_project/models/location_model.dart';
+import 'package:gymme/content/map/map_service.dart';
+import 'package:gymme/models/gym_model.dart';
+import 'package:gymme/models/location_model.dart';
 import 'package:geolocator/geolocator.dart';
 
 void main() {

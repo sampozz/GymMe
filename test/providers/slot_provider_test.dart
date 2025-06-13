@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dima_project/models/slot_model.dart';
-import 'package:dima_project/providers/slot_provider.dart';
+import 'package:gymme/models/slot_model.dart';
+import 'package:gymme/providers/slot_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 

@@ -1,6 +1,6 @@
-import 'package:dima_project/models/booking_model.dart';
-import 'package:dima_project/providers/bookings_provider.dart';
-import 'package:dima_project/providers/screen_provider.dart';
+import 'package:gymme/models/booking_model.dart';
+import 'package:gymme/providers/bookings_provider.dart';
+import 'package:gymme/providers/screen_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -61,6 +61,14 @@ class _BookingPageState extends State<BookingPage> {
           leading: const Icon(Icons.monetization_on),
           title: const Text("Price"),
           subtitle: Text('${booking.price} EUR'),
+        ),
+        ListTile(
+          leading: const Icon(Icons.payment),
+          title: const Text("Payment Status"),
+          subtitle:
+              booking.paymentStatus == 'completed'
+                  ? const Text("Paid", style: TextStyle(color: Colors.green))
+                  : const Text("Pending", style: TextStyle(color: Colors.red)),
         ),
         ListTile(
           leading: const Icon(Icons.person),

@@ -1,6 +1,6 @@
-import 'package:dima_project/content/map/map_service.dart';
-import 'package:dima_project/models/gym_model.dart';
-import 'package:dima_project/models/location_model.dart';
+import 'package:gymme/content/map/map_service.dart';
+import 'package:gymme/models/gym_model.dart';
+import 'package:gymme/models/location_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';

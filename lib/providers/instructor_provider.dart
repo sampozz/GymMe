@@ -1,5 +1,5 @@
-import 'package:dima_project/models/instructor_model.dart';
-import 'package:dima_project/services/instructor_service.dart';
+import 'package:gymme/models/instructor_model.dart';
+import 'package:gymme/services/instructor_service.dart';
 import 'package:flutter/material.dart';
 
 class InstructorProvider extends ChangeNotifier {

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dima_project/models/slot_model.dart';
-import 'package:dima_project/services/slot_service.dart';
+import 'package:gymme/models/slot_model.dart';
+import 'package:gymme/services/slot_service.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 

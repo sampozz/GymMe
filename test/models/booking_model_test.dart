@@ -1,5 +1,5 @@
-import 'package:dima_project/models/booking_model.dart';
-import 'package:dima_project/models/booking_update_model.dart';
+import 'package:gymme/models/booking_model.dart';
+import 'package:gymme/models/booking_update_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 

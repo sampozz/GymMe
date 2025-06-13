@@ -1,5 +1,5 @@
-import 'package:dima_project/models/subscription_model.dart';
-import 'package:dima_project/providers/user_provider.dart';
+import 'package:gymme/models/subscription_model.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
