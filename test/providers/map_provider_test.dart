@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mockito/mockito.dart';
-import 'package:dima_project/models/gym_model.dart';
-import 'package:dima_project/models/location_model.dart';
-import 'package:dima_project/providers/map_provider.dart';
+import 'package:gymme/models/gym_model.dart';
+import 'package:gymme/models/location_model.dart';
+import 'package:gymme/providers/map_provider.dart';
 import '../provider_test.mocks.dart';
 import '../service_test.mocks.dart';
 

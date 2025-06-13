@@ -1,5 +1,5 @@
-import 'package:dima_project/models/slot_model.dart';
-import 'package:dima_project/providers/slot_provider.dart';
+import 'package:gymme/models/slot_model.dart';
+import 'package:gymme/providers/slot_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';

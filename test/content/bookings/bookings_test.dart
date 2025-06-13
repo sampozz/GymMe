@@ -1,9 +1,9 @@
-import 'package:dima_project/models/booking_model.dart';
-import 'package:dima_project/providers/bookings_provider.dart';
-import 'package:dima_project/content/bookings/booking_card.dart';
-import 'package:dima_project/content/bookings/booking_page.dart';
-import 'package:dima_project/content/bookings/bookings.dart';
-import 'package:dima_project/providers/screen_provider.dart';
+import 'package:gymme/models/booking_model.dart';
+import 'package:gymme/providers/bookings_provider.dart';
+import 'package:gymme/content/bookings/booking_card.dart';
+import 'package:gymme/content/bookings/booking_page.dart';
+import 'package:gymme/content/bookings/bookings.dart';
+import 'package:gymme/providers/screen_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';

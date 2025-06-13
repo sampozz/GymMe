@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dima_project/models/booking_update_model.dart';
-import 'package:dima_project/models/slot_model.dart';
+import 'package:gymme/models/booking_update_model.dart';
+import 'package:gymme/models/slot_model.dart';
 
 class SlotService {
   final FirebaseFirestore _firestore;

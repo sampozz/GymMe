@@ -1,9 +1,9 @@
-import 'package:dima_project/models/booking_model.dart';
-import 'package:dima_project/models/booking_update_model.dart';
-import 'package:dima_project/providers/bookings_provider.dart';
-import 'package:dima_project/content/custom_appbar.dart';
-import 'package:dima_project/content/notifications/notifications.dart';
-import 'package:dima_project/models/user_model.dart';
+import 'package:gymme/models/booking_model.dart';
+import 'package:gymme/models/booking_update_model.dart';
+import 'package:gymme/providers/bookings_provider.dart';
+import 'package:gymme/content/custom_appbar.dart';
+import 'package:gymme/content/notifications/notifications.dart';
+import 'package:gymme/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';

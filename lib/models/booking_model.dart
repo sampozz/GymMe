@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dima_project/models/booking_update_model.dart';
+import 'package:gymme/models/booking_update_model.dart';
 
 class Booking {
   String id;
@@ -18,6 +18,7 @@ class Booking {
   final String gymId;
   final String slotId;
   final String activityId;
+  final String paymentStatus;
   final BookingUpdate? bookingUpdate;
 
   Booking({
@@ -37,6 +38,7 @@ class Booking {
     gymId,
     slotId,
     activityId,
+    paymentStatus = 'pending',
     this.bookingUpdate,
   }) : id = id ?? '',
        title = title ?? 'Booking',
@@ -53,7 +55,8 @@ class Booking {
        userId = userId ?? 'User ID',
        gymId = gymId ?? 'Gym ID',
        slotId = slotId ?? 'Slot ID',
-       activityId = activityId ?? 'Activity ID';
+       activityId = activityId ?? 'Activity ID',
+       paymentStatus = paymentStatus ?? 'pending';
 
   factory Booking.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
@@ -77,6 +80,7 @@ class Booking {
       gymId: data['gymId'],
       slotId: data['slotId'],
       activityId: data['activityId'],
+      paymentStatus: data['paymentStatus'],
       bookingUpdate:
           data['bookingUpdate'] != null
               ? BookingUpdate.fromFirestore(data['bookingUpdate'], snapshot.id)
@@ -101,6 +105,7 @@ class Booking {
       'gymId': gymId,
       'slotId': slotId,
       'activityId': activityId,
+      'paymentStatus': paymentStatus,
       if (bookingUpdate != null) 'bookingUpdate': bookingUpdate!.toFirestore(),
     };
   }

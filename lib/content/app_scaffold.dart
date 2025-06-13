@@ -1,14 +1,14 @@
-import 'package:dima_project/content/bookings/bookings.dart';
-import 'package:dima_project/content/custom_bottomnavbar.dart';
-import 'package:dima_project/content/custom_sidebar.dart';
-import 'package:dima_project/content/favourites/favourites.dart';
-import 'package:dima_project/content/home/home.dart';
-import 'package:dima_project/content/profile/profile_page.dart';
-import 'package:dima_project/content/map/gym_map.dart';
-import 'package:dima_project/content/profile/subscription/fetch_subscription.dart';
-import 'package:dima_project/providers/screen_provider.dart';
-import 'package:dima_project/models/user_model.dart';
-import 'package:dima_project/providers/user_provider.dart';
+import 'package:gymme/content/bookings/bookings.dart';
+import 'package:gymme/content/custom_bottomnavbar.dart';
+import 'package:gymme/content/custom_sidebar.dart';
+import 'package:gymme/content/favourites/favourites.dart';
+import 'package:gymme/content/home/home.dart';
+import 'package:gymme/content/profile/profile_page.dart';
+import 'package:gymme/content/map/gym_map.dart';
+import 'package:gymme/content/profile/subscription/fetch_subscription.dart';
+import 'package:gymme/providers/screen_provider.dart';
+import 'package:gymme/models/user_model.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

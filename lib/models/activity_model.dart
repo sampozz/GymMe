@@ -1,4 +1,4 @@
-import 'package:dima_project/models/instructor_model.dart';
+import 'package:gymme/models/instructor_model.dart';
 
 class Activity {
   final String id;

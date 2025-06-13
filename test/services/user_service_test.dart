@@ -1,11 +1,11 @@
-import 'package:dima_project/models/subscription_model.dart';
-import 'package:dima_project/services/user_service.dart';
+import 'package:gymme/models/subscription_model.dart';
+import 'package:gymme/services/user_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mockito/mockito.dart';
-import 'package:dima_project/models/user_model.dart';
+import 'package:gymme/models/user_model.dart';
 
 import '../firestore_test.mocks.dart';
 

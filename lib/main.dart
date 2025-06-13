@@ -1,10 +1,12 @@
-import 'package:dima_project/intro/intro_animation.dart';
-import 'package:dima_project/auth_gate/auth_gate.dart';
-import 'package:dima_project/providers/screen_provider.dart';
-import 'package:dima_project/providers/user_provider.dart';
-import 'package:dima_project/theme/theme.dart';
-import 'package:dima_project/theme/theme_utility.dart';
-import 'package:dima_project/providers/theme_provider.dart';
+import 'package:gymme/content/stripe_success_page.dart';
+import 'package:gymme/intro/intro_animation.dart';
+import 'package:gymme/auth_gate/auth_gate.dart';
+import 'package:gymme/providers/bookings_provider.dart';
+import 'package:gymme/providers/screen_provider.dart';
+import 'package:gymme/providers/user_provider.dart';
+import 'package:gymme/theme/theme.dart';
+import 'package:gymme/theme/theme_utility.dart';
+import 'package:gymme/providers/theme_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -57,6 +59,21 @@ class _AppState extends State<App> with WidgetsBindingObserver {
     themeProvider.updateSystemTheme(systemBrightness);
   }
 
+  Route<dynamic>? generateStripeRoute(settings) {
+    Uri uri = Uri.parse(settings.name ?? '');
+    if (uri.path == '/stripesuccess') {
+      final bookingId = uri.queryParameters['bookingId'] ?? '';
+      return MaterialPageRoute(
+        builder:
+            (_) => ChangeNotifierProvider(
+              create: (_) => BookingsProvider(),
+              child: StripeSuccessPage(bookingId: bookingId),
+            ),
+      );
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = createTextTheme(context, "Lato");
@@ -69,6 +86,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
           theme: themeProvider.isDarkMode ? theme.dark() : theme.light(),
           home: kIsWeb ? const AuthGate() : const IntroAnimation(),
           initialRoute: '/',
+          onGenerateRoute: generateStripeRoute,
         );
       },
     );

@@ -1,9 +1,9 @@
-import 'package:dima_project/content/custom_appbar.dart';
-import 'package:dima_project/content/home/gym/gym_card.dart';
-import 'package:dima_project/models/gym_model.dart';
-import 'package:dima_project/content/home/gym/gym_page.dart';
-import 'package:dima_project/providers/gym_provider.dart';
-import 'package:dima_project/providers/user_provider.dart';
+import 'package:gymme/content/custom_appbar.dart';
+import 'package:gymme/content/home/gym/gym_card.dart';
+import 'package:gymme/models/gym_model.dart';
+import 'package:gymme/content/home/gym/gym_page.dart';
+import 'package:gymme/providers/gym_provider.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

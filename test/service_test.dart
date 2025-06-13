@@ -1,9 +1,9 @@
-import 'package:dima_project/services/bookings_service.dart';
-import 'package:dima_project/services/slot_service.dart';
-import 'package:dima_project/services/gym_service.dart';
-import 'package:dima_project/services/instructor_service.dart';
-import 'package:dima_project/content/map/map_service.dart';
-import 'package:dima_project/services/user_service.dart';
+import 'package:gymme/services/bookings_service.dart';
+import 'package:gymme/services/slot_service.dart';
+import 'package:gymme/services/gym_service.dart';
+import 'package:gymme/services/instructor_service.dart';
+import 'package:gymme/content/map/map_service.dart';
+import 'package:gymme/services/user_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/annotations.dart';
 

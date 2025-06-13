@@ -1,5 +1,5 @@
-import 'package:dima_project/models/instructor_model.dart';
-import 'package:dima_project/providers/instructor_provider.dart';
+import 'package:gymme/models/instructor_model.dart';
+import 'package:gymme/providers/instructor_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 

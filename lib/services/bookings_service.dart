@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:add_2_calendar/add_2_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dima_project/models/booking_model.dart';
-import 'package:dima_project/models/booking_update_model.dart';
-import 'package:dima_project/models/slot_model.dart';
+import 'package:gymme/models/booking_model.dart';
+import 'package:gymme/models/booking_update_model.dart';
+import 'package:gymme/models/slot_model.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
+import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
 class BookingsService {
@@ -92,5 +95,34 @@ class BookingsService {
 
   void addToCalendarMobile(Event event) {
     Add2Calendar.addEvent2Cal(event);
+  }
+
+  Future<void> goToPayment(Booking booking) async {
+    final String projectId = 'dima-app-ea636';
+    final String functionUrl =
+        'https://us-central1-$projectId.cloudfunctions.net/createCheckout';
+
+    final Uri uri = Uri.parse(functionUrl).replace(
+      queryParameters: {
+        'amount': (booking.price * 100).toString(),
+        'bookingId': booking.id,
+      },
+    );
+
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+
+      if (data['url'] != null) {
+        await launchUrl(Uri.parse(data['url']));
+      }
+    }
+  }
+
+  Future<void> confirmPayment(String bookingId) async {
+    await firestore.collection('booking').doc(bookingId).update({
+      'paymentStatus': 'completed',
+    });
   }
 }

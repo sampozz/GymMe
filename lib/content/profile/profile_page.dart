@@ -1,8 +1,8 @@
-import 'package:dima_project/content/profile/my_data.dart';
-import 'package:dima_project/content/profile/subscription/subscriptions.dart';
-import 'package:dima_project/providers/theme_provider.dart';
-import 'package:dima_project/models/user_model.dart';
-import 'package:dima_project/providers/user_provider.dart';
+import 'package:gymme/content/profile/my_data.dart';
+import 'package:gymme/content/profile/subscription/subscriptions.dart';
+import 'package:gymme/providers/theme_provider.dart';
+import 'package:gymme/models/user_model.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
