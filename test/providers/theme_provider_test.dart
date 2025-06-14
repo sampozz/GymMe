@@ -209,25 +209,6 @@ void main() {
       },
     );
 
-    /*testWidgets(
-      'updateSystemTheme should not update when not following system',
-      (WidgetTester tester) async {
-        // Arrange
-        await themeProvider!.setFollowSystemTheme(false);
-        await themeProvider!.setTheme(true); // Set to dark manually
-        var notifyCount = 0;
-        themeProvider!.addListener(() => notifyCount++);
-
-        // Act - Simulate system theme change to light
-        themeProvider!.updateSystemTheme(Brightness.light);
-        await tester.pumpAndSettle();
-
-        // Assert - Should remain dark because not following system
-        expect(themeProvider!.isDarkMode, true);
-        expect(notifyCount, 0);
-      },
-    );*/
-
     testWidgets(
       'refreshSystemTheme should update theme when following system and not when not following',
       (WidgetTester tester) async {
@@ -258,25 +239,6 @@ void main() {
         expect(notifyCount, 0);
       },
     );
-
-    /*testWidgets(
-      'refreshSystemTheme should not update when not following system',
-      (WidgetTester tester) async {
-        // Arrange
-        await themeProvider!.setFollowSystemTheme(false);
-        await themeProvider!.setTheme(true);
-        var notifyCount = 0;
-        themeProvider!.addListener(() => notifyCount++);
-
-        // Act
-        themeProvider!.refreshSystemTheme();
-        await tester.pumpAndSettle();
-
-        // Assert - Should remain unchanged
-        expect(themeProvider!.isDarkMode, true);
-        expect(notifyCount, 0);
-      },
-    );*/
   });
 
   group('Persistence Tests', () {
@@ -303,24 +265,6 @@ void main() {
         expect(prefs.getBool('follow_system_theme'), true);
       });
     });
-
-    /*testWidgets('should load saved preferences on initialization', (
-      WidgetTester tester,
-    ) async {
-      // Arrange - Set preferences
-      SharedPreferences.setMockInitialValues({
-        'follow_system_theme': false,
-        'is_dark_mode': true,
-      });
-
-      // Act
-      themeProvider = ThemeProvider();
-      await tester.pumpAndSettle();
-
-      // Assert
-      expect(themeProvider!.followSystemTheme, false);
-      expect(themeProvider!.isDarkMode, true);
-    });*/
   });
 
   group('Getters Tests', () {
