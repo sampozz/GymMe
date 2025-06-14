@@ -5,6 +5,8 @@ import 'package:dima_project/models/user_model.dart';
 import 'package:dima_project/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:io';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -230,13 +232,19 @@ class _ProfilePageState extends State<ProfilePage> {
                 CircleAvatar(
                   radius: 50,
                   child: ClipOval(
-                    child: Image.network(
-                      user.photoURL,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) {
-                        return Image.asset('assets/avatar.png');
-                      },
-                    ),
+                    child:
+                        !kIsWeb && !Platform.isAndroid && !Platform.isIOS
+                            ? Image.asset(
+                              'assets/avatar.png',
+                              fit: BoxFit.cover,
+                            ) // For tests
+                            : Image.network(
+                              user.photoURL,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, _, _) {
+                                return Image.asset('assets/avatar.png');
+                              },
+                            ),
                   ),
                 ),
                 SizedBox(width: 16),

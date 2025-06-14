@@ -6,21 +6,22 @@
 import 'dart:async' as _i6;
 import 'dart:ui' as _i12;
 
+import 'package:dima_project/models/activity_model.dart' as _i9;
 import 'package:dima_project/models/booking_model.dart' as _i7;
 import 'package:dima_project/models/booking_update_model.dart' as _i11;
-import 'package:dima_project/providers/bookings_provider.dart' as _i5;
-import 'package:dima_project/models/activity_model.dart' as _i9;
-import 'package:dima_project/models/slot_model.dart' as _i10;
-import 'package:dima_project/providers/slot_provider.dart' as _i21;
 import 'package:dima_project/models/gym_model.dart' as _i8;
 import 'package:dima_project/models/instructor_model.dart' as _i20;
-import 'package:dima_project/providers/instructor_provider.dart' as _i19;
 import 'package:dima_project/models/location_model.dart' as _i4;
+import 'package:dima_project/models/slot_model.dart' as _i10;
 import 'package:dima_project/models/subscription_model.dart' as _i16;
+import 'package:dima_project/models/user_model.dart' as _i15;
+import 'package:dima_project/providers/bookings_provider.dart' as _i5;
 import 'package:dima_project/providers/gym_provider.dart' as _i18;
+import 'package:dima_project/providers/instructor_provider.dart' as _i19;
 import 'package:dima_project/providers/map_provider.dart' as _i22;
 import 'package:dima_project/providers/screen_provider.dart' as _i13;
-import 'package:dima_project/models/user_model.dart' as _i15;
+import 'package:dima_project/providers/slot_provider.dart' as _i21;
+import 'package:dima_project/providers/theme_provider.dart' as _i24;
 import 'package:dima_project/providers/user_provider.dart' as _i14;
 import 'package:flutter/material.dart' as _i2;
 import 'package:geolocator/geolocator.dart' as _i23;
@@ -1094,4 +1095,124 @@ class MockPosition extends _i1.Mock implements _i23.Position {
             returnValueForMissingStub: <String, dynamic>{},
           )
           as Map<String, dynamic>);
+}
+
+/// A class which mocks [ThemeProvider].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockThemeProvider extends _i1.Mock implements _i24.ThemeProvider {
+  @override
+  bool get isDarkMode =>
+      (super.noSuchMethod(
+            Invocation.getter(#isDarkMode),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
+
+  @override
+  bool get followSystemTheme =>
+      (super.noSuchMethod(
+            Invocation.getter(#followSystemTheme),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
+
+  @override
+  String get currentThemeMode =>
+      (super.noSuchMethod(
+            Invocation.getter(#currentThemeMode),
+            returnValue: _i17.dummyValue<String>(
+              this,
+              Invocation.getter(#currentThemeMode),
+            ),
+            returnValueForMissingStub: _i17.dummyValue<String>(
+              this,
+              Invocation.getter(#currentThemeMode),
+            ),
+          )
+          as String);
+
+  @override
+  bool get hasListeners =>
+      (super.noSuchMethod(
+            Invocation.getter(#hasListeners),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
+
+  @override
+  void updateSystemTheme(_i12.Brightness? systemBrightness) =>
+      super.noSuchMethod(
+        Invocation.method(#updateSystemTheme, [systemBrightness]),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i6.Future<void> toggleTheme() =>
+      (super.noSuchMethod(
+            Invocation.method(#toggleTheme, []),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> setFollowSystemTheme(bool? follow) =>
+      (super.noSuchMethod(
+            Invocation.method(#setFollowSystemTheme, [follow]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> setTheme(bool? isDark) =>
+      (super.noSuchMethod(
+            Invocation.method(#setTheme, [isDark]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> cycleTheme() =>
+      (super.noSuchMethod(
+            Invocation.method(#cycleTheme, []),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  void refreshSystemTheme() => super.noSuchMethod(
+    Invocation.method(#refreshSystemTheme, []),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void addListener(_i12.VoidCallback? listener) => super.noSuchMethod(
+    Invocation.method(#addListener, [listener]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void removeListener(_i12.VoidCallback? listener) => super.noSuchMethod(
+    Invocation.method(#removeListener, [listener]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void dispose() => super.noSuchMethod(
+    Invocation.method(#dispose, []),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void notifyListeners() => super.noSuchMethod(
+    Invocation.method(#notifyListeners, []),
+    returnValueForMissingStub: null,
+  );
 }

@@ -67,7 +67,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.black),
+              border: Border.all(color: Theme.of(context).colorScheme.primary),
             ),
             child: IconButton(
               icon: Icon(Icons.notifications_outlined),
@@ -86,7 +86,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: Icon(
                 Icons.circle,
                 size: 14,
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
         ],

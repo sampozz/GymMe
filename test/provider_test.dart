@@ -5,6 +5,7 @@ import 'package:dima_project/providers/gym_provider.dart';
 import 'package:dima_project/providers/map_provider.dart';
 import 'package:dima_project/providers/screen_provider.dart';
 import 'package:dima_project/providers/user_provider.dart';
+import 'package:dima_project/providers/theme_provider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mockito/annotations.dart';
 
@@ -18,6 +19,7 @@ import 'package:mockito/annotations.dart';
   MockSpec<PlatformService>(),
   MockSpec<MapProvider>(),
   MockSpec<Position>(),
+  MockSpec<ThemeProvider>(),
 ])
 void main() {
   // Method to set up the test environment

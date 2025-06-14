@@ -19,10 +19,10 @@ class CustomBottomNavBar extends StatelessWidget {
     this.navigatorKey,
   });
 
-  Widget _buildLoadingShimmer() {
+  Widget _buildLoadingShimmer(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: Theme.of(context).colorScheme.surfaceContainer,
+      highlightColor: Theme.of(context).colorScheme.surfaceContainerLow,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: List.generate(5, (index) {
@@ -59,7 +59,7 @@ class CustomBottomNavBar extends StatelessWidget {
             ),
             child:
                 isLoading
-                    ? _buildLoadingShimmer()
+                    ? _buildLoadingShimmer(context)
                     : Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
