@@ -151,8 +151,7 @@ class GymBottomSheet extends StatelessWidget {
                       // Favourite Button
                       FilledButton(
                         style: FilledButton.styleFrom(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.secondaryContainer,
+                          backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),

@@ -21,10 +21,13 @@ class CustomSidebar extends StatelessWidget {
   });
 
   Widget _buildHeader(BuildContext context) {
-    return SizedBox(
-      height: 100,
-      width: double.infinity,
-      child: Center(child: Image.asset('assets/logo_dark.png', width: 200)),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 30),
+      child: SizedBox(
+        height: 100,
+        width: double.infinity,
+        child: Center(child: Image.asset('assets/logo_dark.png', width: 200)),
+      ),
     );
   }
 

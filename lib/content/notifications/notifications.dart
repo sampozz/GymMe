@@ -51,7 +51,10 @@ class _NotificationsState extends State<Notifications> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-      appBar: AppBar(title: Text('Notifications')),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text('Notifications'),
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,

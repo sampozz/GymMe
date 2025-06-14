@@ -58,7 +58,7 @@ class Favourites extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),
@@ -99,6 +99,7 @@ class Favourites extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(user: userProvider.user),
       body: _buildBody(context, gymList, userProvider.user?.favouriteGyms),
+      backgroundColor: Colors.transparent,
     );
   }
 }

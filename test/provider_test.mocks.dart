@@ -24,6 +24,7 @@ import 'package:gymme/providers/instructor_provider.dart' as _i19;
 import 'package:gymme/providers/map_provider.dart' as _i22;
 import 'package:gymme/providers/screen_provider.dart' as _i13;
 import 'package:gymme/providers/slot_provider.dart' as _i21;
+import 'package:gymme/providers/theme_provider.dart' as _i24;
 import 'package:gymme/providers/user_provider.dart' as _i14;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i17;
@@ -1112,4 +1113,124 @@ class MockPosition extends _i1.Mock implements _i23.Position {
             returnValueForMissingStub: <String, dynamic>{},
           )
           as Map<String, dynamic>);
+}
+
+/// A class which mocks [ThemeProvider].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockThemeProvider extends _i1.Mock implements _i24.ThemeProvider {
+  @override
+  bool get isDarkMode =>
+      (super.noSuchMethod(
+            Invocation.getter(#isDarkMode),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
+
+  @override
+  bool get followSystemTheme =>
+      (super.noSuchMethod(
+            Invocation.getter(#followSystemTheme),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
+
+  @override
+  String get currentThemeMode =>
+      (super.noSuchMethod(
+            Invocation.getter(#currentThemeMode),
+            returnValue: _i17.dummyValue<String>(
+              this,
+              Invocation.getter(#currentThemeMode),
+            ),
+            returnValueForMissingStub: _i17.dummyValue<String>(
+              this,
+              Invocation.getter(#currentThemeMode),
+            ),
+          )
+          as String);
+
+  @override
+  bool get hasListeners =>
+      (super.noSuchMethod(
+            Invocation.getter(#hasListeners),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
+
+  @override
+  void updateSystemTheme(_i12.Brightness? systemBrightness) =>
+      super.noSuchMethod(
+        Invocation.method(#updateSystemTheme, [systemBrightness]),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i6.Future<void> toggleTheme() =>
+      (super.noSuchMethod(
+            Invocation.method(#toggleTheme, []),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> setFollowSystemTheme(bool? follow) =>
+      (super.noSuchMethod(
+            Invocation.method(#setFollowSystemTheme, [follow]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> setTheme(bool? isDark) =>
+      (super.noSuchMethod(
+            Invocation.method(#setTheme, [isDark]),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  _i6.Future<void> cycleTheme() =>
+      (super.noSuchMethod(
+            Invocation.method(#cycleTheme, []),
+            returnValue: _i6.Future<void>.value(),
+            returnValueForMissingStub: _i6.Future<void>.value(),
+          )
+          as _i6.Future<void>);
+
+  @override
+  void refreshSystemTheme() => super.noSuchMethod(
+    Invocation.method(#refreshSystemTheme, []),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void addListener(_i12.VoidCallback? listener) => super.noSuchMethod(
+    Invocation.method(#addListener, [listener]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void removeListener(_i12.VoidCallback? listener) => super.noSuchMethod(
+    Invocation.method(#removeListener, [listener]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void dispose() => super.noSuchMethod(
+    Invocation.method(#dispose, []),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void notifyListeners() => super.noSuchMethod(
+    Invocation.method(#notifyListeners, []),
+    returnValueForMissingStub: null,
+  );
 }

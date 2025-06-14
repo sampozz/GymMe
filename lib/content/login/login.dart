@@ -308,7 +308,7 @@ class _LoginState extends State<Login> {
 
   Widget _buildFooter() {
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Row(

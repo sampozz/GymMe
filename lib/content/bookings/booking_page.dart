@@ -28,9 +28,10 @@ class _BookingPageState extends State<BookingPage> {
 
   Widget _buildQRCode(Booking booking) {
     return QrImageView(
-      data: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      data: booking.id,
       version: QrVersions.auto,
       size: 200.0,
+      foregroundColor: Theme.of(context).colorScheme.tertiary,
     );
   }
 
@@ -207,7 +208,8 @@ class _BookingPageState extends State<BookingPage> {
     }
 
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(backgroundColor: Colors.transparent),
       body: SingleChildScrollView(
         child: SizedBox(
           width: double.infinity,

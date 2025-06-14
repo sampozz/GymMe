@@ -111,11 +111,8 @@ class _FetchSubscriptionState extends State<FetchSubscription> {
               );
             },
             borderRadius: BorderRadius.circular(12.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12.0),
-              ),
+            child: Card(
+              elevation: 0,
               child: ListTile(
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: 16.0,
@@ -194,7 +191,11 @@ class _FetchSubscriptionState extends State<FetchSubscription> {
   Widget build(BuildContext context) {
     _useMobileLayout = context.watch<ScreenProvider>().useMobileLayout;
     return Scaffold(
-      appBar: AppBar(title: Text('Members')),
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text('Members'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

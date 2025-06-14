@@ -10,7 +10,8 @@ import 'package:gymme/content/map/gym_bottom_sheet.dart';
 import 'package:flutter/foundation.dart';
 
 class GymMap extends StatefulWidget {
-  const GymMap({super.key});
+  final bool isHomePage;
+  const GymMap({super.key, this.isHomePage = false});
 
   @override
   State<GymMap> createState() => _GymAppState();
@@ -299,7 +300,7 @@ class _GymAppState extends State<GymMap> {
         // Search Bar
         if (useMobileLayout)
           Positioned(top: 48, left: 16, right: 16, child: _buildSearchBar())
-        else
+        else if (!widget.isHomePage)
           Positioned(
             top: 20,
             left: 20,

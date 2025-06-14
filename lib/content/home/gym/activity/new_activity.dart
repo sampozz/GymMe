@@ -204,7 +204,9 @@ class _NewActivityState extends State<NewActivity> {
         Provider.of<InstructorProvider>(context).instructorList;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: Text(
           widget.activity == null ? 'Add activity' : 'Update activity',
         ),
