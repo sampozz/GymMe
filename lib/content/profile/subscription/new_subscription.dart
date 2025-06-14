@@ -227,7 +227,6 @@ class _NewSubscriptionState extends State<NewSubscription>
   Widget biuldDurationOptions() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Colors.grey.shade300),
       ),
@@ -306,7 +305,6 @@ class _NewSubscriptionState extends State<NewSubscription>
             // Title field
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey.shade50,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.grey.shade300),
               ),
@@ -326,7 +324,6 @@ class _NewSubscriptionState extends State<NewSubscription>
             // Description field
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey.shade50,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.grey.shade300),
               ),
@@ -365,7 +362,6 @@ class _NewSubscriptionState extends State<NewSubscription>
             // Price field
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey.shade50,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.grey.shade300),
               ),
@@ -488,7 +484,7 @@ class _NewSubscriptionState extends State<NewSubscription>
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: medicalCertDate != null ? Colors.black : Colors.grey,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],
@@ -530,7 +526,6 @@ class _NewSubscriptionState extends State<NewSubscription>
               width: double.infinity,
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.grey.shade50,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color:
@@ -620,7 +615,9 @@ class _NewSubscriptionState extends State<NewSubscription>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: const Text('User documents'),
         bottom: TabBar(
           controller: _tabController,
@@ -669,13 +666,12 @@ class _NewSubscriptionState extends State<NewSubscription>
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Container(
-                      padding: EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12.0),
+                    child: Card(
+                      elevation: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: buildUserInfoBox(),
                       ),
-                      child: buildUserInfoBox(),
                     ),
                   ),
 

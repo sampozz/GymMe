@@ -174,7 +174,11 @@ class _InstructorsPageState extends State<InstructorsPage> {
         context.watch<InstructorProvider>().instructorList;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Instructors')),
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: const Text('Instructors'),
+      ),
       body: Column(
         children: [
           ..._buildInstructorList(instructors),

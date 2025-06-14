@@ -1,3 +1,4 @@
+import 'package:gymme/content/map/gym_map.dart';
 import 'package:gymme/models/booking_model.dart';
 import 'package:gymme/providers/bookings_provider.dart';
 import 'package:gymme/content/bookings/booking_card.dart';
@@ -351,7 +352,10 @@ class _HomeState extends State<Home> {
                     onGenerateRoute:
                         (settings) => MaterialPageRoute(
                           builder:
-                              (context) => Center(child: Text('Select a gym')),
+                              (context) => ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: GymMap(isHomePage: true),
+                              ),
                         ),
                   ),
                 ),

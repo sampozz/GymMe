@@ -8,8 +8,10 @@ import 'package:gymme/content/home/gym/new_gym.dart';
 import 'package:gymme/content/home/home.dart';
 import 'package:gymme/content/home/home_loading.dart';
 import 'package:gymme/providers/gym_provider.dart';
+import 'package:gymme/providers/map_provider.dart';
 import 'package:gymme/providers/screen_provider.dart';
 import 'package:gymme/models/user_model.dart';
+import 'package:gymme/providers/theme_provider.dart';
 import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -39,6 +41,10 @@ void main() {
       await tester.pumpWidget(
         MultiProvider(
           providers: [
+            ChangeNotifierProvider<ThemeProvider>.value(
+              value: MockThemeProvider(),
+            ),
+            ChangeNotifierProvider<MapProvider>.value(value: MockMapProvider()),
             ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
             ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
             ChangeNotifierProvider<BookingsProvider>.value(
@@ -66,6 +72,10 @@ void main() {
       await tester.pumpWidget(
         MultiProvider(
           providers: [
+            ChangeNotifierProvider<ThemeProvider>.value(
+              value: MockThemeProvider(),
+            ),
+            ChangeNotifierProvider<MapProvider>.value(value: MockMapProvider()),
             ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
             ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
             ChangeNotifierProvider<BookingsProvider>.value(
@@ -122,6 +132,7 @@ void main() {
       await tester.pumpWidget(
         MultiProvider(
           providers: [
+            ChangeNotifierProvider<MapProvider>.value(value: MockMapProvider()),
             ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
             ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
             ChangeNotifierProvider<BookingsProvider>.value(
@@ -202,6 +213,7 @@ void main() {
       await tester.pumpWidget(
         MultiProvider(
           providers: [
+            ChangeNotifierProvider<MapProvider>.value(value: MockMapProvider()),
             ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
             ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
             ChangeNotifierProvider<BookingsProvider>.value(
@@ -263,6 +275,7 @@ void main() {
       await tester.pumpWidget(
         MultiProvider(
           providers: [
+            ChangeNotifierProvider<MapProvider>.value(value: MockMapProvider()),
             ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
             ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
             ChangeNotifierProvider<BookingsProvider>.value(

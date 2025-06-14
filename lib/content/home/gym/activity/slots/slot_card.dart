@@ -21,7 +21,7 @@ class SlotCard extends StatelessWidget {
       cursor:
           alreadyBooked ? SystemMouseCursors.basic : SystemMouseCursors.click,
       child: Card(
-        color: alreadyBooked ? Colors.grey[50] : Colors.white,
+        // color: alreadyBooked ? Colors.grey[50] : Colors.white,
         elevation: 0,
         child: SizedBox(
           width: double.infinity,

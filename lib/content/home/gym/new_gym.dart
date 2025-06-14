@@ -171,7 +171,11 @@ class _NewGymState extends State<NewGym> {
     bool isLoading = context.watch<GymProvider>().isLoading;
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.gym == null ? 'Add gym' : 'Edit gym')),
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text(widget.gym == null ? 'Add gym' : 'Edit gym'),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

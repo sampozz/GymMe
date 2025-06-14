@@ -21,7 +21,7 @@ exports.createCheckout = functions.https.onRequest({ cors: true }, async (req, r
                     price_data: {
                         currency: 'eur',
                         product_data: {
-                            name: 'Ricarica',
+                            name: 'Price for booking',
                         },
                         unit_amount: amount,
                     },

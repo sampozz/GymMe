@@ -181,18 +181,18 @@ class _SlotsPageState extends State<SlotsPage> with TickerProviderStateMixin {
     return Center(
       child: Column(
         children: [
-          ElevatedButton(
+          TextButton(
             onPressed: () => _addSlot(gym!, activity!),
             child: Text('Add slot'),
           ),
           SizedBox(height: 10),
-          ElevatedButton(
+          TextButton(
             onPressed: () => _modifyActivity(gym!, activity!),
             child: Text('Modify activity'),
           ),
           SizedBox(height: 10),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+          TextButton(
+            style: TextButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () => _deleteActivity(gym!, activity!),
             child: Text(
               'Delete activity',
@@ -370,7 +370,9 @@ class _SlotsPageState extends State<SlotsPage> with TickerProviderStateMixin {
         Instructor();
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: Text(activity!.title),
         bottom: TabBar(
           controller: _tabController,
