@@ -1,4 +1,4 @@
-import 'package:dima_project/providers/theme_provider.dart';
+import 'package:gymme/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_test/flutter_test.dart';
