@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:dima_project/content/profile/subscription/new_subscription.dart';
 import 'package:dima_project/models/user_model.dart';
 import 'package:dima_project/providers/user_provider.dart';
@@ -7,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'dart:async';
 
 import '../../../provider_test.mocks.dart';
 
@@ -85,6 +84,12 @@ void main() {
       WidgetTester tester,
     ) async {
       await tester.pumpWidget(createTestWidget(user: testUser));
+
+      await tester.scrollUntilVisible(
+        find.text('3 months'),
+        500.0,
+        scrollable: find.byType(Scrollable).first,
+      );
 
       await tester.tap(find.text('3 months'));
       await tester.pump();
