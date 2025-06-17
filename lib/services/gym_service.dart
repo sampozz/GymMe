@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dima_project/models/activity_model.dart';
-import 'package:dima_project/models/gym_model.dart';
+import 'package:gymme/models/activity_model.dart';
+import 'package:gymme/models/gym_model.dart';
 import 'package:http/http.dart' as http;
 
 class GymService {

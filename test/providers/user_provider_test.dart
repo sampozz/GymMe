@@ -1,6 +1,6 @@
-import 'package:dima_project/models/subscription_model.dart';
-import 'package:dima_project/models/user_model.dart';
-import 'package:dima_project/providers/user_provider.dart';
+import 'package:gymme/models/subscription_model.dart';
+import 'package:gymme/models/user_model.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';

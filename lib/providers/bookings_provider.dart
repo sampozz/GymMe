@@ -1,12 +1,12 @@
 import 'package:add_2_calendar/add_2_calendar.dart';
-import 'package:dima_project/models/booking_update_model.dart';
-import 'package:dima_project/models/instructor_model.dart';
-import 'package:dima_project/services/instructor_service.dart';
-import 'package:dima_project/models/booking_model.dart';
-import 'package:dima_project/services/bookings_service.dart';
-import 'package:dima_project/models/activity_model.dart';
-import 'package:dima_project/models/slot_model.dart';
-import 'package:dima_project/models/gym_model.dart';
+import 'package:gymme/models/booking_update_model.dart';
+import 'package:gymme/models/instructor_model.dart';
+import 'package:gymme/services/instructor_service.dart';
+import 'package:gymme/models/booking_model.dart';
+import 'package:gymme/services/bookings_service.dart';
+import 'package:gymme/models/activity_model.dart';
+import 'package:gymme/models/slot_model.dart';
+import 'package:gymme/models/gym_model.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/foundation.dart';
 
@@ -64,11 +64,11 @@ class BookingsProvider extends ChangeNotifier {
   }
 
   /// Books a slot for the current user
-  Future<bool> createBooking(Gym gym, Activity activity, Slot slot) async {
+  Future<Booking?> createBooking(Gym gym, Activity activity, Slot slot) async {
     auth.User user = _firebaseAuth.currentUser!;
     if (slot.bookedUsers.contains(user.uid) ||
         slot.bookedUsers.length >= slot.maxUsers) {
-      return false;
+      return null;
     }
 
     Instructor? instructor = await _instructorService.fetchInstructorById(
@@ -91,12 +91,13 @@ class BookingsProvider extends ChangeNotifier {
       price: activity.price,
       room: slot.room,
       title: activity.title,
+      paymentStatus: 'pending',
     );
 
     final bookingId = await _bookingsService.addBooking(booking, slot);
 
     if (bookingId == null) {
-      return false;
+      return null;
     }
 
     // Update the bookings list
@@ -105,7 +106,7 @@ class BookingsProvider extends ChangeNotifier {
       _bookings!.add(booking);
     }
     notifyListeners();
-    return true;
+    return booking;
   }
 
   /// Removes a booking for the current user
@@ -178,5 +179,13 @@ class BookingsProvider extends ChangeNotifier {
     });
     await _bookingsService.markUpdateAsRead(bookingUpdate);
     notifyListeners();
+  }
+
+  Future<void> goToPayment(Booking booking) async {
+    return _bookingsService.goToPayment(booking);
+  }
+
+  Future<void> confirmPayment(String bookingId) async {
+    _bookingsService.confirmPayment(bookingId);
   }
 }

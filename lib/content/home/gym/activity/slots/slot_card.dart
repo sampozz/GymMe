@@ -1,4 +1,4 @@
-import 'package:dima_project/models/slot_model.dart';
+import 'package:gymme/models/slot_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -21,7 +21,7 @@ class SlotCard extends StatelessWidget {
       cursor:
           alreadyBooked ? SystemMouseCursors.basic : SystemMouseCursors.click,
       child: Card(
-        color: alreadyBooked ? Colors.grey[50] : Colors.white,
+        // color: alreadyBooked ? Colors.grey[50] : Colors.white,
         elevation: 0,
         child: SizedBox(
           width: double.infinity,

@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:dima_project/models/instructor_model.dart';
-import 'package:dima_project/providers/instructor_provider.dart';
-import 'package:dima_project/providers/gym_provider.dart';
+import 'package:gymme/models/instructor_model.dart';
+import 'package:gymme/providers/instructor_provider.dart';
+import 'package:gymme/providers/gym_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -174,7 +174,11 @@ class _InstructorsPageState extends State<InstructorsPage> {
         context.watch<InstructorProvider>().instructorList;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Instructors')),
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: const Text('Instructors'),
+      ),
       body: Column(
         children: [
           ..._buildInstructorList(instructors),

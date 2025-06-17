@@ -1,4 +1,5 @@
-import 'package:dima_project/providers/user_provider.dart';
+import 'package:gymme/providers/theme_provider.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:ui';
@@ -20,9 +21,13 @@ class CustomBottomNavBar extends StatelessWidget {
   });
 
   Widget _buildLoadingShimmer(BuildContext context) {
+    final isDarkMode = context.watch<ThemeProvider>().isDarkMode;
+    var baseColor = isDarkMode ? Colors.grey[800]! : Colors.grey[300]!;
+    var highlightColor = isDarkMode ? Colors.grey[700]! : Colors.grey[100]!;
+
     return Shimmer.fromColors(
-      baseColor: Theme.of(context).colorScheme.surfaceContainer,
-      highlightColor: Theme.of(context).colorScheme.surfaceContainerLow,
+      baseColor: baseColor,
+      highlightColor: highlightColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: List.generate(5, (index) {

@@ -1,6 +1,7 @@
-import 'package:dima_project/content/custom_bottomnavbar.dart';
-import 'package:dima_project/models/user_model.dart';
-import 'package:dima_project/providers/user_provider.dart';
+import 'package:gymme/content/custom_bottomnavbar.dart';
+import 'package:gymme/models/user_model.dart';
+import 'package:gymme/providers/theme_provider.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -77,6 +78,9 @@ void main() {
       await tester.pumpWidget(
         MultiProvider(
           providers: [
+            ChangeNotifierProvider<ThemeProvider>.value(
+              value: MockThemeProvider(),
+            ),
             ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
           ],
           child: MaterialApp(

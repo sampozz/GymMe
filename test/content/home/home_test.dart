@@ -1,16 +1,18 @@
-import 'package:dima_project/models/booking_model.dart';
-import 'package:dima_project/providers/bookings_provider.dart';
-import 'package:dima_project/content/bookings/booking_card.dart';
-import 'package:dima_project/content/home/gym/gym_card.dart';
-import 'package:dima_project/models/gym_model.dart';
-import 'package:dima_project/content/home/gym/gym_page.dart';
-import 'package:dima_project/content/home/gym/new_gym.dart';
-import 'package:dima_project/content/home/home.dart';
-import 'package:dima_project/content/home/home_loading.dart';
-import 'package:dima_project/providers/gym_provider.dart';
-import 'package:dima_project/providers/screen_provider.dart';
-import 'package:dima_project/models/user_model.dart';
-import 'package:dima_project/providers/user_provider.dart';
+import 'package:gymme/models/booking_model.dart';
+import 'package:gymme/providers/bookings_provider.dart';
+import 'package:gymme/content/bookings/booking_card.dart';
+import 'package:gymme/content/home/gym/gym_card.dart';
+import 'package:gymme/models/gym_model.dart';
+import 'package:gymme/content/home/gym/gym_page.dart';
+import 'package:gymme/content/home/gym/new_gym.dart';
+import 'package:gymme/content/home/home.dart';
+import 'package:gymme/content/home/home_loading.dart';
+import 'package:gymme/providers/gym_provider.dart';
+import 'package:gymme/providers/map_provider.dart';
+import 'package:gymme/providers/screen_provider.dart';
+import 'package:gymme/models/user_model.dart';
+import 'package:gymme/providers/theme_provider.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -39,6 +41,10 @@ void main() {
       await tester.pumpWidget(
         MultiProvider(
           providers: [
+            ChangeNotifierProvider<ThemeProvider>.value(
+              value: MockThemeProvider(),
+            ),
+            ChangeNotifierProvider<MapProvider>.value(value: MockMapProvider()),
             ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
             ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
             ChangeNotifierProvider<BookingsProvider>.value(
@@ -66,6 +72,10 @@ void main() {
       await tester.pumpWidget(
         MultiProvider(
           providers: [
+            ChangeNotifierProvider<ThemeProvider>.value(
+              value: MockThemeProvider(),
+            ),
+            ChangeNotifierProvider<MapProvider>.value(value: MockMapProvider()),
             ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
             ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
             ChangeNotifierProvider<BookingsProvider>.value(
@@ -122,6 +132,7 @@ void main() {
       await tester.pumpWidget(
         MultiProvider(
           providers: [
+            ChangeNotifierProvider<MapProvider>.value(value: MockMapProvider()),
             ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
             ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
             ChangeNotifierProvider<BookingsProvider>.value(
@@ -202,6 +213,7 @@ void main() {
       await tester.pumpWidget(
         MultiProvider(
           providers: [
+            ChangeNotifierProvider<MapProvider>.value(value: MockMapProvider()),
             ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
             ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
             ChangeNotifierProvider<BookingsProvider>.value(
@@ -263,6 +275,7 @@ void main() {
       await tester.pumpWidget(
         MultiProvider(
           providers: [
+            ChangeNotifierProvider<MapProvider>.value(value: MockMapProvider()),
             ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
             ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
             ChangeNotifierProvider<BookingsProvider>.value(

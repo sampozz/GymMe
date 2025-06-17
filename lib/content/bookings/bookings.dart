@@ -1,7 +1,8 @@
-import 'package:dima_project/models/booking_model.dart';
-import 'package:dima_project/providers/bookings_provider.dart';
-import 'package:dima_project/content/bookings/booking_card.dart';
+import 'package:gymme/models/booking_model.dart';
+import 'package:gymme/providers/bookings_provider.dart';
+import 'package:gymme/content/bookings/booking_card.dart';
 import 'package:flutter/material.dart';
+import 'package:gymme/providers/screen_provider.dart';
 import 'package:provider/provider.dart';
 
 class Bookings extends StatelessWidget {
@@ -51,6 +52,7 @@ class Bookings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Booking>? bookings = context.watch<BookingsProvider>().bookings;
+    final screenProvider = context.watch<ScreenProvider>();
     DateTime now = DateTime.now();
     DateTime startOfDay = DateTime(now.year, now.month, now.day);
 
@@ -65,9 +67,13 @@ class Bookings extends StatelessWidget {
             tabs: <Widget>[Tab(text: "Upcoming"), Tab(text: "Past")],
             dividerHeight: 0,
           ),
+          backgroundColor: Colors.transparent,
         ),
         body: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+          padding:
+              screenProvider.useMobileLayout
+                  ? const EdgeInsets.fromLTRB(16, 16, 16, 80)
+                  : const EdgeInsets.all(16),
           child: TabBarView(
             children: <Widget>[
               Center(

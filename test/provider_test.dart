@@ -1,11 +1,11 @@
-import 'package:dima_project/providers/bookings_provider.dart';
-import 'package:dima_project/providers/slot_provider.dart';
-import 'package:dima_project/providers/instructor_provider.dart';
-import 'package:dima_project/providers/gym_provider.dart';
-import 'package:dima_project/providers/map_provider.dart';
-import 'package:dima_project/providers/screen_provider.dart';
-import 'package:dima_project/providers/user_provider.dart';
-import 'package:dima_project/providers/theme_provider.dart';
+import 'package:gymme/providers/bookings_provider.dart';
+import 'package:gymme/providers/slot_provider.dart';
+import 'package:gymme/providers/instructor_provider.dart';
+import 'package:gymme/providers/gym_provider.dart';
+import 'package:gymme/providers/map_provider.dart';
+import 'package:gymme/providers/screen_provider.dart';
+import 'package:gymme/providers/theme_provider.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mockito/annotations.dart';
 

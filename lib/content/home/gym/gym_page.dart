@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:dima_project/content/home/gym/activity/activity_card.dart';
-import 'package:dima_project/content/home/gym/activity/new_activity.dart';
-import 'package:dima_project/models/gym_model.dart';
-import 'package:dima_project/content/home/gym/new_gym.dart';
-import 'package:dima_project/providers/gym_provider.dart';
-import 'package:dima_project/providers/screen_provider.dart';
-import 'package:dima_project/models/user_model.dart';
-import 'package:dima_project/providers/user_provider.dart';
+import 'package:gymme/content/home/gym/activity/activity_card.dart';
+import 'package:gymme/content/home/gym/activity/new_activity.dart';
+import 'package:gymme/models/gym_model.dart';
+import 'package:gymme/content/home/gym/new_gym.dart';
+import 'package:gymme/providers/gym_provider.dart';
+import 'package:gymme/providers/screen_provider.dart';
+import 'package:gymme/models/user_model.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -47,29 +47,16 @@ class GymPage extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: Theme.of(context).colorScheme.error,
-          title: Text(
-            'Delete Gym',
-            style: TextStyle(color: Theme.of(context).colorScheme.onError),
-          ),
-          content: Text(
-            'Are you sure you want to delete this gym?',
-            style: TextStyle(color: Theme.of(context).colorScheme.onError),
-          ),
+          title: Text('Delete Gym'),
+          content: Text('Are you sure you want to delete this gym?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: Text(
-                'Cancel',
-                style: TextStyle(color: Theme.of(context).colorScheme.onError),
-              ),
+              child: Text('Cancel'),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: Text(
-                'Delete',
-                style: TextStyle(color: Theme.of(context).colorScheme.onError),
-              ),
+              child: Text('Delete'),
             ),
           ],
         );
@@ -105,6 +92,7 @@ class GymPage extends StatelessWidget {
     bool useMobileLayout = context.watch<ScreenProvider>().useMobileLayout;
 
     return SliverAppBar(
+      backgroundColor: Colors.transparent,
       pinned: true,
       expandedHeight: 200,
       leading: Container(
@@ -114,9 +102,16 @@ class GymPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(50.0),
         ),
         child: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(
+            useMobileLayout ? Icons.arrow_back : Icons.close,
+            color: Theme.of(context).colorScheme.primaryContainer,
+          ),
           onPressed: () {
-            Navigator.pop(context);
+            if (useMobileLayout) {
+              Navigator.pop(context);
+            } else {
+              Navigator.popUntil(context, (route) => route.isFirst);
+            }
           },
         ),
       ),
@@ -131,7 +126,12 @@ class GymPage extends StatelessWidget {
                   color: Colors.white.withAlpha(200),
                   borderRadius: BorderRadius.circular(20.0),
                 ),
-                child: Text(gym.name),
+                child: Text(
+                  gym.name,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                ),
               )
               : null,
       flexibleSpace: FlexibleSpaceBar(
@@ -319,7 +319,7 @@ class GymPage extends StatelessWidget {
     Gym gym = context.watch<GymProvider>().gymList![gymIndex];
 
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+      backgroundColor: Colors.transparent,
       body: CustomScrollView(
         slivers: [
           _buildSliverAppBar(context, gym),

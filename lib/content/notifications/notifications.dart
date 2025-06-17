@@ -1,6 +1,6 @@
-import 'package:dima_project/models/booking_update_model.dart';
-import 'package:dima_project/providers/bookings_provider.dart';
-import 'package:dima_project/content/bookings/booking_page.dart';
+import 'package:gymme/models/booking_update_model.dart';
+import 'package:gymme/providers/bookings_provider.dart';
+import 'package:gymme/content/bookings/booking_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -51,7 +51,10 @@ class _NotificationsState extends State<Notifications> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-      appBar: AppBar(title: Text('Notifications')),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text('Notifications'),
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,

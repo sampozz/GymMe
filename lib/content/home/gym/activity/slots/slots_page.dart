@@ -1,19 +1,19 @@
 import 'dart:io';
 
-import 'package:dima_project/models/activity_model.dart';
-import 'package:dima_project/content/home/gym/activity/slots/admin_slot_modal.dart';
-import 'package:dima_project/content/home/gym/activity/slots/confirm_booking_modal.dart';
-import 'package:dima_project/content/home/gym/activity/slots/new_slot.dart';
-import 'package:dima_project/content/home/gym/activity/slots/slot_card.dart';
-import 'package:dima_project/models/slot_model.dart';
-import 'package:dima_project/providers/slot_provider.dart';
-import 'package:dima_project/content/home/gym/activity/new_activity.dart';
-import 'package:dima_project/models/gym_model.dart';
-import 'package:dima_project/models/instructor_model.dart';
-import 'package:dima_project/providers/instructor_provider.dart';
-import 'package:dima_project/providers/gym_provider.dart';
-import 'package:dima_project/models/user_model.dart';
-import 'package:dima_project/providers/user_provider.dart';
+import 'package:gymme/models/activity_model.dart';
+import 'package:gymme/content/home/gym/activity/slots/admin_slot_modal.dart';
+import 'package:gymme/content/home/gym/activity/slots/confirm_booking_modal.dart';
+import 'package:gymme/content/home/gym/activity/slots/new_slot.dart';
+import 'package:gymme/content/home/gym/activity/slots/slot_card.dart';
+import 'package:gymme/models/slot_model.dart';
+import 'package:gymme/providers/slot_provider.dart';
+import 'package:gymme/content/home/gym/activity/new_activity.dart';
+import 'package:gymme/models/gym_model.dart';
+import 'package:gymme/models/instructor_model.dart';
+import 'package:gymme/providers/instructor_provider.dart';
+import 'package:gymme/providers/gym_provider.dart';
+import 'package:gymme/models/user_model.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -181,18 +181,18 @@ class _SlotsPageState extends State<SlotsPage> with TickerProviderStateMixin {
     return Center(
       child: Column(
         children: [
-          ElevatedButton(
+          TextButton(
             onPressed: () => _addSlot(gym!, activity!),
             child: Text('Add slot'),
           ),
           SizedBox(height: 10),
-          ElevatedButton(
+          TextButton(
             onPressed: () => _modifyActivity(gym!, activity!),
             child: Text('Modify activity'),
           ),
           SizedBox(height: 10),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+          TextButton(
+            style: TextButton.styleFrom(backgroundColor: Colors.red),
             onPressed: () => _deleteActivity(gym!, activity!),
             child: Text(
               'Delete activity',
@@ -370,7 +370,9 @@ class _SlotsPageState extends State<SlotsPage> with TickerProviderStateMixin {
         Instructor();
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: Text(activity!.title),
         bottom: TabBar(
           controller: _tabController,

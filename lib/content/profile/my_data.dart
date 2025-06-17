@@ -1,7 +1,7 @@
-import 'package:dima_project/content/profile/new_my_data.dart';
+import 'package:gymme/content/profile/new_my_data.dart';
 import 'package:flutter/material.dart';
-import 'package:dima_project/models/user_model.dart';
-import 'package:dima_project/providers/user_provider.dart';
+import 'package:gymme/models/user_model.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io';

@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:dima_project/models/instructor_model.dart';
-import 'package:dima_project/providers/instructor_provider.dart';
-import 'package:dima_project/content/home/gym/activity/instructors/instructors_page.dart';
-import 'package:dima_project/models/activity_model.dart';
-import 'package:dima_project/models/gym_model.dart';
-import 'package:dima_project/providers/gym_provider.dart';
+import 'package:gymme/models/instructor_model.dart';
+import 'package:gymme/providers/instructor_provider.dart';
+import 'package:gymme/content/home/gym/activity/instructors/instructors_page.dart';
+import 'package:gymme/models/activity_model.dart';
+import 'package:gymme/models/gym_model.dart';
+import 'package:gymme/providers/gym_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -204,7 +204,9 @@ class _NewActivityState extends State<NewActivity> {
         Provider.of<InstructorProvider>(context).instructorList;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: Text(
           widget.activity == null ? 'Add activity' : 'Update activity',
         ),

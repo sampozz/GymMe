@@ -1,5 +1,5 @@
-import 'package:dima_project/models/slot_model.dart';
-import 'package:dima_project/services/slot_service.dart';
+import 'package:gymme/models/slot_model.dart';
+import 'package:gymme/services/slot_service.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/material.dart';
 

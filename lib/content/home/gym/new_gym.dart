@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:io';
 
-import 'package:dima_project/models/gym_model.dart';
-import 'package:dima_project/providers/gym_provider.dart';
+import 'package:gymme/models/gym_model.dart';
+import 'package:gymme/providers/gym_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -171,7 +171,11 @@ class _NewGymState extends State<NewGym> {
     bool isLoading = context.watch<GymProvider>().isLoading;
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.gym == null ? 'Add gym' : 'Edit gym')),
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text(widget.gym == null ? 'Add gym' : 'Edit gym'),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

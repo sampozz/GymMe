@@ -1,6 +1,6 @@
-import 'package:dima_project/models/activity_model.dart';
-import 'package:dima_project/models/gym_model.dart';
-import 'package:dima_project/services/gym_service.dart';
+import 'package:gymme/models/activity_model.dart';
+import 'package:gymme/models/gym_model.dart';
+import 'package:gymme/services/gym_service.dart';
 import 'package:flutter/material.dart';
 
 class GymProvider with ChangeNotifier {

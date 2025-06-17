@@ -1,5 +1,5 @@
-import 'package:dima_project/models/instructor_model.dart';
-import 'package:dima_project/services/instructor_service.dart';
+import 'package:gymme/models/instructor_model.dart';
+import 'package:gymme/services/instructor_service.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
 

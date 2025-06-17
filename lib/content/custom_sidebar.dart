@@ -1,5 +1,5 @@
-import 'package:dima_project/models/user_model.dart';
-import 'package:dima_project/providers/user_provider.dart';
+import 'package:gymme/models/user_model.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -21,10 +21,13 @@ class CustomSidebar extends StatelessWidget {
   });
 
   Widget _buildHeader(BuildContext context) {
-    return SizedBox(
-      height: 100,
-      width: double.infinity,
-      child: Center(child: Image.asset('assets/logo_dark.png', width: 200)),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 30),
+      child: SizedBox(
+        height: 100,
+        width: double.infinity,
+        child: Center(child: Image.asset('assets/logo_dark.png', width: 200)),
+      ),
     );
   }
 

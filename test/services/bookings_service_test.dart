@@ -1,7 +1,7 @@
-import 'package:dima_project/models/booking_model.dart';
-import 'package:dima_project/models/booking_update_model.dart';
-import 'package:dima_project/services/bookings_service.dart';
-import 'package:dima_project/models/slot_model.dart';
+import 'package:gymme/models/booking_model.dart';
+import 'package:gymme/models/booking_update_model.dart';
+import 'package:gymme/services/bookings_service.dart';
+import 'package:gymme/models/slot_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:mockito/mockito.dart';

@@ -1,10 +1,10 @@
-import 'package:dima_project/models/booking_model.dart';
-import 'package:dima_project/models/booking_update_model.dart';
-import 'package:dima_project/providers/bookings_provider.dart';
-import 'package:dima_project/models/activity_model.dart';
-import 'package:dima_project/models/slot_model.dart';
-import 'package:dima_project/models/gym_model.dart';
-import 'package:dima_project/models/instructor_model.dart';
+import 'package:gymme/models/booking_model.dart';
+import 'package:gymme/models/booking_update_model.dart';
+import 'package:gymme/providers/bookings_provider.dart';
+import 'package:gymme/models/activity_model.dart';
+import 'package:gymme/models/slot_model.dart';
+import 'package:gymme/models/gym_model.dart';
+import 'package:gymme/models/instructor_model.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -57,7 +57,7 @@ void main() {
     });
 
     test(
-      'createBooking should return false if slot is already booked',
+      'createBooking should return null if slot is already booked',
       () async {
         Slot mockSlot = Slot(id: '1', bookedUsers: ['user1'], maxUsers: 2);
 
@@ -71,7 +71,7 @@ void main() {
           mockSlot,
         );
 
-        expect(res, false);
+        expect(res, null);
       },
     );
 
@@ -98,7 +98,7 @@ void main() {
           mockSlot,
         );
 
-        expect(res, true);
+        expect(res, isA<Booking>());
       },
     );
 
