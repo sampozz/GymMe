@@ -1,17 +1,17 @@
-import 'package:dima_project/global_providers/screen_provider.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:gymme/models/gym_model.dart';
+import 'package:gymme/providers/gym_provider.dart';
+import 'package:gymme/providers/map_provider.dart';
+import 'package:gymme/providers/screen_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pointer_interceptor/pointer_interceptor.dart';
-import 'package:dima_project/global_providers/gym_provider.dart';
-import 'package:dima_project/global_providers/map_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:dima_project/content/home/gym/gym_model.dart';
-import 'package:dima_project/content/map/gym_bottom_sheet.dart';
+import 'package:gymme/content/map/gym_bottom_sheet.dart';
 import 'package:flutter/foundation.dart';
 
 class GymMap extends StatefulWidget {
-  const GymMap({super.key});
+  final bool isHomePage;
+  const GymMap({super.key, this.isHomePage = false});
 
   @override
   State<GymMap> createState() => _GymAppState();
@@ -100,16 +100,23 @@ class _GymAppState extends State<GymMap> {
       setState(() {
         _locationGranted = false;
       });
-      print('Error getting user location: $e');
     }
   }
 
   Future<void> _loadGymList() async {
-    final gyms = await context.read<GymProvider>().getGymList();
-    if (mounted) {
-      setState(() {
-        gymList = gyms;
-      });
+    try {
+      final gyms = await context.read<GymProvider>().getGymList();
+      if (mounted) {
+        setState(() {
+          gymList = gyms;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          gymList = [];
+        });
+      }
     }
   }
 
@@ -142,8 +149,8 @@ class _GymAppState extends State<GymMap> {
     });
 
     try {
-      if (mapProvider != null) {
-        final gyms = await mapProvider!.getGymLocations(gymList);
+      if (mapProvider != null && gymList != null) {
+        final gyms = await mapProvider!.getGymLocations(gymList!);
 
         if (mounted) {
           setState(() {
@@ -185,7 +192,9 @@ class _GymAppState extends State<GymMap> {
           ),
         );
       } catch (e) {
-        print('Error updating camera position: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Unable to update camera position')),
+        );
       }
     }
   }
@@ -272,9 +281,14 @@ class _GymAppState extends State<GymMap> {
                         ),
                       );
                     },
-            backgroundColor: _locationGranted ? Colors.blue : Colors.grey,
+            backgroundColor:
+                _locationGranted
+                    ? Theme.of(context).colorScheme.secondaryContainer
+                    : Theme.of(context).colorScheme.surfaceContainerHighest,
             foregroundColor:
-                _locationGranted ? Colors.white : Colors.grey.shade300,
+                _locationGranted
+                    ? Theme.of(context).colorScheme.onSecondaryContainer
+                    : Theme.of(context).colorScheme.secondary,
             tooltip:
                 _locationGranted
                     ? 'Go to user location'
@@ -286,7 +300,7 @@ class _GymAppState extends State<GymMap> {
         // Search Bar
         if (useMobileLayout)
           Positioned(top: 48, left: 16, right: 16, child: _buildSearchBar())
-        else
+        else if (!widget.isHomePage)
           Positioned(
             top: 20,
             left: 20,
@@ -330,14 +344,25 @@ class _GymAppState extends State<GymMap> {
             padding: const WidgetStatePropertyAll<EdgeInsets>(
               EdgeInsets.symmetric(horizontal: 16.0),
             ),
+            backgroundColor: WidgetStatePropertyAll<Color>(
+              Theme.of(context).colorScheme.surfaceContainerLow,
+            ),
             leading: const Icon(Icons.search),
             elevation: WidgetStateProperty.all(0),
+            overlayColor: MaterialStatePropertyAll<Color>(Colors.transparent),
+            surfaceTintColor: MaterialStatePropertyAll<Color>(
+              Colors.transparent,
+            ),
+            shadowColor: MaterialStatePropertyAll<Color>(Colors.transparent),
             hintText: 'Search for gyms or locations...',
             hintStyle: WidgetStatePropertyAll<TextStyle>(
               TextStyle(
-                color: Colors.grey.shade400,
+                color: Theme.of(context).colorScheme.outlineVariant,
                 fontStyle: FontStyle.italic,
               ),
+            ),
+            textStyle: WidgetStatePropertyAll<TextStyle>(
+              TextStyle(color: Theme.of(context).colorScheme.onSurface),
             ),
           );
         },

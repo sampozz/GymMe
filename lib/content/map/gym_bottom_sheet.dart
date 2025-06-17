@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:dima_project/content/home/gym/gym_model.dart';
+import 'package:gymme/models/gym_model.dart';
 import 'package:provider/provider.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
-import 'package:dima_project/global_providers/gym_provider.dart';
-import 'package:dima_project/content/home/gym/gym_page.dart';
+import 'package:gymme/providers/user_provider.dart';
+import 'package:gymme/providers/gym_provider.dart';
+import 'package:gymme/content/home/gym/gym_page.dart';
 
 class GymBottomSheet extends StatelessWidget {
   final String gymId;
@@ -77,184 +77,203 @@ class GymBottomSheet extends StatelessWidget {
         color: Theme.of(context).colorScheme.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Drag Indicator
-          Center(
-            child: Container(
-              width: 32,
-              height: 4,
-              margin: const EdgeInsets.only(bottom: 8),
-              decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).colorScheme.onSurfaceVariant.withOpacity(0.4),
-                borderRadius: BorderRadius.circular(2),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Drag Indicator
+            Center(
+              child: Container(
+                width: 32,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 8),
+                decoration: BoxDecoration(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurfaceVariant.withAlpha(100),
+                  borderRadius: BorderRadius.circular(2),
+                ),
               ),
             ),
-          ),
 
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Row(
-              children: [
-                // Gym Name
-                Expanded(
-                  child: Text(
-                    gym.name,
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                children: [
+                  // Gym Name
+                  Expanded(
+                    child: Text(
+                      gym.name,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                      maxLines: 2,
+                      softWrap: true,
                     ),
-                    maxLines: 2,
-                    softWrap: true,
                   ),
-                ),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    // Visit Button
-                    FilledButton(
-                      style: FilledButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        minimumSize: Size(0, 40),
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => GymPage(gymIndex: gymIndex),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      // Visit Button
+                      FilledButton(
+                        style: FilledButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                        );
-                      },
-                      child: Text(
-                        'Visit',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          fontSize: 14,
+                          minimumSize: Size(0, 40),
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
                         ),
-                      ),
-                    ),
-
-                    const SizedBox(width: 8),
-
-                    // Favourite Button
-                    FilledButton(
-                      style: FilledButton.styleFrom(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.secondaryContainer,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        minimumSize: Size(40, 40),
-                        padding: EdgeInsets.zero,
-                      ),
-                      onPressed:
-                          () =>
-                              _onFavoriteIconTap(context, gym.id!, isFavourite),
-                      child: Icon(
-                        isFavourite ? Icons.favorite : Icons.favorite_border,
-                        color:
-                            Theme.of(context).colorScheme.onSecondaryContainer,
-                        size: 20,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-
-          // Gym Details
-          Container(
-            padding: const EdgeInsets.only(left: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    //Gym Address
-                    Row(
-                      children: [
-                        Text(
-                          gym.address,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => GymPage(gymIndex: gymIndex),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Visit',
                           style: Theme.of(
                             context,
                           ).textTheme.bodyMedium!.copyWith(
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontSize: 14,
                           ),
                         ),
-                      ],
-                    ),
-                    // Gym Status
-                    Row(
-                      spacing: 4.0,
-                      children: [
-                        Text(
-                          _isOpen(gym) ? 'Open' : 'Closed',
-                          style: TextStyle(
-                            color: _isOpen(gym) ? Colors.green : Colors.red,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Icon(
-                          Icons.circle,
-                          size: 2,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                        Text(
-                          _isOpen(gym)
-                              ? 'Close at $closingTime'
-                              : 'Open at $openingTime',
-                          style: TextStyle(
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+                      ),
 
-          const SizedBox(height: 8),
+                      const SizedBox(width: 8),
 
-          // Gym Image
-          !kIsWeb && !Platform.isAndroid && !Platform.isIOS
-              ? Image.asset('assets/avatar.png', fit: BoxFit.cover) // For tests
-              : ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: kIsWeb ? Radius.circular(16) : Radius.circular(0),
-                ),
-                child: Image.network(
-                  gym.imageUrl,
-                  fit: BoxFit.fitWidth,
-                  width: double.infinity,
-                  height: 150,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.asset(
-                      'assets/gym.jpeg',
-                      fit: BoxFit.fitWidth,
-                      height: 150,
-                      width: double.infinity,
-                    );
-                  },
-                ),
+                      // Favourite Button
+                      FilledButton(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          minimumSize: Size(40, 40),
+                          padding: EdgeInsets.zero,
+                        ),
+                        onPressed:
+                            () => _onFavoriteIconTap(
+                              context,
+                              gym.id!,
+                              isFavourite,
+                            ),
+                        child: Icon(
+                          isFavourite ? Icons.favorite : Icons.favorite_border,
+                          color: Color(0xFFFB5C1C),
+                          size: 20,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-        ],
+            ),
+
+            // Gym Details
+            Container(
+              padding: const EdgeInsets.only(left: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //Gym Address
+                      Row(
+                        children: [
+                          Text(
+                            gym.address,
+                            style: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium!.copyWith(
+                              color:
+                                  Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                      // Gym Status
+                      Row(
+                        spacing: 4.0,
+                        children: [
+                          Text(
+                            _isOpen(gym) ? 'Open' : 'Closed',
+                            style: TextStyle(
+                              color: _isOpen(gym) ? Colors.green : Colors.red,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Icon(
+                            Icons.circle,
+                            size: 2,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                          Text(
+                            _isOpen(gym)
+                                ? 'Close at $closingTime'
+                                : 'Open at $openingTime',
+                            style: TextStyle(
+                              color:
+                                  Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            !kIsWeb &&
+                    !Platform.isAndroid &&
+                    !Platform
+                        .isIOS // for tests
+                ? SizedBox(
+                  height: 100,
+                  width: double.infinity,
+                  child: Image.asset('assets/avatar.png', fit: BoxFit.cover),
+                )
+                : ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: kIsWeb ? Radius.circular(16) : Radius.circular(0),
+                  ),
+                  child: Image.network(
+                    gym.imageUrl,
+                    fit: BoxFit.fitWidth,
+                    width: double.infinity,
+                    height: 120,
+                    errorBuilder: (context, error, stackTrace) {
+                      return SizedBox(
+                        height: 120,
+                        width: double.infinity,
+                        child: Image.asset(
+                          'assets/gym.jpeg',
+                          fit: BoxFit.fitWidth,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+          ],
+        ),
       ),
     );
   }

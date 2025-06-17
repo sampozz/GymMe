@@ -1,13 +1,13 @@
 import 'dart:io';
 
-import 'package:dima_project/content/home/gym/activity/activity_card.dart';
-import 'package:dima_project/content/home/gym/activity/new_activity.dart';
-import 'package:dima_project/content/home/gym/gym_model.dart';
-import 'package:dima_project/content/home/gym/new_gym.dart';
-import 'package:dima_project/global_providers/gym_provider.dart';
-import 'package:dima_project/global_providers/screen_provider.dart';
-import 'package:dima_project/global_providers/user/user_model.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:gymme/content/home/gym/activity/activity_card.dart';
+import 'package:gymme/content/home/gym/activity/new_activity.dart';
+import 'package:gymme/models/gym_model.dart';
+import 'package:gymme/content/home/gym/new_gym.dart';
+import 'package:gymme/providers/gym_provider.dart';
+import 'package:gymme/providers/screen_provider.dart';
+import 'package:gymme/models/user_model.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -38,21 +38,25 @@ class GymPage extends StatelessWidget {
 
   /// Delete the gym from the database
   Future<void> _deleteGym(BuildContext context, Gym gym) async {
+    var gymProvider = Provider.of<GymProvider>(context, listen: false);
+    var snackBar = ScaffoldMessenger.of(context);
+    var theme = Theme.of(context);
+
     // Show confirmation dialog
     bool? confirm = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Delete Gym'),
-          content: const Text('Are you sure you want to delete this gym?'),
+          title: Text('Delete Gym'),
+          content: Text('Are you sure you want to delete this gym?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel'),
+              child: Text('Cancel'),
             ),
             TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('Delete'),
+              child: Text('Delete'),
             ),
           ],
         );
@@ -60,17 +64,20 @@ class GymPage extends StatelessWidget {
     );
     // If the user confirmed, delete the gym
     if (confirm == true) {
-      await Provider.of<GymProvider>(context, listen: false)
+      await gymProvider
           .removeGym(gym)
           .timeout(
             const Duration(seconds: 5),
             onTimeout: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Error while deleting gym. Please try again.'),
+              snackBar.showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Error while deleting gym. Please try again.',
+                    style: TextStyle(color: theme.colorScheme.onError),
+                  ),
                   duration: Duration(seconds: 2),
                   behavior: SnackBarBehavior.floating,
-                  backgroundColor: Colors.red,
+                  backgroundColor: theme.colorScheme.error,
                 ),
               );
             },
@@ -85,6 +92,7 @@ class GymPage extends StatelessWidget {
     bool useMobileLayout = context.watch<ScreenProvider>().useMobileLayout;
 
     return SliverAppBar(
+      backgroundColor: Colors.transparent,
       pinned: true,
       expandedHeight: 200,
       leading: Container(
@@ -94,9 +102,16 @@ class GymPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(50.0),
         ),
         child: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(
+            useMobileLayout ? Icons.arrow_back : Icons.close,
+            color: Theme.of(context).colorScheme.primaryContainer,
+          ),
           onPressed: () {
-            Navigator.pop(context);
+            if (useMobileLayout) {
+              Navigator.pop(context);
+            } else {
+              Navigator.popUntil(context, (route) => route.isFirst);
+            }
           },
         ),
       ),
@@ -111,7 +126,12 @@ class GymPage extends StatelessWidget {
                   color: Colors.white.withAlpha(200),
                   borderRadius: BorderRadius.circular(20.0),
                 ),
-                child: Text(gym.name),
+                child: Text(
+                  gym.name,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                ),
               )
               : null,
       flexibleSpace: FlexibleSpaceBar(
@@ -280,8 +300,13 @@ class GymPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: TextButton(
             onPressed: () => _deleteGym(context, gym),
-            style: TextButton.styleFrom(backgroundColor: Colors.red),
-            child: Text('Delete gym', style: TextStyle(color: Colors.white)),
+            style: TextButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: Text(
+              'Delete gym',
+              style: TextStyle(color: Theme.of(context).colorScheme.onError),
+            ),
           ),
         ),
       ),
@@ -294,6 +319,7 @@ class GymPage extends StatelessWidget {
     Gym gym = context.watch<GymProvider>().gymList![gymIndex];
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: CustomScrollView(
         slivers: [
           _buildSliverAppBar(context, gym),

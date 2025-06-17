@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:gymme/providers/theme_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
+// ignore: must_be_immutable
 class HomeLoading extends StatelessWidget {
-  const HomeLoading({super.key});
+  Color baseColor = Colors.grey[300]!;
+  Color highlightColor = Colors.grey[100]!;
+
+  HomeLoading({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = context.watch<ThemeProvider>().isDarkMode;
+    baseColor = isDarkMode ? Colors.grey[800]! : Colors.grey[300]!;
+    highlightColor = isDarkMode ? Colors.grey[700]! : Colors.grey[100]!;
+
     return CustomScrollView(
       slivers: [
         // Upcoming bookings section
@@ -59,8 +69,8 @@ class HomeLoading extends StatelessWidget {
       child: Align(
         alignment: Alignment.centerLeft,
         child: Shimmer.fromColors(
-          baseColor: Colors.grey[300]!,
-          highlightColor: Colors.grey[100]!,
+          baseColor: baseColor,
+          highlightColor: highlightColor,
           child: Container(
             width: width,
             height: height,
@@ -76,8 +86,8 @@ class HomeLoading extends StatelessWidget {
 
   Widget _buildShimmerSearchBar() {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: baseColor,
+      highlightColor: highlightColor,
       child: Container(
         height: 48,
         decoration: BoxDecoration(
@@ -92,8 +102,8 @@ class HomeLoading extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
       child: Shimmer.fromColors(
-        baseColor: Colors.grey[300]!,
-        highlightColor: Colors.grey[100]!,
+        baseColor: baseColor,
+        highlightColor: highlightColor,
         child: Container(
           height: 180,
           decoration: BoxDecoration(
@@ -144,8 +154,8 @@ class HomeLoading extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
       child: Shimmer.fromColors(
-        baseColor: Colors.grey[300]!,
-        highlightColor: Colors.grey[100]!,
+        baseColor: baseColor,
+        highlightColor: highlightColor,
         child: Container(
           width: 260,
           decoration: BoxDecoration(

@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:dima_project/global_providers/user/user_model.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:gymme/models/user_model.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -12,10 +12,10 @@ import 'package:provider/provider.dart';
 class NewMyData extends StatefulWidget {
   final User? user;
 
-  const NewMyData({Key? key, this.user}) : super(key: key);
+  const NewMyData({super.key, this.user});
 
   @override
-  _NewMyDataState createState() => _NewMyDataState();
+  State<NewMyData> createState() => _NewMyDataState();
 }
 
 class _NewMyDataState extends State<NewMyData> {
@@ -90,6 +90,10 @@ class _NewMyDataState extends State<NewMyData> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
+
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+    var snackBar = ScaffoldMessenger.of(context);
+
     String imageUrl = widget.user?.photoURL ?? '';
     if (imageBytes != null) {
       final base64Image = base64Encode(imageBytes!);
@@ -103,8 +107,6 @@ class _NewMyDataState extends State<NewMyData> {
     setState(() {
       _isSaving = true;
     });
-
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
 
     try {
       // Aggiorna i dati dell'utente nel provider e su Firestore
@@ -126,14 +128,12 @@ class _NewMyDataState extends State<NewMyData> {
       });
 
       // Mostra un messaggio di successo
-      ScaffoldMessenger.of(context).showSnackBar(
+      snackBar.showSnackBar(
         SnackBar(
           content: Row(
             children: [
               Icon(Icons.check_circle_outlined, color: Colors.white),
-              Icon(Icons.check_circle_outlined, color: Colors.white),
               SizedBox(width: 12),
-              Expanded(child: Text('Changes saved successfully!')),
               Expanded(child: Text('Changes saved successfully!')),
             ],
           ),
@@ -151,7 +151,7 @@ class _NewMyDataState extends State<NewMyData> {
       birthDateCtrl.clear();
 
       // Torna alla pagina precedente
-      if (context.mounted) {
+      if (mounted) {
         Navigator.pop(context);
       }
     } catch (e) {
@@ -159,7 +159,7 @@ class _NewMyDataState extends State<NewMyData> {
         _isSaving = false;
       });
       // Gestisci eventuali errori
-      ScaffoldMessenger.of(context).showSnackBar(
+      snackBar.showSnackBar(
         SnackBar(
           content: Text('There\'s been an issue during the update: $e'),
           backgroundColor: Colors.red,
@@ -176,16 +176,16 @@ class _NewMyDataState extends State<NewMyData> {
   ) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: Theme.of(context).colorScheme.primary),
       ),
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
-          icon: Icon(icon),
+          icon: Icon(icon, color: Theme.of(context).colorScheme.secondary),
           border: InputBorder.none,
         ),
         validator: isMandatory ? (value) => _validateMandatory(value) : null,
@@ -247,7 +247,7 @@ class _NewMyDataState extends State<NewMyData> {
                       child: Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.black.withOpacity(0.3),
+                          color: Colors.black.withAlpha(75),
                         ),
                         child: Icon(Icons.edit, color: Colors.white, size: 24),
                       ),
@@ -269,16 +269,21 @@ class _NewMyDataState extends State<NewMyData> {
             // Email (read-only)
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey.shade50,
+                color: Theme.of(context).colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: TextFormField(
                 enabled: false,
                 decoration: InputDecoration(
                   labelText: widget.user?.email,
-                  icon: Icon(Icons.email_outlined),
+                  icon: Icon(
+                    Icons.email_outlined,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
                   border: InputBorder.none,
                 ),
               ),
@@ -304,16 +309,21 @@ class _NewMyDataState extends State<NewMyData> {
 
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey.shade50,
+                color: Theme.of(context).colorScheme.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.grey.shade300),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: TextFormField(
                 controller: birthDateCtrl,
                 decoration: InputDecoration(
                   labelText: 'Birth date',
-                  icon: Icon(Icons.date_range_outlined),
+                  icon: Icon(
+                    Icons.calendar_today_outlined,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
                   border: InputBorder.none,
                 ),
                 onTap: () async {
@@ -351,10 +361,12 @@ class _NewMyDataState extends State<NewMyData> {
 
   @override
   Widget build(BuildContext context) {
-    final user = widget.user ?? Provider.of<UserProvider>(context).user;
-
     return Scaffold(
-      appBar: AppBar(title: Text('Modify data')),
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+      appBar: AppBar(
+        title: Text('Modify data'),
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+      ),
       body:
           _isSaving
               ? Center(

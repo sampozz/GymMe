@@ -1,15 +1,17 @@
-import 'package:dima_project/auth_gate/auth_gate.dart';
-import 'package:dima_project/global_providers/screen_provider.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:gymme/content/stripe_success_page.dart';
+import 'package:gymme/intro/intro_animation.dart';
+import 'package:gymme/auth_gate/auth_gate.dart';
+import 'package:gymme/providers/bookings_provider.dart';
+import 'package:gymme/providers/screen_provider.dart';
+import 'package:gymme/providers/user_provider.dart';
+import 'package:gymme/theme/theme.dart';
+import 'package:gymme/theme/theme_utility.dart';
+import 'package:gymme/providers/theme_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
-
-// TODO?? add activities to favourites -> create new activity card that can be shown in the home
-// -- > make it a horizontal list of cards in the gym page
-// TODO: when an activity is removed, cosa facciamo??
-// TODO: introduction screen
 
 void main() async {
   // Initialize Firebase
@@ -21,75 +23,72 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => ScreenProvider()),
         ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ],
       child: const App(),
     ),
   );
 }
 
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'GymMe',
-      // TODO: Decide App theme
+  State<App> createState() => _AppState();
+}
 
-      /*LAVANDA #FFAE94FC RGB: 174 148 252
-          MIRTILLO #FF221743 RGB: 34 23 67
-          GIALLO #FFFFD73C RGB: 255 255 215 60
-          SABBIA #FFFDF7EA RGB: 255 253 247 234 
-          ROSA #FFFEACF0
-          CORALLO #FFFB5C1C*/
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch:
-              Colors.deepPurple, // Base primary swatch (closest to navy)
-          accentColor: Color(0xFFFFC107), // Gold as secondary color
-          backgroundColor: Color(0xFFBEC4FF), // Light gray background
-          cardColor: Color(0xFFFFFFFF), // White surface for cards
-          errorColor: Color.fromARGB(255, 142, 76, 76), // Strong red for errors
-        ).copyWith(
-          primary: const Color.fromARGB(
-            255,
-            14,
-            57,
-            199,
-          ), // Navy Blue (custom primary)
-          secondary: Color(0xFFFFC107), // Gold (custom secondary)
-          tertiary: Color(0xFF4C9AFF), // Lighter Blue for accents
-          surface: Color(0xFFF5F5F5), // White surface
-          primaryContainer: Color(0xFFFFFFFF), // White for primary container
-          error: Color(0xFFD32F2F), // Standard material red for errors
-          onPrimary: Color(0xFFFDF7EA), // White text/icons on primary (navy)
-          onSecondary: Color.fromARGB(
-            255,
-            34,
-            23,
-            67,
-          ), // Black text/icons on secondary (gold)
-          onTertiary: Colors.white, // White text/icons on lighter blue
-          onSurface: Colors.black, // Black text on white surfaces
-          onError: Colors.white, // White text on red error color
-        ),
-        textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(
-            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
+class _AppState extends State<App> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    super.didChangePlatformBrightness();
+    final themeProvider = context.read<ThemeProvider>();
+    final systemBrightness =
+        WidgetsBinding.instance.platformDispatcher.platformBrightness;
+    themeProvider.updateSystemTheme(systemBrightness);
+  }
+
+  Route<dynamic>? generateStripeRoute(settings) {
+    Uri uri = Uri.parse(settings.name ?? '');
+    if (uri.path == '/stripesuccess') {
+      final bookingId = uri.queryParameters['bookingId'] ?? '';
+      return MaterialPageRoute(
+        builder:
+            (_) => ChangeNotifierProvider(
+              create: (_) => BookingsProvider(),
+              child: StripeSuccessPage(bookingId: bookingId),
             ),
-            textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.normal),
-            elevation: 0,
-            fixedSize: Size(200, 40),
-            backgroundColor: Colors.white,
-          ),
-        ),
-      ),
+      );
+    }
+    return null;
+  }
 
-      home: const AuthGate(),
-      // TODO: Add splash screen
-      initialRoute: '/',
+  @override
+  Widget build(BuildContext context) {
+    TextTheme textTheme = createTextTheme(context, "Lato");
+    MaterialTheme theme = MaterialTheme(textTheme);
+
+    return Consumer<ThemeProvider>(
+      builder: (context, themeProvider, child) {
+        return MaterialApp(
+          title: 'GymMe',
+          theme: themeProvider.isDarkMode ? theme.dark() : theme.light(),
+          home: kIsWeb ? const AuthGate() : const IntroAnimation(),
+          initialRoute: '/',
+          onGenerateRoute: generateStripeRoute,
+        );
+      },
     );
   }
 }

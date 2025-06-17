@@ -1,6 +1,6 @@
-import 'package:dima_project/content/instructors/instructor_model.dart';
-import 'package:dima_project/content/instructors/instructor_provider.dart';
-import 'package:dima_project/content/instructors/instructors_page.dart';
+import 'package:gymme/models/instructor_model.dart';
+import 'package:gymme/providers/instructor_provider.dart';
+import 'package:gymme/content/home/gym/activity/instructors/instructors_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';

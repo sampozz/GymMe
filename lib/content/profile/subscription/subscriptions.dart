@@ -1,5 +1,5 @@
-import 'package:dima_project/content/profile/subscription/subscription_model.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:gymme/models/subscription_model.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +12,7 @@ class Subscriptions extends StatefulWidget {
 
 class _SubscriptionsState extends State<Subscriptions> {
   // Set to track which subscriptions are expanded
-  Set<String> _expandedSubscriptions = {};
+  final Set<String> _expandedSubscriptions = {};
 
   // Toggle the expanded state of a subscription
   void _toggleExpansion(String subscriptionId) {
@@ -26,14 +26,13 @@ class _SubscriptionsState extends State<Subscriptions> {
   }
 
   Future<void> _refreshSubscriptions(BuildContext context) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final snackBar = ScaffoldMessenger.of(context);
     try {
-      final scaffoldMessenger = ScaffoldMessenger.of(context);
-      final userProvider = Provider.of<UserProvider>(context, listen: false);
-
       await userProvider.fetchUser();
 
       // Optional: show success message
-      scaffoldMessenger.showSnackBar(
+      snackBar.showSnackBar(
         const SnackBar(
           content: Text('Subscriptions updated successfully'),
           duration: Duration(seconds: 2),
@@ -41,7 +40,7 @@ class _SubscriptionsState extends State<Subscriptions> {
       );
     } catch (e) {
       // Show error message
-      ScaffoldMessenger.of(context).showSnackBar(
+      snackBar.showSnackBar(
         SnackBar(
           content: Text('Error refreshing subscriptions: ${e.toString()}'),
           backgroundColor: Colors.red,
@@ -76,11 +75,8 @@ class _SubscriptionsState extends State<Subscriptions> {
 
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 6.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12.0),
-              ),
+            child: Card(
+              elevation: 0,
               child: Column(
                 children: [
                   Padding(
@@ -95,7 +91,10 @@ class _SubscriptionsState extends State<Subscriptions> {
                               padding: EdgeInsets.only(right: 16),
                               child: Icon(
                                 Icons.fitness_center,
-                                color: Theme.of(context).primaryColor,
+                                color:
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.onPrimaryContainer,
                                 size: 36,
                               ),
                             ),
@@ -162,13 +161,19 @@ class _SubscriptionsState extends State<Subscriptions> {
                                   child: Icon(
                                     Icons.keyboard_arrow_down,
                                     size: 30,
-                                    color: Theme.of(context).primaryColor,
+                                    color:
+                                        Theme.of(
+                                          context,
+                                        ).colorScheme.onPrimaryContainer,
                                   ),
                                 ),
                                 Text(
                                   isExpanded ? "Hide details" : "Show details",
                                   style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
+                                    color:
+                                        Theme.of(
+                                          context,
+                                        ).colorScheme.onPrimaryContainer,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -181,7 +186,7 @@ class _SubscriptionsState extends State<Subscriptions> {
                   ),
 
                   AnimatedCrossFade(
-                    firstChild: Container(height: 0, width: double.infinity),
+                    firstChild: SizedBox(height: 0, width: double.infinity),
                     secondChild: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
@@ -195,10 +200,13 @@ class _SubscriptionsState extends State<Subscriptions> {
                               children: [
                                 Text(
                                   '${subscription.duration}',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.black87,
+                                    color:
+                                        Theme.of(
+                                          context,
+                                        ).colorScheme.onPrimaryContainer,
                                   ),
                                 ),
                                 Text(
@@ -207,7 +215,10 @@ class _SubscriptionsState extends State<Subscriptions> {
                                       : 'months',
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: Colors.black54,
+                                    color:
+                                        Theme.of(
+                                          context,
+                                        ).colorScheme.onPrimaryContainer,
                                   ),
                                 ),
                               ],
@@ -320,6 +331,7 @@ class _SubscriptionsState extends State<Subscriptions> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
+          backgroundColor: Colors.transparent,
           title: const Text('Subscriptions'),
           bottom: const TabBar(
             tabs: <Widget>[Tab(text: "Valid"), Tab(text: "Expired")],

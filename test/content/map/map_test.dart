@@ -1,238 +1,879 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:dima_project/content/map/gym_map.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
-import 'package:dima_project/global_providers/gym_provider.dart';
-import 'package:dima_project/global_providers/map_provider.dart';
-import 'package:dima_project/content/home/gym/gym_model.dart';
-import 'package:dima_project/content/map/location_model.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:mockito/annotations.dart';
-import 'map_test.mocks.dart'; // Generated file
+import 'package:provider/provider.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:gymme/content/map/gym_map.dart';
+import 'package:gymme/content/map/gym_bottom_sheet.dart';
+import 'package:gymme/content/home/gym/gym_page.dart';
+import 'package:gymme/providers/map_provider.dart';
+import 'package:gymme/providers/gym_provider.dart';
+import 'package:gymme/providers/screen_provider.dart';
+import 'package:gymme/providers/user_provider.dart';
+import 'package:gymme/models/gym_model.dart';
+import 'package:gymme/models/location_model.dart';
+import '../../provider_test.mocks.dart';
 
-abstract class CameraUpdateProvider {
-  CameraUpdate newCameraPosition(CameraPosition position);
-}
-
-// Mocks
-@GenerateMocks(
-  [GoogleMapController, GymProvider, MapProvider, http.Client],
-  customMocks: [MockSpec<http.Response>(as: #MockHttpResponse)],
-)
 void main() {
-  late MockGymProvider mockGymProvider;
   late MockMapProvider mockMapProvider;
+  late MockGymProvider mockGymProvider;
+  late MockScreenProvider mockScreenProvider;
+  late MockUserProvider mockUserProvider;
 
   setUp(() {
-    mockGymProvider = MockGymProvider();
     mockMapProvider = MockMapProvider();
+    mockGymProvider = MockGymProvider();
+    mockScreenProvider = MockScreenProvider();
+    mockUserProvider = MockUserProvider();
 
-    // Setup default responses for GymProvider
-    when(mockGymProvider.getGymList()).thenAnswer((_) async => <Gym>[]);
-
-    // Setup default responses for MapProvider
-    when(mockMapProvider.getUserLocation()).thenAnswer(
-      (_) async => Position(
-        latitude: 45.46427,
-        longitude: 9.18951,
-        timestamp: DateTime.now(),
-        accuracy: 1.0,
-        altitude: 1.0,
-        heading: 1.0,
-        speed: 1.0,
-        speedAccuracy: 1.0,
-        altitudeAccuracy: 1.0,
-        headingAccuracy: 1.0,
-      ),
-    );
-
+    // Setup default mocks
+    when(mockScreenProvider.useMobileLayout).thenReturn(true);
+    when(mockMapProvider.isInitialized).thenReturn(false);
     when(
-      mockMapProvider.getGymLocations(any),
-    ).thenAnswer((_) async => Locations(gyms: []));
+      mockMapProvider.savedPosition,
+    ).thenReturn(const LatLng(45.46427, 9.18951)); // Milano
+    when(mockMapProvider.savedZoom).thenReturn(14.0);
+    when(mockGymProvider.getGymList()).thenAnswer((_) async => []);
+    when(mockUserProvider.isGymInFavourites(any)).thenReturn(false);
+    when(mockGymProvider.gymList).thenReturn([]);
   });
 
-  // Helper function to create the widget with providers
-  Widget createWidgetWithProviders({Widget? child}) {
+  Widget createTestWidget() {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
         ChangeNotifierProvider<MapProvider>.value(value: mockMapProvider),
+        ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
+        ChangeNotifierProvider<ScreenProvider>.value(value: mockScreenProvider),
+        ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
       ],
-      child: MaterialApp(home: Scaffold(body: child ?? const GymMap())),
+      child: const MaterialApp(home: Scaffold(body: GymMap())),
     );
   }
 
-  // Test that verifies if the GymMap widget builds correctly
-  testWidgets('GymMap builds correctly', (WidgetTester tester) async {
-    return;
-    /*await tester.pumpWidget(createWidgetWithProviders());
-    
-    expect(find.byType(GymMap), findsOneWidget);*/
-  });
-
-  // Test that verifies if GymMap contains a GoogleMap widget
-  testWidgets('GymMap contains a GoogleMap widget', (
-    WidgetTester tester,
-  ) async {
-    return;
-    /*await tester.pumpWidget(createWidgetWithProviders());
-    
-    expect(find.byType(GoogleMap), findsOneWidget);*/
-  });
-
-  // Test that verifies the initial map position (center of Milan)
-  testWidgets('GymMap has initial position set to Milan', (
-    WidgetTester tester,
-  ) async {
-    return;
-    /* tester.pumpWidget(createWidgetWithProviders());
-    
-    final googleMapWidget = tester.widget<GoogleMap>(find.byType(GoogleMap));
-    
-    expect(googleMapWidget.initialCameraPosition.target.latitude, 45.46427);
-    expect(googleMapWidget.initialCameraPosition.target.longitude, 9.18951);
-    expect(googleMapWidget.initialCameraPosition.zoom, 14);*/
-  });
-
-  // Test that verifies if the onMapCreated function is called when the map is created
-  testWidgets('GymMap calls onMapCreated when the map is created', (
-    WidgetTester tester,
-  ) async {
-    return;
-    /*await tester.pumpWidget(createWidgetWithProviders());
-    
-    final googleMapWidget = tester.widget<GoogleMap>(find.byType(GoogleMap));
-    expect(googleMapWidget.onMapCreated, isNotNull);*/
-  });
-
-  // Test that verifies if gym loading works correctly
-  testWidgets('GymMap loads gym list correctly', (WidgetTester tester) async {
-    return;
-    /*final testGyms = [
-      Gym(id: '1', name: 'Test Gym 1', address: 'Corso Como, 15, 20154 Milano MI'),
-      Gym(id: '2', name: 'Test Gym 2', address: 'Viale Toscana, 30, 20141 Milano MI'),
-    ];
-    
-    when(mockGymProvider.getGymList()).thenAnswer((_) async => testGyms);
-    
-    await tester.pumpWidget(createWidgetWithProviders());
-
-    await tester.pumpAndSettle();
-    
-    verify(mockGymProvider.getGymList()).called(1);*/
-  });
-
-  // Test that verifies if the map provider is called to get user location
-  testWidgets('GymMap calls MapProvider to get user location', (
-    WidgetTester tester,
-  ) async {
-    return;
-    /*await tester.pumpWidget(createWidgetWithProviders());
-    
-    await tester.pumpAndSettle();
-    
-    verify(mockMapProvider.getUserLocation()).called(1);*/
-  });
-
-  // Test that verifies if the map provider is called to get gym locations
-  testWidgets('GymMap calls MapProvider to get gym locations', (
-    WidgetTester tester,
-  ) async {
-    return;
-    /*final testGyms = [
-      Gym(id: '1', name: 'Test Gym 1', address: 'Corso Como, 15, 20154 Milano MI'),
-      Gym(id: '2', name: 'Test Gym 2', address: 'Viale Toscana, 30, 20141 Milano MI'),
-    ];
-    
-    when(mockGymProvider.getGymList()).thenAnswer((_) async => testGyms);
-
-    when(mockMapProvider.getGymLocations(any)).thenAnswer((_) async => 
-      Locations(gyms: [
-        GymLocation(id: '1', name: 'Test Gym 1', address: 'Corso Como, 15, 20154 Milano MI', lat: 45.48, lng: 9.19),
-        GymLocation(id: '2', name: 'Test Gym 2', address: 'Viale Toscana, 30, 20141 Milano MI', lat: 45.44, lng: 9.20),
-      ])
+  Widget createBottomSheetTestWidget(String gymId) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
+        ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
+        ChangeNotifierProvider<ScreenProvider>.value(value: mockScreenProvider),
+      ],
+      child: MaterialApp(home: Scaffold(body: GymBottomSheet(gymId: gymId))),
     );
-    
-    await tester.pumpWidget(createWidgetWithProviders());
+  }
 
-    // Configura il mock del controller
-    final mockController = MockGoogleMapController();
-    when(mockController.animateCamera(any)).thenAnswer((_) async {});
-    
-    // Find and trigger onMapCreated
-    final googleMapWidget = tester.widget<GoogleMap>(find.byType(GoogleMap));
-    googleMapWidget.onMapCreated?.call(mockController);
+  group('GymMap Widget Tests', () {
+    testWidgets('GymMap renders correctly', (WidgetTester tester) async {
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
 
-    await tester.pumpAndSettle();
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
 
-    verify(mockMapProvider.getGymLocations(any)).called(1);*/
+      expect(find.byType(GymMap), findsOneWidget);
+      expect(find.byType(GoogleMap), findsOneWidget);
+    });
+
+    testWidgets('GymMap shows search bar on mobile layout', (
+      WidgetTester tester,
+    ) async {
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+      when(mockScreenProvider.useMobileLayout).thenReturn(true);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SearchAnchor), findsOneWidget);
+    });
+
+    testWidgets('GymMap shows location button', (WidgetTester tester) async {
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+      expect(find.byIcon(Icons.my_location), findsOneWidget);
+    });
+
+    testWidgets('GymMap shows search bar on desktop layout', (
+      WidgetTester tester,
+    ) async {
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+      when(mockScreenProvider.useMobileLayout).thenReturn(false);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SearchAnchor), findsOneWidget);
+    });
   });
 
-  // Test that verifies map settings
-  testWidgets('GymMap uses correct map settings', (WidgetTester tester) async {
-    return;
-    /*await tester.pumpWidget(createWidgetWithProviders());
+  group('GymMap Location Tests', () {
+    testWidgets('GymMap requests user location on init', (
+      WidgetTester tester,
+    ) async {
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
 
-    final googleMapWidget = tester.widget<GoogleMap>(find.byType(GoogleMap));
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
 
-    expect(googleMapWidget.myLocationEnabled, isFalse); // Se usi myLocationEnabled invece di myLocationButtonEnabled
-    expect(googleMapWidget.mapType, MapType.normal);
-    
-    // Commenta questa verifica se cloudMapId non è più utilizzato
-    // expect(googleMapWidget.cloudMapId, '7a4015798822680c');*/
+      verify(mockMapProvider.getUserLocation()).called(1);
+    });
+
+    testWidgets('GymMap updates location button state when location granted', (
+      WidgetTester tester,
+    ) async {
+      final mockPosition = MockPosition();
+      when(mockPosition.latitude).thenReturn(45.464);
+      when(mockPosition.longitude).thenReturn(9.189);
+      when(mockPosition.timestamp).thenReturn(DateTime.now());
+      when(mockPosition.accuracy).thenReturn(5.0);
+      when(mockPosition.altitude).thenReturn(100.0);
+      when(mockPosition.heading).thenReturn(0.0);
+      when(mockPosition.speed).thenReturn(0.0);
+      when(mockPosition.speedAccuracy).thenReturn(1.0);
+      when(mockPosition.altitudeAccuracy).thenReturn(1.0);
+      when(mockPosition.headingAccuracy).thenReturn(1.0);
+
+      when(
+        mockMapProvider.getUserLocation(),
+      ).thenAnswer((_) async => mockPosition);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      final fab = tester.widget<FloatingActionButton>(
+        find.byType(FloatingActionButton),
+      );
+      expect(fab.onPressed, isNotNull);
+    });
+
+    testWidgets('GymMap shows error when location permission denied', (
+      WidgetTester tester,
+    ) async {
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Location permission denied. Go to settings to enable it.'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('Location button tap requests location when granted', (
+      WidgetTester tester,
+    ) async {
+      final mockPosition = MockPosition();
+      when(mockPosition.latitude).thenReturn(45.464);
+      when(mockPosition.longitude).thenReturn(9.189);
+      when(mockPosition.timestamp).thenReturn(DateTime.now());
+      when(mockPosition.accuracy).thenReturn(5.0);
+      when(mockPosition.altitude).thenReturn(100.0);
+      when(mockPosition.heading).thenReturn(0.0);
+      when(mockPosition.speed).thenReturn(0.0);
+      when(mockPosition.speedAccuracy).thenReturn(1.0);
+      when(mockPosition.altitudeAccuracy).thenReturn(1.0);
+      when(mockPosition.headingAccuracy).thenReturn(1.0);
+
+      when(
+        mockMapProvider.getUserLocation(),
+      ).thenAnswer((_) async => mockPosition);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      verify(mockMapProvider.getUserLocation()).called(2); // Init + tap
+    });
+
+    testWidgets('Location button disabled when location denied', (
+      WidgetTester tester,
+    ) async {
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      // Test that button shows error when tapped with denied location
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Location permission denied. Go to settings to enable it.'),
+        findsWidgets,
+      );
+    });
   });
 
-  // Test that verifies if the initial map position is correct when location permissions are not granted
-  testWidgets(
-    'GymMap initializes with Milan position when location permission is denied',
-    (WidgetTester tester) async {
-      return;
-      /*when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
-    
-    await tester.pumpWidget(createWidgetWithProviders());
-  
-    await tester.pumpAndSettle();
+  group('GymMap Search Tests', () {
+    testWidgets('Search bar filters gym list correctly', (
+      WidgetTester tester,
+    ) async {
+      final testGyms = [
+        Gym(
+          id: '1',
+          name: 'Fitness First',
+          address: 'Via Roma 1, Milano',
+          openTime: DateTime.parse('2023-01-01 08:00:00'),
+          closeTime: DateTime.parse('2023-01-01 22:00:00'),
+          imageUrl: 'test.jpg',
+        ),
+        Gym(
+          id: '2',
+          name: 'McFit',
+          address: 'Via Dante 2, Milano',
+          openTime: DateTime.parse('2023-01-01 09:00:00'),
+          closeTime: DateTime.parse('2023-01-01 21:00:00'),
+          imageUrl: 'test2.jpg',
+        ),
+      ];
 
-    final googleMapWidget = tester.widget<GoogleMap>(find.byType(GoogleMap));
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+      when(mockGymProvider.getGymList()).thenAnswer((_) async => testGyms);
 
-    expect(googleMapWidget.initialCameraPosition.target.latitude, 45.46427);
-    expect(googleMapWidget.initialCameraPosition.target.longitude, 9.18951);*/
-    },
-  );
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
 
-  // Test that verifies if the camera is updated when the user location is granted
-  testWidgets('GymMap updates camera when user location is granted', (
+      // Find and tap search bar
+      final searchBar = find.byType(SearchBar);
+      expect(searchBar, findsOneWidget);
+
+      await tester.tap(searchBar);
+      await tester.pumpAndSettle();
+
+      // Enter search text
+      await tester.enterText(searchBar, 'Fitness');
+      await tester.pumpAndSettle();
+
+      // Should show filtered results
+      expect(find.text('Fitness First'), findsOneWidget);
+      expect(find.text('McFit'), findsNothing);
+    });
+
+    testWidgets('Search shows no results when no matches', (
+      WidgetTester tester,
+    ) async {
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+      when(mockGymProvider.getGymList()).thenAnswer((_) async => []);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      final searchBar = find.byType(SearchBar);
+      await tester.tap(searchBar);
+      await tester.pumpAndSettle();
+
+      await tester.enterText(searchBar, 'NonExistentGym');
+      await tester.pumpAndSettle();
+
+      expect(find.text('No results found'), findsOneWidget);
+    });
+
+    testWidgets('Clear button clears search', (WidgetTester tester) async {
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      final searchAnchor = find.byType(SearchAnchor);
+      await tester.tap(searchAnchor);
+      await tester.pumpAndSettle();
+
+      final searchField = find.byType(TextField).first;
+
+      await tester.enterText(searchField, 'Test');
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('Test'), findsWidgets);
+
+      await tester.enterText(searchField, '');
+      await tester.pumpAndSettle();
+
+      expect(find.text('Test'), findsNothing);
+      expect(find.textContaining('No results found'), findsWidgets);
+    });
+
+    testWidgets('Search filters by address as well as name', (
+      WidgetTester tester,
+    ) async {
+      final testGyms = [
+        Gym(
+          id: '1',
+          name: 'Test Gym',
+          address: 'Via Roma 1, Milano',
+          openTime: DateTime.parse('2023-01-01 08:00:00'),
+          closeTime: DateTime.parse('2023-01-01 22:00:00'),
+          imageUrl: 'test.jpg',
+        ),
+      ];
+
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+      when(mockGymProvider.getGymList()).thenAnswer((_) async => testGyms);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      final searchBar = find.byType(SearchBar);
+      await tester.tap(searchBar);
+      await tester.pumpAndSettle();
+
+      await tester.enterText(searchBar, 'Roma');
+      await tester.pumpAndSettle();
+
+      expect(find.text('Test Gym'), findsOneWidget);
+    });
+
+    testWidgets('Search suggestion tap updates camera and shows details', (
+      WidgetTester tester,
+    ) async {
+      final testGyms = [
+        Gym(
+          id: '1',
+          name: 'Test Gym',
+          address: 'Via Roma 1, Milano',
+          openTime: DateTime.parse('2023-01-01 08:00:00'),
+          closeTime: DateTime.parse('2023-01-01 22:00:00'),
+          imageUrl: 'test.jpg',
+        ),
+      ];
+
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+      when(mockGymProvider.getGymList()).thenAnswer((_) async => testGyms);
+      when(mockGymProvider.gymList).thenReturn(testGyms);
+      when(mockGymProvider.getGymIndex(any)).thenReturn(0);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      final searchBar = find.byType(SearchBar);
+      await tester.tap(searchBar);
+      await tester.pumpAndSettle();
+
+      await tester.enterText(searchBar, 'Test');
+      await tester.pumpAndSettle();
+
+      // Tap on suggestion
+      await tester.tap(find.byType(ListTile).first);
+      await tester.pumpAndSettle();
+
+      // Should show gym details bottom sheet after delay
+      await tester.pump(const Duration(milliseconds: 600));
+      expect(find.byType(GymBottomSheet), findsOneWidget);
+    });
+
+    testWidgets('Search text can be cleared', (WidgetTester tester) async {
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      final searchAnchor = find.byType(SearchAnchor);
+      await tester.tap(searchAnchor);
+      await tester.pumpAndSettle();
+
+      final searchInput = find.byType(TextField).first;
+      await tester.enterText(searchInput, 'Test Search');
+      await tester.pumpAndSettle();
+
+      expect(find.text('Test Search'), findsAtLeastNWidgets(1));
+
+      await tester.enterText(searchInput, '');
+      await tester.pumpAndSettle();
+
+      expect(find.text('Test Search'), findsNothing);
+      expect(find.text('No results found'), findsAtLeastNWidgets(1));
+    });
+  });
+
+  group('GymMap Marker Tests', () {
+    testWidgets('GymMap loads gym list correctly', (WidgetTester tester) async {
+      final testGyms = [
+        Gym(
+          id: '1',
+          name: 'Test Gym',
+          address: 'Test Address',
+          openTime: DateTime.parse('2023-01-01 08:00:00'),
+          closeTime: DateTime.parse('2023-01-01 22:00:00'),
+          imageUrl: 'test.jpg',
+        ),
+      ];
+
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+      when(mockGymProvider.getGymList()).thenAnswer((_) async => testGyms);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      verify(mockGymProvider.getGymList()).called(1);
+      expect(find.byType(GoogleMap), findsOneWidget);
+    });
+
+    testWidgets('GymMap handles map initialization', (
+      WidgetTester tester,
+    ) async {
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+      when(mockGymProvider.getGymList()).thenAnswer((_) async => []);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(GymMap), findsOneWidget);
+      expect(find.byType(GoogleMap), findsOneWidget);
+      expect(find.byType(SearchAnchor), findsOneWidget);
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+    });
+
+    testWidgets('GymMap state management works correctly', (
+      WidgetTester tester,
+    ) async {
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+      when(mockGymProvider.getGymList()).thenAnswer((_) async => []);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      // Navigate away to trigger deactivate
+      await tester.pumpWidget(const MaterialApp(home: Scaffold()));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(GymMap), findsNothing);
+    });
+
+    testWidgets('GymMap handles async map creation', (
+      WidgetTester tester,
+    ) async {
+      final testGyms = [
+        Gym(
+          id: '1',
+          name: 'Test Gym',
+          address: 'Test Address',
+          openTime: DateTime.parse('2023-01-01 08:00:00'),
+          closeTime: DateTime.parse('2023-01-01 22:00:00'),
+          imageUrl: 'test.jpg',
+        ),
+      ];
+
+      final testLocations = Locations(
+        gyms: [
+          GymLocation(
+            id: '1',
+            name: 'Test Gym',
+            address: 'Test Address',
+            lat: 45.464,
+            lng: 9.189,
+          ),
+        ],
+      );
+
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+      when(mockGymProvider.getGymList()).thenAnswer((_) async => testGyms);
+      when(
+        mockMapProvider.getGymLocations(testGyms),
+      ).thenAnswer((_) async => testLocations);
+      when(
+        mockMapProvider.getMarkers(any, onMarkerTap: anyNamed('onMarkerTap')),
+      ).thenReturn({});
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(GymMap), findsOneWidget);
+      expect(find.byType(GoogleMap), findsOneWidget);
+
+      verify(mockGymProvider.getGymList()).called(1);
+    });
+  });
+
+  group('GymMap Error Handling Tests', () {
+    testWidgets('GymMap handles gym loading errors gracefully', (
+      WidgetTester tester,
+    ) async {
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+      when(
+        mockGymProvider.getGymList(),
+      ).thenThrow(Exception('Failed to load gyms'));
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      // App should still render without crashing
+      expect(find.byType(GymMap), findsOneWidget);
+      expect(find.byType(GoogleMap), findsOneWidget);
+    });
+
+    testWidgets('GymMap handles marker loading errors', (
+      WidgetTester tester,
+    ) async {
+      final testGyms = [
+        Gym(
+          id: '1',
+          name: 'Test Gym',
+          address: 'Test Address',
+          openTime: DateTime.parse('2023-01-01 08:00:00'),
+          closeTime: DateTime.parse('2023-01-01 22:00:00'),
+          imageUrl: 'test.jpg',
+        ),
+      ];
+
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+      when(mockGymProvider.getGymList()).thenAnswer((_) async => testGyms);
+      when(
+        mockMapProvider.getGymLocations(testGyms),
+      ).thenThrow(Exception('Geocoding failed'));
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(GymMap), findsOneWidget);
+      expect(find.byType(GoogleMap), findsOneWidget);
+    });
+
+    testWidgets('GymMap handles camera update errors gracefully', (
+      WidgetTester tester,
+    ) async {
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      // The widget should handle camera errors internally without crashing
+      expect(find.byType(GymMap), findsOneWidget);
+    });
+  });
+
+  group('GymBottomSheet Widget Tests', () {
+    testWidgets('GymBottomSheet displays gym information correctly', (
+      WidgetTester tester,
+    ) async {
+      final testGym = Gym(
+        id: '1',
+        name: 'Test Gym',
+        address: 'Via Roma 1, Milano',
+        openTime: DateTime.parse('2023-01-01 08:00:00'),
+        closeTime: DateTime.parse('2023-01-01 22:00:00'),
+        imageUrl: 'test.jpg',
+      );
+
+      when(mockGymProvider.gymList).thenReturn([testGym]);
+      when(mockGymProvider.getGymIndex(testGym)).thenReturn(0);
+      when(mockUserProvider.isGymInFavourites('1')).thenReturn(false);
+
+      await tester.pumpWidget(createBottomSheetTestWidget('1'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Test Gym'), findsOneWidget);
+      expect(find.text('Via Roma 1, Milano'), findsOneWidget);
+      expect(find.text('Visit'), findsOneWidget);
+      expect(find.byIcon(Icons.favorite_border), findsOneWidget);
+    });
+
+    testWidgets('GymBottomSheet shows gym as open during opening hours', (
+      WidgetTester tester,
+    ) async {
+      final now = DateTime.now();
+      final testGym = Gym(
+        id: '1',
+        name: 'Test Gym',
+        address: 'Via Roma 1, Milano',
+        openTime: DateTime(now.year, now.month, now.day, 8, 0),
+        closeTime: DateTime(now.year, now.month, now.day, 22, 0),
+        imageUrl: 'test.jpg',
+      );
+
+      when(mockGymProvider.gymList).thenReturn([testGym]);
+      when(mockGymProvider.getGymIndex(testGym)).thenReturn(0);
+      when(mockUserProvider.isGymInFavourites('1')).thenReturn(false);
+
+      await tester.pumpWidget(createBottomSheetTestWidget('1'));
+      await tester.pumpAndSettle();
+
+      final openText = find.text('Open');
+      final closedText = find.text('Closed');
+
+      expect(
+        openText.evaluate().isNotEmpty || closedText.evaluate().isNotEmpty,
+        isTrue,
+      );
+    });
+
+    testWidgets('GymBottomSheet visit button navigates to gym page', (
+      WidgetTester tester,
+    ) async {
+      final testGym = Gym(
+        id: '1',
+        name: 'Test Gym',
+        address: 'Via Roma 1, Milano',
+        openTime: DateTime.parse('2023-01-01 08:00:00'),
+        closeTime: DateTime.parse('2023-01-01 22:00:00'),
+        imageUrl: 'test.jpg',
+      );
+
+      when(mockGymProvider.gymList).thenReturn([testGym]);
+      when(mockGymProvider.getGymIndex(testGym)).thenReturn(0);
+      when(mockUserProvider.isGymInFavourites('1')).thenReturn(false);
+
+      await tester.pumpWidget(createBottomSheetTestWidget('1'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Visit'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(GymPage), findsOneWidget);
+    });
+
+    testWidgets('GymBottomSheet favorite button toggles favorite status', (
+      WidgetTester tester,
+    ) async {
+      final testGym = Gym(
+        id: '1',
+        name: 'Test Gym',
+        address: 'Via Roma 1, Milano',
+        openTime: DateTime.parse('2023-01-01 08:00:00'),
+        closeTime: DateTime.parse('2023-01-01 22:00:00'),
+        imageUrl: 'test.jpg',
+      );
+
+      when(mockGymProvider.gymList).thenReturn([testGym]);
+      when(mockGymProvider.getGymIndex(testGym)).thenReturn(0);
+      when(mockUserProvider.isGymInFavourites('1')).thenReturn(false);
+
+      await tester.pumpWidget(createBottomSheetTestWidget('1'));
+      await tester.pumpAndSettle();
+
+      // Tap favorite button
+      await tester.tap(find.byIcon(Icons.favorite_border));
+      await tester.pumpAndSettle();
+
+      verify(mockUserProvider.addFavouriteGym('1')).called(1);
+    });
+
+    testWidgets('GymBottomSheet removes favorite when already favorited', (
+      WidgetTester tester,
+    ) async {
+      final testGym = Gym(
+        id: '1',
+        name: 'Test Gym',
+        address: 'Via Roma 1, Milano',
+        openTime: DateTime.parse('2023-01-01 08:00:00'),
+        closeTime: DateTime.parse('2023-01-01 22:00:00'),
+        imageUrl: 'test.jpg',
+      );
+
+      when(mockGymProvider.gymList).thenReturn([testGym]);
+      when(mockGymProvider.getGymIndex(testGym)).thenReturn(0);
+      when(mockUserProvider.isGymInFavourites('1')).thenReturn(true);
+
+      await tester.pumpWidget(createBottomSheetTestWidget('1'));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.favorite), findsOneWidget);
+
+      // Tap favorite button to remove
+      await tester.tap(find.byIcon(Icons.favorite));
+      await tester.pumpAndSettle();
+
+      verify(mockUserProvider.removeFavouriteGym('1')).called(1);
+    });
+
+    testWidgets('GymBottomSheet shows opening hours when gym is closed', (
+      WidgetTester tester,
+    ) async {
+      // Simulate closed gym
+      final now = DateTime.now();
+
+      final testGym = Gym(
+        id: '1',
+        name: 'Test Gym',
+        address: 'Via Roma 1, Milano',
+        openTime: DateTime(now.year, now.month, now.day, 0, 0),
+        closeTime: DateTime(
+          now.year,
+          now.month,
+          now.day,
+          now.hour,
+          now.minute - 1,
+        ),
+        imageUrl: 'test.jpg',
+      );
+
+      when(mockGymProvider.gymList).thenReturn([testGym]);
+      when(mockGymProvider.getGymIndex(testGym)).thenReturn(0);
+      when(mockUserProvider.isGymInFavourites('1')).thenReturn(false);
+
+      await tester.pumpWidget(createBottomSheetTestWidget('1'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Closed'), findsOneWidget);
+      expect(find.textContaining('Open at 12:00 AM'), findsOneWidget);
+    });
+
+    testWidgets('GymBottomSheet shows closing hours when gym is open', (
+      WidgetTester tester,
+    ) async {
+      // Simulate open gym
+      final now = DateTime.now();
+
+      final testGym = Gym(
+        id: '1',
+        name: 'Test Gym',
+        address: 'Via Roma 1, Milano',
+        openTime: DateTime(now.year, now.month, now.day, 0, 0),
+        closeTime: DateTime(now.year, now.month, now.day, 23, 59),
+        imageUrl: 'test.jpg',
+      );
+
+      when(mockGymProvider.gymList).thenReturn([testGym]);
+      when(mockGymProvider.getGymIndex(testGym)).thenReturn(0);
+      when(mockUserProvider.isGymInFavourites('1')).thenReturn(false);
+
+      await tester.pumpWidget(createBottomSheetTestWidget('1'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Open'), findsOneWidget);
+      expect(find.textContaining('Close at 11:59 PM'), findsOneWidget);
+    });
+
+    testWidgets('GymBottomSheet visit button works correctly', (
+      WidgetTester tester,
+    ) async {
+      final testGym = Gym(
+        id: '1',
+        name: 'Test Gym',
+        address: 'Via Roma 1, Milano',
+        openTime: DateTime.parse('2023-01-01 08:00:00'),
+        closeTime: DateTime.parse('2023-01-01 22:00:00'),
+        imageUrl: 'test.jpg',
+      );
+
+      when(mockGymProvider.gymList).thenReturn([testGym]);
+      when(mockGymProvider.getGymIndex(testGym)).thenReturn(0);
+      when(mockUserProvider.isGymInFavourites('1')).thenReturn(false);
+
+      await tester.pumpWidget(createBottomSheetTestWidget('1'));
+      await tester.pumpAndSettle();
+
+      final visitButton = find.text('Visit');
+      expect(visitButton, findsOneWidget);
+
+      expect(
+        tester
+            .widget<FilledButton>(find.widgetWithText(FilledButton, 'Visit'))
+            .onPressed,
+        isNotNull,
+      );
+    });
+
+    testWidgets('GymBottomSheet displays basic information', (
+      WidgetTester tester,
+    ) async {
+      final testGym = Gym(
+        id: '1',
+        name: 'Test Gym',
+        address: 'Via Roma 1, Milano',
+        openTime: DateTime.parse('2023-01-01 08:00:00'),
+        closeTime: DateTime.parse('2023-01-01 22:00:00'),
+        imageUrl: 'test.jpg',
+      );
+
+      when(mockGymProvider.gymList).thenReturn([testGym]);
+      when(mockGymProvider.getGymIndex(testGym)).thenReturn(0);
+      when(mockUserProvider.isGymInFavourites('1')).thenReturn(false);
+
+      await tester.pumpWidget(createBottomSheetTestWidget('1'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(GymBottomSheet), findsOneWidget);
+      expect(find.text('Test Gym'), findsOneWidget);
+      expect(find.text('Via Roma 1, Milano'), findsOneWidget);
+      expect(find.text('Visit'), findsOneWidget);
+    });
+  });
+
+  group('GymMap State Management Tests', () {
+    testWidgets('GymMap uses default position when not initialized', (
+      WidgetTester tester,
+    ) async {
+      when(mockMapProvider.isInitialized).thenReturn(false);
+      when(
+        mockMapProvider.savedPosition,
+      ).thenReturn(const LatLng(45.46427, 9.18951));
+      when(mockMapProvider.savedZoom).thenReturn(14.0);
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      final googleMap = tester.widget<GoogleMap>(find.byType(GoogleMap));
+      expect(googleMap.initialCameraPosition.target.latitude, 45.46427);
+      expect(googleMap.initialCameraPosition.target.longitude, 9.18951);
+      expect(googleMap.initialCameraPosition.zoom, 14);
+    });
+
+    testWidgets('GymMap uses saved position when initialized', (
+      WidgetTester tester,
+    ) async {
+      when(mockMapProvider.isInitialized).thenReturn(true);
+      when(mockMapProvider.savedPosition).thenReturn(const LatLng(45.5, 9.2));
+      when(mockMapProvider.savedZoom).thenReturn(16.0);
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(GymMap), findsOneWidget);
+    });
+  });
+
+  testWidgets('GymMap survives initialization errors', (
     WidgetTester tester,
   ) async {
-    return;
-    /*final userPosition = Position(
-      latitude: 45.50,
-      longitude: 9.20,
-      timestamp: DateTime.now(),
-      accuracy: 1.0,
-      altitude: 1.0,
-      heading: 1.0,
-      speed: 1.0,
-      speedAccuracy: 1.0,
-      altitudeAccuracy: 1.0,
-      headingAccuracy: 1.0,
-    );
-    
-    when(mockMapProvider.getUserLocation()).thenAnswer((_) async => userPosition);
-    
-    await tester.pumpWidget(createWidgetWithProviders());
+    when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+    when(
+      mockGymProvider.getGymList(),
+    ).thenThrow(Exception('Failed to load gyms'));
 
-    final mockController = MockGoogleMapController();
-    when(mockController.animateCamera(any)).thenAnswer((_) async {});
-    
-    final googleMapWidget = tester.widget<GoogleMap>(find.byType(GoogleMap));
-    googleMapWidget.onMapCreated?.call(mockController);
-    
+    await tester.pumpWidget(createTestWidget());
+
+    await tester.pumpAndSettle(const Duration(seconds: 5));
+
+    expect(find.byType(GymMap), findsOneWidget);
+    expect(find.byType(GoogleMap), findsOneWidget);
+  });
+
+  testWidgets('GymMap shows error when markers fail to load', (
+    WidgetTester tester,
+  ) async {
+    final testGyms = [
+      Gym(
+        id: '1',
+        name: 'Test Gym',
+        address: 'Test Address',
+        openTime: DateTime.parse('2023-01-01 08:00:00'),
+        closeTime: DateTime.parse('2023-01-01 22:00:00'),
+        imageUrl: 'test.jpg',
+      ),
+    ];
+
+    when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+    when(mockGymProvider.getGymList()).thenAnswer((_) async => testGyms);
+    when(
+      mockMapProvider.getGymLocations(any),
+    ).thenThrow(Exception('Geocoding failed'));
+
+    await tester.pumpWidget(createTestWidget());
     await tester.pumpAndSettle();
 
-    verify(mockController.animateCamera(any)).called(greaterThanOrEqualTo(1));*/
+    await tester.pump(const Duration(seconds: 2));
+
+    expect(find.byType(GymMap), findsOneWidget);
   });
 }

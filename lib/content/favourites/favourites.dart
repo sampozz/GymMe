@@ -1,9 +1,9 @@
-import 'package:dima_project/content/custom_appbar.dart';
-import 'package:dima_project/content/home/gym/gym_card.dart';
-import 'package:dima_project/content/home/gym/gym_model.dart';
-import 'package:dima_project/content/home/gym/gym_page.dart';
-import 'package:dima_project/global_providers/gym_provider.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:gymme/content/custom_appbar.dart';
+import 'package:gymme/content/home/gym/gym_card.dart';
+import 'package:gymme/models/gym_model.dart';
+import 'package:gymme/content/home/gym/gym_page.dart';
+import 'package:gymme/providers/gym_provider.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,11 +12,15 @@ class Favourites extends StatelessWidget {
 
   /// Refreshes the gym list by fetching it from the provider
   Future<void> _onRefresh(BuildContext context) async {
-    await Provider.of<UserProvider>(context, listen: false).fetchUser();
-    await Provider.of<GymProvider>(context, listen: false).getGymList().timeout(
+    var userProvider = Provider.of<UserProvider>(context, listen: false);
+    var gymProvider = Provider.of<GymProvider>(context, listen: false);
+    var snackBar = ScaffoldMessenger.of(context);
+
+    await userProvider.fetchUser();
+    await gymProvider.getGymList().timeout(
       Duration(seconds: 5),
       onTimeout: () {
-        ScaffoldMessenger.of(context).showSnackBar(
+        snackBar.showSnackBar(
           const SnackBar(
             content: Text("Failed to refresh gyms"),
             duration: Duration(seconds: 2),
@@ -35,7 +39,6 @@ class Favourites extends StatelessWidget {
     List<Gym>? gymList,
     List<String>? favouriteGymsIds,
   ) {
-    // TODO: replace CircularProgressIndicator with shimmer effect https://docs.flutter.dev/cookbook/effects/shimmer-loading
     if (favouriteGymsIds == null || gymList == null) {
       return Center(child: CircularProgressIndicator());
     } else if (favouriteGymsIds.isEmpty) {
@@ -55,7 +58,7 @@ class Favourites extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),
@@ -96,6 +99,7 @@ class Favourites extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(user: userProvider.user),
       body: _buildBody(context, gymList, userProvider.user?.favouriteGyms),
+      backgroundColor: Colors.transparent,
     );
   }
 }

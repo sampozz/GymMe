@@ -1,7 +1,7 @@
-import 'package:dima_project/content/profile/subscription/new_subscription.dart';
-import 'package:dima_project/global_providers/screen_provider.dart';
-import 'package:dima_project/global_providers/user/user_model.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:gymme/content/profile/subscription/new_subscription.dart';
+import 'package:gymme/providers/screen_provider.dart';
+import 'package:gymme/models/user_model.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -9,7 +9,7 @@ class FetchSubscription extends StatefulWidget {
   const FetchSubscription({super.key});
 
   @override
-  _FetchSubscriptionState createState() => _FetchSubscriptionState();
+  State<FetchSubscription> createState() => _FetchSubscriptionState();
 }
 
 class _FetchSubscriptionState extends State<FetchSubscription> {
@@ -30,14 +30,10 @@ class _FetchSubscriptionState extends State<FetchSubscription> {
   }
 
   Future<void> _loadUsers() async {
-    try {
-      _userList = await _userProvider.getUserList();
-      setState(() {
-        _filteredUserList = _userList;
-      });
-    } catch (e) {
-      print('Error loading users: $e');
-    }
+    _userList = await _userProvider.getUserList();
+    setState(() {
+      _filteredUserList = _userList;
+    });
   }
 
   @override
@@ -115,11 +111,8 @@ class _FetchSubscriptionState extends State<FetchSubscription> {
               );
             },
             borderRadius: BorderRadius.circular(12.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12.0),
-              ),
+            child: Card(
+              elevation: 0,
               child: ListTile(
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: 16.0,
@@ -129,7 +122,7 @@ class _FetchSubscriptionState extends State<FetchSubscription> {
                   radius: 35,
                   child: ClipOval(
                     child: Image.network(
-                      user?.photoURL ?? '',
+                      user.photoURL,
                       fit: BoxFit.cover,
                       errorBuilder: (_, _, _) {
                         return Image.asset(
@@ -198,7 +191,11 @@ class _FetchSubscriptionState extends State<FetchSubscription> {
   Widget build(BuildContext context) {
     _useMobileLayout = context.watch<ScreenProvider>().useMobileLayout;
     return Scaffold(
-      appBar: AppBar(title: Text('Members')),
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text('Members'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

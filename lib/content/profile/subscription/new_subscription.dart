@@ -1,22 +1,20 @@
-import 'package:dima_project/content/profile/subscription/subscription_model.dart';
-import 'package:dima_project/global_providers/user/user_model.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:gymme/models/subscription_model.dart';
+import 'package:gymme/models/user_model.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class NewSubscription extends StatefulWidget {
-  User? user;
-  NewSubscription({super.key, required this.user});
+  final User? user;
+  const NewSubscription({super.key, required this.user});
 
   @override
-  _NewSubscriptionState createState() => _NewSubscriptionState(user: user);
+  State<NewSubscription> createState() => _NewSubscriptionState();
 }
 
 class _NewSubscriptionState extends State<NewSubscription>
     with SingleTickerProviderStateMixin {
-  User? user;
   final _formKey = GlobalKey<FormState>();
-  _NewSubscriptionState({this.user});
 
   late TabController _tabController;
   late int selectedDuration;
@@ -37,7 +35,7 @@ class _NewSubscriptionState extends State<NewSubscription>
       if (!_tabController.indexIsChanging) {
         if (_tabController.index == 1) {
           setState(() {
-            medicalCertDate = user?.certificateExpDate;
+            medicalCertDate = widget.user?.certificateExpDate;
           });
         }
         setState(() {});
@@ -124,6 +122,7 @@ class _NewSubscriptionState extends State<NewSubscription>
 
   Future<void> _saveChanges() async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
+    var snackBar = ScaffoldMessenger.of(context);
 
     setState(() {
       _isSaving = true;
@@ -151,7 +150,7 @@ class _NewSubscriptionState extends State<NewSubscription>
         );
 
         // Update user data in provider and Firestore
-        await userProvider.addSubscription(user!, subscription);
+        await userProvider.addSubscription(widget.user!, subscription);
 
         titleCtrl.clear();
         descriptionCtrl.clear();
@@ -173,12 +172,12 @@ class _NewSubscriptionState extends State<NewSubscription>
 
         // Update the medical certificate date in Firestore
         await userProvider.updateMedicalCertificate(
-          user!.uid,
+          widget.user!.uid,
           medicalCertDate!,
         );
 
         // Uodate the user object in the provider
-        user!.certificateExpDate = medicalCertDate;
+        widget.user!.certificateExpDate = medicalCertDate;
       }
 
       setState(() {
@@ -186,7 +185,7 @@ class _NewSubscriptionState extends State<NewSubscription>
       });
 
       // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
+      snackBar.showSnackBar(
         SnackBar(
           content: Row(
             children: [
@@ -208,7 +207,7 @@ class _NewSubscriptionState extends State<NewSubscription>
       );
 
       // Return to previous page
-      if (context.mounted) {
+      if (mounted) {
         Navigator.pop(context);
       }
     } catch (e) {
@@ -216,7 +215,7 @@ class _NewSubscriptionState extends State<NewSubscription>
         _isSaving = false;
       });
       // Handle potential errors
-      ScaffoldMessenger.of(context).showSnackBar(
+      snackBar.showSnackBar(
         SnackBar(
           content: Text('There\'s been an issue during the update: $e'),
           backgroundColor: Colors.red,
@@ -228,7 +227,6 @@ class _NewSubscriptionState extends State<NewSubscription>
   Widget biuldDurationOptions() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Colors.grey.shade300),
       ),
@@ -307,7 +305,6 @@ class _NewSubscriptionState extends State<NewSubscription>
             // Title field
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey.shade50,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.grey.shade300),
               ),
@@ -327,7 +324,6 @@ class _NewSubscriptionState extends State<NewSubscription>
             // Description field
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey.shade50,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.grey.shade300),
               ),
@@ -366,7 +362,6 @@ class _NewSubscriptionState extends State<NewSubscription>
             // Price field
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey.shade50,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.grey.shade300),
               ),
@@ -489,7 +484,7 @@ class _NewSubscriptionState extends State<NewSubscription>
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: medicalCertDate != null ? Colors.black : Colors.grey,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],
@@ -531,7 +526,6 @@ class _NewSubscriptionState extends State<NewSubscription>
               width: double.infinity,
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.grey.shade50,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color:
@@ -584,7 +578,7 @@ class _NewSubscriptionState extends State<NewSubscription>
           radius: 40,
           child: ClipOval(
             child: Image.network(
-              user?.photoURL ?? '',
+              widget.user?.photoURL ?? '',
               fit: BoxFit.cover,
               errorBuilder: (_, _, _) {
                 return Image.asset('assets/avatar.png', fit: BoxFit.cover);
@@ -598,7 +592,9 @@ class _NewSubscriptionState extends State<NewSubscription>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                user != null ? user!.displayName : 'No User Selected',
+                widget.user != null
+                    ? widget.user!.displayName
+                    : 'No User Selected',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -606,7 +602,7 @@ class _NewSubscriptionState extends State<NewSubscription>
               ),
               SizedBox(height: 4),
               Text(
-                user != null ? user!.email : '',
+                widget.user != null ? widget.user!.email : '',
                 style: TextStyle(fontSize: 14, color: Colors.grey[600]),
               ),
             ],
@@ -619,7 +615,9 @@ class _NewSubscriptionState extends State<NewSubscription>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: const Text('User documents'),
         bottom: TabBar(
           controller: _tabController,
@@ -668,13 +666,12 @@ class _NewSubscriptionState extends State<NewSubscription>
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: Container(
-                      padding: EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12.0),
+                    child: Card(
+                      elevation: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: buildUserInfoBox(),
                       ),
-                      child: buildUserInfoBox(),
                     ),
                   ),
 

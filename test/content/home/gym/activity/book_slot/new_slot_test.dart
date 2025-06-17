@@ -1,6 +1,6 @@
-import 'package:dima_project/content/home/gym/activity/book_slot/new_slot.dart';
-import 'package:dima_project/content/home/gym/activity/book_slot/slot_model.dart';
-import 'package:dima_project/content/home/gym/activity/book_slot/slot_provider.dart';
+import 'package:gymme/content/home/gym/activity/slots/new_slot.dart';
+import 'package:gymme/models/slot_model.dart';
+import 'package:gymme/providers/slot_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';

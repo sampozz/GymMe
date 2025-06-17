@@ -1,4 +1,5 @@
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:gymme/providers/theme_provider.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:ui';
@@ -19,10 +20,14 @@ class CustomBottomNavBar extends StatelessWidget {
     this.navigatorKey,
   });
 
-  Widget _buildLoadingShimmer() {
+  Widget _buildLoadingShimmer(BuildContext context) {
+    final isDarkMode = context.watch<ThemeProvider>().isDarkMode;
+    var baseColor = isDarkMode ? Colors.grey[800]! : Colors.grey[300]!;
+    var highlightColor = isDarkMode ? Colors.grey[700]! : Colors.grey[100]!;
+
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
+      baseColor: baseColor,
+      highlightColor: highlightColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: List.generate(5, (index) {
@@ -55,11 +60,11 @@ class CustomBottomNavBar extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(200)),
               color: Theme.of(
                 context,
-              ).colorScheme.primaryContainer.withValues(alpha: 50),
+              ).colorScheme.inversePrimary.withValues(alpha: 80),
             ),
             child:
                 isLoading
-                    ? _buildLoadingShimmer()
+                    ? _buildLoadingShimmer(context)
                     : Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -125,7 +130,7 @@ class _NavBarItemState extends State<NavBarItem> {
                 color:
                     widget.isSelected || _isHovered
                         ? Theme.of(context).colorScheme.primary
-                        : Theme.of(context).colorScheme.onSecondary,
+                        : Theme.of(context).colorScheme.onPrimaryContainer,
               ),
               widget.isSelected
                   ? Text(

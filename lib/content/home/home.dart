@@ -1,16 +1,17 @@
-import 'package:dima_project/content/bookings/booking_model.dart';
-import 'package:dima_project/content/bookings/bookings_provider.dart';
-import 'package:dima_project/content/bookings/widgets/booking_card.dart';
-import 'package:dima_project/content/custom_appbar.dart';
-import 'package:dima_project/content/home/gym/gym_model.dart';
-import 'package:dima_project/content/home/gym/gym_page.dart';
-import 'package:dima_project/content/home/gym/new_gym.dart';
-import 'package:dima_project/content/home/home_loading.dart';
-import 'package:dima_project/global_providers/gym_provider.dart';
-import 'package:dima_project/content/home/gym/gym_card.dart';
-import 'package:dima_project/global_providers/screen_provider.dart';
-import 'package:dima_project/global_providers/user/user_model.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:gymme/content/map/gym_map.dart';
+import 'package:gymme/models/booking_model.dart';
+import 'package:gymme/providers/bookings_provider.dart';
+import 'package:gymme/content/bookings/booking_card.dart';
+import 'package:gymme/content/custom_appbar.dart';
+import 'package:gymme/models/gym_model.dart';
+import 'package:gymme/content/home/gym/gym_page.dart';
+import 'package:gymme/content/home/gym/new_gym.dart';
+import 'package:gymme/content/home/home_loading.dart';
+import 'package:gymme/providers/gym_provider.dart';
+import 'package:gymme/content/home/gym/gym_card.dart';
+import 'package:gymme/providers/screen_provider.dart';
+import 'package:gymme/models/user_model.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -76,6 +77,13 @@ class _HomeState extends State<Home> {
 
   /// Refreshes the gym list by fetching it from the provider
   Future<void> _onRefresh() async {
+    var snackBar = ScaffoldMessenger.of(context);
+    var theme = Theme.of(context);
+    var bookingsProvider = Provider.of<BookingsProvider>(
+      context,
+      listen: false,
+    );
+
     // Get gym list
     final list = await Provider.of<GymProvider>(
       context,
@@ -83,10 +91,10 @@ class _HomeState extends State<Home> {
     ).getGymList().timeout(
       Duration(seconds: 5),
       onTimeout: () {
-        ScaffoldMessenger.of(context).showSnackBar(
+        snackBar.showSnackBar(
           SnackBar(
             content: Text('Failed to refresh gym list'),
-            backgroundColor: Colors.red,
+            backgroundColor: theme.colorScheme.error,
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -98,11 +106,7 @@ class _HomeState extends State<Home> {
       _filteredGymList = list;
     });
 
-    final value =
-        await Provider.of<BookingsProvider>(
-          context,
-          listen: false,
-        ).getTodaysBookings();
+    final value = await bookingsProvider.getTodaysBookings();
 
     setState(() {
       _todaysBookings = value;
@@ -136,7 +140,7 @@ class _HomeState extends State<Home> {
         child: Text(
           title,
           style: TextStyle(
-            color: Colors.black,
+            color: Theme.of(context).colorScheme.onSurface,
             fontSize: 24.0,
             fontWeight: FontWeight.bold,
           ),
@@ -149,6 +153,9 @@ class _HomeState extends State<Home> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0),
       child: SearchBar(
+        backgroundColor: WidgetStatePropertyAll<Color>(
+          Theme.of(context).colorScheme.surfaceContainerLow,
+        ),
         hintText: 'Search for a gym...',
         controller: _controller,
         trailing:
@@ -167,8 +174,17 @@ class _HomeState extends State<Home> {
         ),
         leading: const Icon(Icons.search),
         elevation: WidgetStateProperty.all(0),
+        overlayColor: WidgetStatePropertyAll<Color>(Colors.transparent),
+        surfaceTintColor: WidgetStatePropertyAll<Color>(Colors.transparent),
+        shadowColor: WidgetStatePropertyAll<Color>(Colors.transparent),
         hintStyle: WidgetStatePropertyAll<TextStyle>(
-          TextStyle(color: Colors.grey.shade400, fontStyle: FontStyle.italic),
+          TextStyle(
+            color: Theme.of(context).colorScheme.outlineVariant,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+        textStyle: WidgetStatePropertyAll<TextStyle>(
+          TextStyle(color: Theme.of(context).colorScheme.onSurface),
         ),
       ),
     );
@@ -185,12 +201,12 @@ class _HomeState extends State<Home> {
                 horizontal: 20.0,
                 vertical: 10.0,
               ),
-              backgroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             ),
             child: Text(
               'Add a new gym',
               style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimary,
+                color: Theme.of(context).colorScheme.primary,
                 fontSize: 16.0,
               ),
             ),
@@ -336,7 +352,10 @@ class _HomeState extends State<Home> {
                     onGenerateRoute:
                         (settings) => MaterialPageRoute(
                           builder:
-                              (context) => Center(child: Text('Select a gym')),
+                              (context) => ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: GymMap(isHomePage: true),
+                              ),
                         ),
                   ),
                 ),
@@ -361,7 +380,7 @@ class _HomeState extends State<Home> {
 
     // TODO: sort the gym list by distance
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
       appBar: _useMobileLayout ? CustomAppBar(user: _user) : null,
       body: RefreshIndicator(
         backgroundColor: Theme.of(context).colorScheme.primary,

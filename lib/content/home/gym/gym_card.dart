@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:dima_project/content/home/gym/gym_model.dart';
-import 'package:dima_project/global_providers/gym_provider.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:gymme/models/gym_model.dart';
+import 'package:gymme/providers/gym_provider.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -56,13 +56,14 @@ class GymCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Card(
+          color: Theme.of(context).colorScheme.surfaceContainerLow,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
             side: BorderSide(
               color:
                   isSelected
-                      ? Theme.of(context).colorScheme.primary
+                      ? Theme.of(context).colorScheme.tertiary
                       : Colors.transparent,
               width: 2.0,
             ),
@@ -109,10 +110,7 @@ class GymCard extends StatelessWidget {
                       child: IconButton(
                         icon: Icon(
                           isFavourite ? Icons.favorite : Icons.favorite_border,
-                          color:
-                              isFavourite
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Colors.grey,
+                          color: isFavourite ? Color(0xFFFB5C1C) : Colors.grey,
                           size: 20,
                         ),
                         onPressed: () => _onFavoriteIconTap(context, gym.id!),

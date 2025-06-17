@@ -1,5 +1,5 @@
-import 'package:dima_project/global_providers/user/user_model.dart';
-import 'package:dima_project/global_providers/user/user_provider.dart';
+import 'package:gymme/models/user_model.dart';
+import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -21,10 +21,13 @@ class CustomSidebar extends StatelessWidget {
   });
 
   Widget _buildHeader(BuildContext context) {
-    return SizedBox(
-      height: 100,
-      width: double.infinity,
-      child: Center(child: Image.asset('assets/logo_light.png', width: 200)),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 30),
+      child: SizedBox(
+        height: 100,
+        width: double.infinity,
+        child: Center(child: Image.asset('assets/logo_dark.png', width: 200)),
+      ),
     );
   }
 
@@ -35,7 +38,7 @@ class CustomSidebar extends StatelessWidget {
       child: Text(
         'Pages',
         style: TextStyle(
-          color: Colors.white54,
+          color: Theme.of(context).colorScheme.onPrimaryContainer,
           fontSize: 14,
           fontWeight: FontWeight.bold,
           decoration: TextDecoration.none,
@@ -211,7 +214,7 @@ class CustomSidebar extends StatelessWidget {
         width: 250,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20)),
-          color: Theme.of(context).colorScheme.primary,
+          color: Theme.of(context).colorScheme.primaryContainer,
         ),
         child:
             isLoading
@@ -286,13 +289,19 @@ class _SidebarItemState extends State<SidebarItem> {
             children: [
               Icon(
                 widget.icon,
-                color: widget.isSelected ? Colors.white : Colors.white70,
+                color:
+                    widget.isSelected
+                        ? Colors.white
+                        : Theme.of(context).colorScheme.onPrimaryContainer,
               ),
               SizedBox(width: 15),
               Text(
                 widget.title,
                 style: TextStyle(
-                  color: widget.isSelected ? Colors.white : Colors.white70,
+                  color:
+                      widget.isSelected
+                          ? Colors.white
+                          : Theme.of(context).colorScheme.onPrimaryContainer,
                   fontSize: 16,
                   decoration: TextDecoration.none,
                 ),
