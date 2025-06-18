@@ -239,7 +239,9 @@ void main() {
       when(mockUserProvider.hasListeners).thenReturn(false);
       when(mockUserProvider.addListener(any)).thenAnswer((_) {});
       when(mockUserProvider.removeListener(any)).thenAnswer((_) {});
-      when(mockUserProvider.fetchUser()).thenAnswer((_) async {});
+      when(
+        mockUserProvider.fetchUser(),
+      ).thenAnswer((_) async => userWithoutSubscriptions);
 
       await tester.pumpWidget(
         ChangeNotifierProvider<UserProvider>.value(
@@ -271,7 +273,7 @@ void main() {
     testWidgets(
       'should refresh subscriptions when pulled down and show success message after successful refresh',
       (WidgetTester tester) async {
-        when(mockUserProvider.fetchUser()).thenAnswer((_) async {});
+        when(mockUserProvider.fetchUser()).thenAnswer((_) async => testUser);
         await tester.pumpWidget(createTestWidget());
 
         await tester.fling(find.byType(RefreshIndicator), Offset(0, 300), 1000);
@@ -342,7 +344,9 @@ void main() {
       when(mockUserProvider.hasListeners).thenReturn(false);
       when(mockUserProvider.addListener(any)).thenAnswer((_) {});
       when(mockUserProvider.removeListener(any)).thenAnswer((_) {});
-      when(mockUserProvider.fetchUser()).thenAnswer((_) async {});
+      when(
+        mockUserProvider.fetchUser(),
+      ).thenAnswer((_) async => userWithNullDates);
 
       await tester.pumpWidget(
         ChangeNotifierProvider<UserProvider>.value(
@@ -382,13 +386,17 @@ void main() {
               )
               .length;
 
+      expect(find.text('Show details'), findsNWidgets(validSubscriptions));
       expect(find.text('PREMIUM PLAN'), findsOneWidget);
       expect(find.text('MONTHLY PLAN'), findsOneWidget);
 
       await tester.tap(find.text('Expired'));
       await tester.pumpAndSettle();
 
+      final expiredSubscriptions =
+          testSubscriptions.length - validSubscriptions;
       expect(find.text('BASIC PLAN'), findsOneWidget);
+      expect(find.text('Show details'), findsNWidgets(expiredSubscriptions));
     });
   });
 }
