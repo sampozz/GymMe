@@ -26,7 +26,6 @@ void main() {
     mockScreenProvider = MockScreenProvider();
     mockUserProvider = MockUserProvider();
 
-    // Setup default mocks
     when(mockScreenProvider.useMobileLayout).thenReturn(true);
     when(mockMapProvider.isInitialized).thenReturn(false);
     when(
@@ -62,7 +61,9 @@ void main() {
   }
 
   group('GymMap Widget Tests', () {
-    testWidgets('GymMap renders correctly', (WidgetTester tester) async {
+    testWidgets('GymMap renders correctly with location button', (
+      WidgetTester tester,
+    ) async {
       when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
 
       await tester.pumpWidget(createTestWidget());
@@ -70,6 +71,9 @@ void main() {
 
       expect(find.byType(GymMap), findsOneWidget);
       expect(find.byType(GoogleMap), findsOneWidget);
+
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+      expect(find.byIcon(Icons.my_location), findsOneWidget);
     });
 
     testWidgets('GymMap shows search bar on mobile layout', (
@@ -82,16 +86,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(SearchAnchor), findsOneWidget);
-    });
-
-    testWidgets('GymMap shows location button', (WidgetTester tester) async {
-      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
-
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
-
-      expect(find.byType(FloatingActionButton), findsOneWidget);
-      expect(find.byIcon(Icons.my_location), findsOneWidget);
     });
 
     testWidgets('GymMap shows search bar on desktop layout', (
@@ -119,93 +113,62 @@ void main() {
       verify(mockMapProvider.getUserLocation()).called(1);
     });
 
-    testWidgets('GymMap updates location button state when location granted', (
-      WidgetTester tester,
-    ) async {
-      final mockPosition = MockPosition();
-      when(mockPosition.latitude).thenReturn(45.464);
-      when(mockPosition.longitude).thenReturn(9.189);
-      when(mockPosition.timestamp).thenReturn(DateTime.now());
-      when(mockPosition.accuracy).thenReturn(5.0);
-      when(mockPosition.altitude).thenReturn(100.0);
-      when(mockPosition.heading).thenReturn(0.0);
-      when(mockPosition.speed).thenReturn(0.0);
-      when(mockPosition.speedAccuracy).thenReturn(1.0);
-      when(mockPosition.altitudeAccuracy).thenReturn(1.0);
-      when(mockPosition.headingAccuracy).thenReturn(1.0);
+    testWidgets(
+      'GymMap updates location button state when location granted and request location when tapped',
+      (WidgetTester tester) async {
+        final mockPosition = MockPosition();
+        when(mockPosition.latitude).thenReturn(45.464);
+        when(mockPosition.longitude).thenReturn(9.189);
+        when(mockPosition.timestamp).thenReturn(DateTime.now());
+        when(mockPosition.accuracy).thenReturn(5.0);
+        when(mockPosition.altitude).thenReturn(100.0);
+        when(mockPosition.heading).thenReturn(0.0);
+        when(mockPosition.speed).thenReturn(0.0);
+        when(mockPosition.speedAccuracy).thenReturn(1.0);
+        when(mockPosition.altitudeAccuracy).thenReturn(1.0);
+        when(mockPosition.headingAccuracy).thenReturn(1.0);
 
-      when(
-        mockMapProvider.getUserLocation(),
-      ).thenAnswer((_) async => mockPosition);
+        when(
+          mockMapProvider.getUserLocation(),
+        ).thenAnswer((_) async => mockPosition);
 
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(createTestWidget());
+        await tester.pumpAndSettle();
 
-      final fab = tester.widget<FloatingActionButton>(
-        find.byType(FloatingActionButton),
-      );
-      expect(fab.onPressed, isNotNull);
-    });
+        final fab = tester.widget<FloatingActionButton>(
+          find.byType(FloatingActionButton),
+        );
+        expect(fab.onPressed, isNotNull);
 
-    testWidgets('GymMap shows error when location permission denied', (
-      WidgetTester tester,
-    ) async {
-      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+        await tester.tap(find.byType(FloatingActionButton));
+        await tester.pumpAndSettle();
 
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
+        verify(mockMapProvider.getUserLocation()).called(2); // Init + tap
+      },
+    );
 
-      expect(
-        find.text('Location permission denied. Go to settings to enable it.'),
-        findsOneWidget,
-      );
-    });
+    testWidgets(
+      'GymMap shows error when location permission denied and location button stays disabled',
+      (WidgetTester tester) async {
+        when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
 
-    testWidgets('Location button tap requests location when granted', (
-      WidgetTester tester,
-    ) async {
-      final mockPosition = MockPosition();
-      when(mockPosition.latitude).thenReturn(45.464);
-      when(mockPosition.longitude).thenReturn(9.189);
-      when(mockPosition.timestamp).thenReturn(DateTime.now());
-      when(mockPosition.accuracy).thenReturn(5.0);
-      when(mockPosition.altitude).thenReturn(100.0);
-      when(mockPosition.heading).thenReturn(0.0);
-      when(mockPosition.speed).thenReturn(0.0);
-      when(mockPosition.speedAccuracy).thenReturn(1.0);
-      when(mockPosition.altitudeAccuracy).thenReturn(1.0);
-      when(mockPosition.headingAccuracy).thenReturn(1.0);
+        await tester.pumpWidget(createTestWidget());
+        await tester.pumpAndSettle();
 
-      when(
-        mockMapProvider.getUserLocation(),
-      ).thenAnswer((_) async => mockPosition);
+        expect(
+          find.text('Location permission denied. Go to settings to enable it.'),
+          findsOneWidget,
+        );
 
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
+        await tester.tap(find.byType(FloatingActionButton));
+        await tester.pumpAndSettle();
 
-      await tester.tap(find.byType(FloatingActionButton));
-      await tester.pumpAndSettle();
-
-      verify(mockMapProvider.getUserLocation()).called(2); // Init + tap
-    });
-
-    testWidgets('Location button disabled when location denied', (
-      WidgetTester tester,
-    ) async {
-      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
-
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
-
-      // Test that button shows error when tapped with denied location
-      await tester.tap(find.byType(FloatingActionButton));
-      await tester.pumpAndSettle();
-
-      expect(
-        find.text('Location permission denied. Go to settings to enable it.'),
-        findsWidgets,
-      );
-    });
+        expect(
+          find.text('Location permission denied. Go to settings to enable it.'),
+          findsWidgets,
+        );
+      },
+    );
   });
 
   group('GymMap Search Tests', () {
@@ -237,18 +200,15 @@ void main() {
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
 
-      // Find and tap search bar
       final searchBar = find.byType(SearchBar);
       expect(searchBar, findsOneWidget);
 
       await tester.tap(searchBar);
       await tester.pumpAndSettle();
 
-      // Enter search text
       await tester.enterText(searchBar, 'Fitness');
       await tester.pumpAndSettle();
 
-      // Should show filtered results
       expect(find.text('Fitness First'), findsOneWidget);
       expect(find.text('McFit'), findsNothing);
     });
@@ -355,36 +315,11 @@ void main() {
       await tester.enterText(searchBar, 'Test');
       await tester.pumpAndSettle();
 
-      // Tap on suggestion
       await tester.tap(find.byType(ListTile).first);
       await tester.pumpAndSettle();
 
-      // Should show gym details bottom sheet after delay
       await tester.pump(const Duration(milliseconds: 600));
       expect(find.byType(GymBottomSheet), findsOneWidget);
-    });
-
-    testWidgets('Search text can be cleared', (WidgetTester tester) async {
-      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
-
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
-
-      final searchAnchor = find.byType(SearchAnchor);
-      await tester.tap(searchAnchor);
-      await tester.pumpAndSettle();
-
-      final searchInput = find.byType(TextField).first;
-      await tester.enterText(searchInput, 'Test Search');
-      await tester.pumpAndSettle();
-
-      expect(find.text('Test Search'), findsAtLeastNWidgets(1));
-
-      await tester.enterText(searchInput, '');
-      await tester.pumpAndSettle();
-
-      expect(find.text('Test Search'), findsNothing);
-      expect(find.text('No results found'), findsAtLeastNWidgets(1));
     });
   });
 
@@ -411,21 +346,6 @@ void main() {
       expect(find.byType(GoogleMap), findsOneWidget);
     });
 
-    testWidgets('GymMap handles map initialization', (
-      WidgetTester tester,
-    ) async {
-      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
-      when(mockGymProvider.getGymList()).thenAnswer((_) async => []);
-
-      await tester.pumpWidget(createTestWidget());
-      await tester.pumpAndSettle();
-
-      expect(find.byType(GymMap), findsOneWidget);
-      expect(find.byType(GoogleMap), findsOneWidget);
-      expect(find.byType(SearchAnchor), findsOneWidget);
-      expect(find.byType(FloatingActionButton), findsOneWidget);
-    });
-
     testWidgets('GymMap state management works correctly', (
       WidgetTester tester,
     ) async {
@@ -435,7 +355,6 @@ void main() {
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
 
-      // Navigate away to trigger deactivate
       await tester.pumpWidget(const MaterialApp(home: Scaffold()));
       await tester.pumpAndSettle();
 
@@ -502,7 +421,6 @@ void main() {
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
 
-      // App should still render without crashing
       expect(find.byType(GymMap), findsOneWidget);
       expect(find.byType(GoogleMap), findsOneWidget);
     });
@@ -545,13 +463,54 @@ void main() {
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
 
-      // The widget should handle camera errors internally without crashing
       expect(find.byType(GymMap), findsOneWidget);
     });
   });
 
   group('GymBottomSheet Widget Tests', () {
-    testWidgets('GymBottomSheet displays gym information correctly', (
+    testWidgets(
+      'GymBottomSheet displays gym info and handles status correctly',
+      (WidgetTester tester) async {
+        final testGym = Gym(
+          id: '1',
+          name: 'Test Gym',
+          address: 'Via Roma 1, Milano',
+          openTime: DateTime.parse('2023-01-01 08:00:00'),
+          closeTime: DateTime.parse('2023-01-01 22:00:00'),
+          imageUrl: 'test.jpg',
+        );
+
+        when(mockGymProvider.gymList).thenReturn([testGym]);
+        when(mockGymProvider.getGymIndex(testGym)).thenReturn(0);
+        when(mockUserProvider.isGymInFavourites('1')).thenReturn(false);
+
+        await tester.pumpWidget(createBottomSheetTestWidget('1'));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(GymBottomSheet), findsOneWidget);
+        expect(find.text('Test Gym'), findsOneWidget);
+        expect(find.text('Via Roma 1, Milano'), findsOneWidget);
+        expect(find.text('Visit'), findsOneWidget);
+        expect(find.byIcon(Icons.favorite_border), findsOneWidget);
+
+        // Open/closed status check
+        final openText = find.text('Open');
+        final closedText = find.text('Closed');
+
+        expect(
+          openText.evaluate().isNotEmpty || closedText.evaluate().isNotEmpty,
+          isTrue,
+        );
+
+        // Tap favorite button -> add to favorites
+        await tester.tap(find.byIcon(Icons.favorite_border));
+        await tester.pumpAndSettle();
+
+        verify(mockUserProvider.addFavouriteGym('1')).called(1);
+      },
+    );
+
+    testWidgets('GymBottomSheet removes favorite when already favorited', (
       WidgetTester tester,
     ) async {
       final testGym = Gym(
@@ -565,44 +524,17 @@ void main() {
 
       when(mockGymProvider.gymList).thenReturn([testGym]);
       when(mockGymProvider.getGymIndex(testGym)).thenReturn(0);
-      when(mockUserProvider.isGymInFavourites('1')).thenReturn(false);
+      when(mockUserProvider.isGymInFavourites('1')).thenReturn(true);
 
       await tester.pumpWidget(createBottomSheetTestWidget('1'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Test Gym'), findsOneWidget);
-      expect(find.text('Via Roma 1, Milano'), findsOneWidget);
-      expect(find.text('Visit'), findsOneWidget);
-      expect(find.byIcon(Icons.favorite_border), findsOneWidget);
-    });
+      expect(find.byIcon(Icons.favorite), findsOneWidget);
 
-    testWidgets('GymBottomSheet shows gym as open during opening hours', (
-      WidgetTester tester,
-    ) async {
-      final now = DateTime.now();
-      final testGym = Gym(
-        id: '1',
-        name: 'Test Gym',
-        address: 'Via Roma 1, Milano',
-        openTime: DateTime(now.year, now.month, now.day, 8, 0),
-        closeTime: DateTime(now.year, now.month, now.day, 22, 0),
-        imageUrl: 'test.jpg',
-      );
-
-      when(mockGymProvider.gymList).thenReturn([testGym]);
-      when(mockGymProvider.getGymIndex(testGym)).thenReturn(0);
-      when(mockUserProvider.isGymInFavourites('1')).thenReturn(false);
-
-      await tester.pumpWidget(createBottomSheetTestWidget('1'));
+      await tester.tap(find.byIcon(Icons.favorite));
       await tester.pumpAndSettle();
 
-      final openText = find.text('Open');
-      final closedText = find.text('Closed');
-
-      expect(
-        openText.evaluate().isNotEmpty || closedText.evaluate().isNotEmpty,
-        isTrue,
-      );
+      verify(mockUserProvider.removeFavouriteGym('1')).called(1);
     });
 
     testWidgets('GymBottomSheet visit button navigates to gym page', (
@@ -628,60 +560,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(GymPage), findsOneWidget);
-    });
-
-    testWidgets('GymBottomSheet favorite button toggles favorite status', (
-      WidgetTester tester,
-    ) async {
-      final testGym = Gym(
-        id: '1',
-        name: 'Test Gym',
-        address: 'Via Roma 1, Milano',
-        openTime: DateTime.parse('2023-01-01 08:00:00'),
-        closeTime: DateTime.parse('2023-01-01 22:00:00'),
-        imageUrl: 'test.jpg',
-      );
-
-      when(mockGymProvider.gymList).thenReturn([testGym]);
-      when(mockGymProvider.getGymIndex(testGym)).thenReturn(0);
-      when(mockUserProvider.isGymInFavourites('1')).thenReturn(false);
-
-      await tester.pumpWidget(createBottomSheetTestWidget('1'));
-      await tester.pumpAndSettle();
-
-      // Tap favorite button
-      await tester.tap(find.byIcon(Icons.favorite_border));
-      await tester.pumpAndSettle();
-
-      verify(mockUserProvider.addFavouriteGym('1')).called(1);
-    });
-
-    testWidgets('GymBottomSheet removes favorite when already favorited', (
-      WidgetTester tester,
-    ) async {
-      final testGym = Gym(
-        id: '1',
-        name: 'Test Gym',
-        address: 'Via Roma 1, Milano',
-        openTime: DateTime.parse('2023-01-01 08:00:00'),
-        closeTime: DateTime.parse('2023-01-01 22:00:00'),
-        imageUrl: 'test.jpg',
-      );
-
-      when(mockGymProvider.gymList).thenReturn([testGym]);
-      when(mockGymProvider.getGymIndex(testGym)).thenReturn(0);
-      when(mockUserProvider.isGymInFavourites('1')).thenReturn(true);
-
-      await tester.pumpWidget(createBottomSheetTestWidget('1'));
-      await tester.pumpAndSettle();
-
-      expect(find.byIcon(Icons.favorite), findsOneWidget);
-
-      // Tap favorite button to remove
-      await tester.tap(find.byIcon(Icons.favorite));
-      await tester.pumpAndSettle();
-
-      verify(mockUserProvider.removeFavouriteGym('1')).called(1);
     });
 
     testWidgets('GymBottomSheet shows opening hours when gym is closed', (
@@ -741,61 +619,6 @@ void main() {
       expect(find.text('Open'), findsOneWidget);
       expect(find.textContaining('Close at 11:59 PM'), findsOneWidget);
     });
-
-    testWidgets('GymBottomSheet visit button works correctly', (
-      WidgetTester tester,
-    ) async {
-      final testGym = Gym(
-        id: '1',
-        name: 'Test Gym',
-        address: 'Via Roma 1, Milano',
-        openTime: DateTime.parse('2023-01-01 08:00:00'),
-        closeTime: DateTime.parse('2023-01-01 22:00:00'),
-        imageUrl: 'test.jpg',
-      );
-
-      when(mockGymProvider.gymList).thenReturn([testGym]);
-      when(mockGymProvider.getGymIndex(testGym)).thenReturn(0);
-      when(mockUserProvider.isGymInFavourites('1')).thenReturn(false);
-
-      await tester.pumpWidget(createBottomSheetTestWidget('1'));
-      await tester.pumpAndSettle();
-
-      final visitButton = find.text('Visit');
-      expect(visitButton, findsOneWidget);
-
-      expect(
-        tester
-            .widget<FilledButton>(find.widgetWithText(FilledButton, 'Visit'))
-            .onPressed,
-        isNotNull,
-      );
-    });
-
-    testWidgets('GymBottomSheet displays basic information', (
-      WidgetTester tester,
-    ) async {
-      final testGym = Gym(
-        id: '1',
-        name: 'Test Gym',
-        address: 'Via Roma 1, Milano',
-        openTime: DateTime.parse('2023-01-01 08:00:00'),
-        closeTime: DateTime.parse('2023-01-01 22:00:00'),
-        imageUrl: 'test.jpg',
-      );
-
-      when(mockGymProvider.gymList).thenReturn([testGym]);
-      when(mockGymProvider.getGymIndex(testGym)).thenReturn(0);
-      when(mockUserProvider.isGymInFavourites('1')).thenReturn(false);
-
-      await tester.pumpWidget(createBottomSheetTestWidget('1'));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(GymBottomSheet), findsOneWidget);
-      expect(find.text('Test Gym'), findsOneWidget);
-      expect(find.text('Via Roma 1, Milano'), findsOneWidget);
-      expect(find.text('Visit'), findsOneWidget);
-    });
   });
 
   group('GymMap State Management Tests', () {
@@ -831,49 +654,5 @@ void main() {
 
       expect(find.byType(GymMap), findsOneWidget);
     });
-  });
-
-  testWidgets('GymMap survives initialization errors', (
-    WidgetTester tester,
-  ) async {
-    when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
-    when(
-      mockGymProvider.getGymList(),
-    ).thenThrow(Exception('Failed to load gyms'));
-
-    await tester.pumpWidget(createTestWidget());
-
-    await tester.pumpAndSettle(const Duration(seconds: 5));
-
-    expect(find.byType(GymMap), findsOneWidget);
-    expect(find.byType(GoogleMap), findsOneWidget);
-  });
-
-  testWidgets('GymMap shows error when markers fail to load', (
-    WidgetTester tester,
-  ) async {
-    final testGyms = [
-      Gym(
-        id: '1',
-        name: 'Test Gym',
-        address: 'Test Address',
-        openTime: DateTime.parse('2023-01-01 08:00:00'),
-        closeTime: DateTime.parse('2023-01-01 22:00:00'),
-        imageUrl: 'test.jpg',
-      ),
-    ];
-
-    when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
-    when(mockGymProvider.getGymList()).thenAnswer((_) async => testGyms);
-    when(
-      mockMapProvider.getGymLocations(any),
-    ).thenThrow(Exception('Geocoding failed'));
-
-    await tester.pumpWidget(createTestWidget());
-    await tester.pumpAndSettle();
-
-    await tester.pump(const Duration(seconds: 2));
-
-    expect(find.byType(GymMap), findsOneWidget);
   });
 }

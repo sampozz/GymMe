@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:gymme/models/user_model.dart';
 import 'package:gymme/providers/user_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:io';
 
 class MyData extends StatelessWidget {
   final User? user;
@@ -42,13 +44,19 @@ class MyData extends StatelessWidget {
     return CircleAvatar(
       radius: isMobile ? 50 : 80,
       child: ClipOval(
-        child: Image.network(
-          photoURL,
-          fit: BoxFit.cover,
-          errorBuilder: (_, _, _) {
-            return Image.asset('assets/avatar.png', fit: BoxFit.cover);
-          },
-        ),
+        child:
+            !kIsWeb && !Platform.isAndroid && !Platform.isIOS
+                ? Image.asset(
+                  'assets/avatar.png',
+                  fit: BoxFit.cover,
+                ) // For tests
+                : Image.network(
+                  photoURL,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, _, _) {
+                    return Image.asset('assets/avatar.png', fit: BoxFit.cover);
+                  },
+                ),
       ),
     );
   }

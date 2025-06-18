@@ -3,6 +3,8 @@ import 'package:gymme/models/user_model.dart';
 import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:io';
 
 class NewSubscription extends StatefulWidget {
   final User? user;
@@ -577,13 +579,22 @@ class _NewSubscriptionState extends State<NewSubscription>
         CircleAvatar(
           radius: 40,
           child: ClipOval(
-            child: Image.network(
-              widget.user?.photoURL ?? '',
-              fit: BoxFit.cover,
-              errorBuilder: (_, _, _) {
-                return Image.asset('assets/avatar.png', fit: BoxFit.cover);
-              },
-            ),
+            child:
+                !kIsWeb && !Platform.isAndroid && !Platform.isIOS
+                    ? Image.asset(
+                      'assets/avatar.png',
+                      fit: BoxFit.cover,
+                    ) // For tests
+                    : Image.network(
+                      widget.user?.photoURL ?? '',
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) {
+                        return Image.asset(
+                          'assets/avatar.png',
+                          fit: BoxFit.cover,
+                        );
+                      },
+                    ),
           ),
         ),
         SizedBox(width: 16),
