@@ -13,18 +13,21 @@ import 'package:gymme/providers/user_provider.dart';
 import 'package:gymme/models/gym_model.dart';
 import 'package:gymme/models/location_model.dart';
 import '../../provider_test.mocks.dart';
+import '../../service_test.mocks.dart';
 
 void main() {
   late MockMapProvider mockMapProvider;
   late MockGymProvider mockGymProvider;
   late MockScreenProvider mockScreenProvider;
   late MockUserProvider mockUserProvider;
+  late MockGoogleMapController mockGoogleMapController;
 
   setUp(() {
     mockMapProvider = MockMapProvider();
     mockGymProvider = MockGymProvider();
     mockScreenProvider = MockScreenProvider();
     mockUserProvider = MockUserProvider();
+    mockGoogleMapController = MockGoogleMapController();
 
     when(mockScreenProvider.useMobileLayout).thenReturn(true);
     when(mockMapProvider.isInitialized).thenReturn(false);
@@ -98,6 +101,52 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(SearchAnchor), findsOneWidget);
+    });
+
+    testWidgets('GymMap handles camera movement correctly', (
+      WidgetTester tester,
+    ) async {
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+      when(mockGymProvider.getGymList()).thenAnswer((_) async => []);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      final googleMap = tester.widget<GoogleMap>(find.byType(GoogleMap));
+
+      // Simulate camera movement
+      const newPosition = CameraPosition(target: LatLng(45.5, 9.2), zoom: 15.0);
+
+      googleMap.onCameraMove!(newPosition);
+      await tester.pump();
+
+      expect(find.byType(GymMap), findsOneWidget);
+    });
+
+    testWidgets('GymMap hides search bar when isHomePage is true', (
+      WidgetTester tester,
+    ) async {
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+      when(mockScreenProvider.useMobileLayout).thenReturn(false);
+
+      await tester.pumpWidget(
+        MultiProvider(
+          providers: [
+            ChangeNotifierProvider<MapProvider>.value(value: mockMapProvider),
+            ChangeNotifierProvider<GymProvider>.value(value: mockGymProvider),
+            ChangeNotifierProvider<ScreenProvider>.value(
+              value: mockScreenProvider,
+            ),
+            ChangeNotifierProvider<UserProvider>.value(value: mockUserProvider),
+          ],
+          child: const MaterialApp(
+            home: Scaffold(body: GymMap(isHomePage: true)),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SearchAnchor), findsNothing);
     });
   });
 
@@ -232,8 +281,23 @@ void main() {
       expect(find.text('No results found'), findsOneWidget);
     });
 
-    testWidgets('Clear button clears search', (WidgetTester tester) async {
+    testWidgets('Clear button clears search text and resets results', (
+      WidgetTester tester,
+    ) async {
+      final testGyms = [
+        Gym(
+          id: '1',
+          name: 'Test Gym',
+          address: 'Test Address',
+          openTime: DateTime.parse('2023-01-01 08:00:00'),
+          closeTime: DateTime.parse('2023-01-01 22:00:00'),
+          imageUrl: 'test.jpg',
+        ),
+      ];
+
       when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+      when(mockGymProvider.getGymList()).thenAnswer((_) async => testGyms);
+      when(mockGymProvider.gymList).thenReturn(testGyms);
 
       await tester.pumpWidget(createTestWidget());
       await tester.pumpAndSettle();
@@ -243,17 +307,19 @@ void main() {
       await tester.pumpAndSettle();
 
       final searchField = find.byType(TextField).first;
-
       await tester.enterText(searchField, 'Test');
       await tester.pumpAndSettle();
 
-      expect(find.textContaining('Test'), findsWidgets);
+      final clearButton = find.byIcon(Icons.clear);
+      expect(clearButton, findsOneWidget);
 
-      await tester.enterText(searchField, '');
+      await tester.ensureVisible(clearButton);
       await tester.pumpAndSettle();
 
-      expect(find.text('Test'), findsNothing);
-      expect(find.textContaining('No results found'), findsWidgets);
+      await tester.tap(clearButton, warnIfMissed: false);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Search for gyms or locations...'), findsOneWidget);
     });
 
     testWidgets('Search filters by address as well as name', (
@@ -425,6 +491,47 @@ void main() {
       expect(find.byType(GoogleMap), findsOneWidget);
     });
 
+    testWidgets('GymMap handles map creation exceptions', (
+      WidgetTester tester,
+    ) async {
+      final testGyms = [
+        Gym(
+          id: '1',
+          name: 'Test Gym',
+          address: 'Test Address',
+          openTime: DateTime.parse('2023-01-01 08:00:00'),
+          closeTime: DateTime.parse('2023-01-01 22:00:00'),
+          imageUrl: 'test.jpg',
+        ),
+      ];
+
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+      when(mockGymProvider.getGymList()).thenAnswer((_) async => testGyms);
+      when(
+        mockMapProvider.getGymLocations(any),
+      ).thenThrow(Exception('Geocoding error'));
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      final googleMap = tester.widget<GoogleMap>(find.byType(GoogleMap));
+
+      if (googleMap.onMapCreated != null) {
+        googleMap.onMapCreated!(mockGoogleMapController);
+        await tester.pumpAndSettle();
+        await tester.pump(const Duration(milliseconds: 100));
+      }
+
+      expect(tester.takeException(), isNull);
+
+      verify(mockMapProvider.getGymLocations(any)).called(1);
+
+      expect(find.byType(GymMap), findsOneWidget);
+      expect(find.byType(GoogleMap), findsOneWidget);
+
+      expect(find.byType(SnackBar), findsOneWidget);
+    });
+
     testWidgets('GymMap handles marker loading errors', (
       WidgetTester tester,
     ) async {
@@ -488,6 +595,7 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.byType(GymBottomSheet), findsOneWidget);
+        expect(find.byType(Image), findsOneWidget);
         expect(find.text('Test Gym'), findsOneWidget);
         expect(find.text('Via Roma 1, Milano'), findsOneWidget);
         expect(find.text('Visit'), findsOneWidget);
@@ -653,6 +761,28 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(GymMap), findsOneWidget);
+    });
+
+    testWidgets('GymMap properly saves state on deactivate', (
+      WidgetTester tester,
+    ) async {
+      when(mockMapProvider.getUserLocation()).thenAnswer((_) async => null);
+      when(mockGymProvider.getGymList()).thenAnswer((_) async => []);
+
+      await tester.pumpWidget(createTestWidget());
+      await tester.pumpAndSettle();
+
+      final googleMap = tester.widget<GoogleMap>(find.byType(GoogleMap));
+
+      if (googleMap.onMapCreated != null) {
+        googleMap.onMapCreated!(mockGoogleMapController);
+        await tester.pump();
+      }
+
+      await tester.pumpWidget(MaterialApp(home: Container()));
+      await tester.pumpAndSettle();
+
+      verify(mockMapProvider.saveMapState(any, any)).called(1);
     });
   });
 }
