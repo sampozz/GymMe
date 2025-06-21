@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:gymme/services/bookings_service.dart';
 import 'package:gymme/services/slot_service.dart';
 import 'package:gymme/services/gym_service.dart';
@@ -17,6 +19,7 @@ import 'package:mockito/annotations.dart';
   MockSpec<http.Client>(),
   MockSpec<MapService>(),
   MockSpec<GoogleMapController>(),
+  MockSpec<HttpClient>(),
 ])
 void main() {
   // Method to set up the test environment
