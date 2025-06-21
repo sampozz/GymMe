@@ -1,23 +1,29 @@
+import 'dart:convert';
+
 import 'package:gymme/models/booking_model.dart';
 import 'package:gymme/models/booking_update_model.dart';
 import 'package:gymme/services/bookings_service.dart';
 import 'package:gymme/models/slot_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 
 import '../firestore_test.mocks.dart';
+import '../service_test.mocks.dart';
 
 void main() {
   late BookingsService bookingsService;
   late FakeFirebaseFirestore fakeFirestore;
   late MockFirebaseAuth mockAuth;
+  late MockClient mockHttpClient;
 
   const String testUserId = 'test-user-id';
   final testUser = MockUser();
 
   setUp(() {
     fakeFirestore = FakeFirebaseFirestore();
+    mockHttpClient = MockClient();
     mockAuth = MockFirebaseAuth();
     when(testUser.uid).thenReturn(testUserId);
     when(mockAuth.currentUser).thenReturn(testUser);
@@ -151,6 +157,29 @@ void main() {
       expect(bookingSnapshot.exists, false);
     });
 
+    test(
+      'should make HTTP request with correct parameters and launch URL on success',
+      () async {
+        // Arrange
+        final booking = Booking(
+          id: 'booking123',
+          userId: 'user123',
+          slotId: 'slot123',
+          price: 25.50,
+        );
+
+        const expectedUrl = 'https://checkout.stripe.com/session123';
+        final responseBody = json.encode({'url': expectedUrl});
+
+        // Mock HTTP response
+        when(
+          mockHttpClient.get(any),
+        ).thenAnswer((_) async => http.Response(responseBody, 200));
+
+        expect(() => bookingsService.goToPayment(booking), returnsNormally);
+      },
+    );
+
     test('markUpdateAsRead updates booking update field', () async {
       // Arrange: Set up a test booking with an update
       final testBooking = Booking(
@@ -181,6 +210,31 @@ void main() {
 
       // You'll need to adapt this assertion based on your actual data structure
       expect(updatedBooking?['bookingUpdate'], isNotNull);
+    });
+
+    test('should update booking payment status to completed', () async {
+      // Arrange
+      const bookingId = 'booking123';
+
+      // Create a booking document in fake firestore
+      await fakeFirestore.collection('booking').doc(bookingId).set({
+        'id': bookingId,
+        'userId': 'user123',
+        'slotId': 'slot123',
+        'price': 25.50,
+        'paymentStatus': 'pending',
+        'bookingDate': DateTime.now().toIso8601String(),
+      });
+
+      // Act
+      await bookingsService.confirmPayment(bookingId);
+
+      // Assert
+      final updatedDoc =
+          await fakeFirestore.collection('booking').doc(bookingId).get();
+
+      expect(updatedDoc.exists, isTrue);
+      expect(updatedDoc.data()?['paymentStatus'], equals('completed'));
     });
   });
 }
