@@ -513,12 +513,18 @@ class _NewSubscriptionState extends State<NewSubscription>
                 OutlinedButton.icon(
                   onPressed: () => _selectDate(context),
                   icon: Icon(Icons.calendar_today_outlined, size: 18),
-                  label: Text('Select date', style: TextStyle(fontSize: 12)),
+                  label: Text(
+                    'Select date',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
                   style: OutlinedButton.styleFrom(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     minimumSize: Size(0, 36),
                     foregroundColor: Theme.of(context).primaryColor,
-                    side: BorderSide(color: Theme.of(context).primaryColor),
+                    side: BorderSide(color: Colors.grey.shade300),
                   ),
                 ),
               ],
@@ -529,12 +535,7 @@ class _NewSubscriptionState extends State<NewSubscription>
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color:
-                      medicalCertDate != null
-                          ? Theme.of(context).primaryColor
-                          : Colors.grey.shade300,
-                ),
+                border: Border.all(color: Colors.grey.shade300),
               ),
               child: buildDateSelectionBox(),
             ),
