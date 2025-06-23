@@ -365,7 +365,7 @@ void main() {
     test('getUserList should fetch and return user list', () async {
       // Arrange
       final userList = [testUser];
-      when(mockUserService.fetchUserList()).thenAnswer((_) async => userList);
+      when(mockUserService.fetchUsers()).thenAnswer((_) async => userList);
 
       // Act
       final result = await userProvider.getUserList();
@@ -378,15 +378,15 @@ void main() {
     test('userList getter should call getUserList when list is null', () async {
       // Arrange
       final userList = [testUser];
-      when(mockUserService.fetchUserList()).thenAnswer((_) async => userList);
+      when(mockUserService.fetchUsers()).thenAnswer((_) async => userList);
 
       // Act
       final result = userProvider.userList;
 
       // Assert
       expect(result, null); // Initially null before async operation completes
-      await untilCalled(mockUserService.fetchUserList());
-      verify(mockUserService.fetchUserList()).called(1);
+      await untilCalled(mockUserService.fetchUsers());
+      verify(mockUserService.fetchUsers()).called(1);
     });
 
     test('getUsersByIds should return filtered users', () async {
@@ -540,7 +540,7 @@ void main() {
       final userList = [testUser];
       final subscription = Subscription(gymId: 'gym1', price: 100.0);
 
-      when(mockUserService.fetchUserList()).thenAnswer((_) async => userList);
+      when(mockUserService.fetchUsers()).thenAnswer((_) async => userList);
       when(mockUserService.setSubscription(any)).thenAnswer((_) async {});
 
       // First get the user list

@@ -20,7 +20,7 @@ class UserProvider extends ChangeNotifier {
 
   /// Returns a list of User objects.
   Future<List<User>> getUserList() async {
-    var data = await _userService.fetchUserList();
+    var data = await _userService.fetchUsers();
     _userList = data;
     notifyListeners();
     return data;

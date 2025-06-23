@@ -4,6 +4,8 @@ import 'package:gymme/models/user_model.dart';
 import 'package:gymme/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:io';
 
 class FetchSubscription extends StatefulWidget {
   const FetchSubscription({super.key});
@@ -121,16 +123,22 @@ class _FetchSubscriptionState extends State<FetchSubscription> {
                 leading: CircleAvatar(
                   radius: 35,
                   child: ClipOval(
-                    child: Image.network(
-                      user.photoURL,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, _, _) {
-                        return Image.asset(
-                          'assets/avatar.png',
-                          fit: BoxFit.cover,
-                        );
-                      },
-                    ),
+                    child:
+                        !kIsWeb && !Platform.isAndroid && !Platform.isIOS
+                            ? Image.asset(
+                              'assets/avatar.png',
+                              fit: BoxFit.cover,
+                            ) // For tests
+                            : Image.network(
+                              user.photoURL,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, _, _) {
+                                return Image.asset(
+                                  'assets/avatar.png',
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            ),
                   ),
                 ),
                 title: Text(

@@ -1,13 +1,17 @@
+import 'dart:convert';
+
 import 'package:gymme/models/subscription_model.dart';
 import 'package:gymme/services/user_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:gymme/models/user_model.dart';
 
 import '../firestore_test.mocks.dart';
+import '../service_test.mocks.dart';
 
 class MockPlatformServiceCustom extends Mock implements PlatformService {
   @override
@@ -58,6 +62,7 @@ void main() {
   late MockPlatformServiceCustom mockPlatformService;
   late MockWebPlatformService mockWebPlatformService;
   late MockUser mockUser;
+  late MockClient mockHttpClient;
 
   setUp(() {
     mockFirebaseAuth = MockFirebaseAuth();
@@ -65,6 +70,7 @@ void main() {
     mockPlatformService = MockPlatformServiceCustom();
     mockWebPlatformService = MockWebPlatformService();
     mockUser = MockUser();
+    mockHttpClient = MockClient();
 
     // Mock the FirebaseAuth instance
     when(mockFirebaseAuth.currentUser).thenReturn(mockUser);
@@ -300,19 +306,54 @@ void main() {
         certificateExpDate: DateTime(2024, 6, 30),
       );
 
+      final thirdUser = User(
+        uid: 'user3',
+        email: 'user3@example.com',
+        displayName: 'User Three',
+        phoneNumber: '+1333222111',
+        address: '321 Third Ave',
+        taxCode: 'USER33333',
+        birthPlace: 'Third City',
+        birthDate: DateTime(1992, 7, 15),
+        favouriteGyms: ['gym1', 'gym4'],
+        subscriptions: [],
+        certificateExpDate: null,
+      );
+
       await fakeFirestore
           .collection('users')
           .doc(secondUser.uid)
           .set(secondUser.toFirestore());
 
+      await fakeFirestore
+          .collection('users')
+          .doc(thirdUser.uid)
+          .set(thirdUser.toFirestore());
+
       // Act
-      final users = await userService.fetchUserList();
+      final users = await userService.fetchUsers();
 
       // Assert
       expect(users, isNotEmpty);
-      expect(users.length, equals(2));
+      expect(users.length, equals(3));
+
+      // Verify all users are present
       expect(users.any((u) => u.uid == testUser.uid), isTrue);
       expect(users.any((u) => u.uid == secondUser.uid), isTrue);
+      expect(users.any((u) => u.uid == thirdUser.uid), isTrue);
+
+      // Verify user data is correctly mapped
+      final fetchedFirstUser = users.firstWhere((u) => u.uid == testUser.uid);
+      expect(fetchedFirstUser.email, equals(testUser.email));
+      expect(fetchedFirstUser.displayName, equals(testUser.displayName));
+      expect(fetchedFirstUser.phoneNumber, equals(testUser.phoneNumber));
+
+      final fetchedSecondUser = users.firstWhere(
+        (u) => u.uid == secondUser.uid,
+      );
+      expect(fetchedSecondUser.email, equals(secondUser.email));
+      expect(fetchedSecondUser.displayName, equals(secondUser.displayName));
+      expect(fetchedSecondUser.favouriteGyms, equals(secondUser.favouriteGyms));
     });
 
     test('updateUserFavourites should update favorite gyms', () async {
@@ -541,6 +582,42 @@ void main() {
       expect(updatedUser!.subscriptions, isNotEmpty);
       expect(updatedUser.subscriptions.length, equals(1));
       expect(updatedUser.subscriptions[0].price, equals(600.0));
+    });
+
+    test('uploadImage should return URL on successful upload', () async {
+      // Arrange
+      const testBase64Image =
+          'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==';
+      const expectedUrl = 'https://i.imgur.com/test123.png';
+
+      final mockResponse = http.Response(
+        json.encode({
+          'success': true,
+          'data': {'link': expectedUrl},
+        }),
+        200,
+      );
+
+      // Mock the HTTP request
+      when(mockHttpClient.send(any)).thenAnswer((_) async {
+        return http.StreamedResponse(
+          Stream.fromIterable([utf8.encode(mockResponse.body)]),
+          200,
+        );
+      });
+
+      UserService userService = UserService(
+        firebaseAuth: mockFirebaseAuth,
+        firebaseFirestore: fakeFirestore,
+        platformService: mockPlatformService,
+        httpClient: mockHttpClient,
+      );
+
+      // Act
+      final result = await userService.uploadImage(testBase64Image);
+
+      // Assert
+      expect(result, equals(expectedUrl));
     });
   });
 }

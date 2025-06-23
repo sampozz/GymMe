@@ -13,6 +13,7 @@ class PlatformService {
 
 class UserService {
   final PlatformService _platformService;
+  final http.Client _httpClient;
   auth.FirebaseAuth firebaseAuth;
   FirebaseFirestore firestore;
 
@@ -20,9 +21,11 @@ class UserService {
     auth.FirebaseAuth? firebaseAuth,
     FirebaseFirestore? firebaseFirestore,
     PlatformService? platformService,
+    http.Client? httpClient,
   }) : firebaseAuth = firebaseAuth ?? auth.FirebaseAuth.instance,
        firestore = firebaseFirestore ?? FirebaseFirestore.instance,
-       _platformService = platformService ?? PlatformService();
+       _platformService = platformService ?? PlatformService(),
+       _httpClient = httpClient ?? http.Client();
 
   /// This method will sign in the user with the provided email and password
   Future<auth.UserCredential?> signInWithEmailAndPassword(
@@ -77,23 +80,6 @@ class UserService {
   /// This method will sign out the user
   Future<void> signOut() async {
     await firebaseAuth.signOut();
-  }
-
-  /// This method will fetch all the user from Firestore
-  Future<List<User>> fetchUserList() async {
-    List<User> userList = [];
-    var usersRef =
-        await firestore
-            .collection('users')
-            .withConverter(
-              fromFirestore: User.fromFirestore,
-              toFirestore: (User user, options) => user.toFirestore(),
-            )
-            .get();
-    for (var doc in usersRef.docs) {
-      userList.add(doc.data());
-    }
-    return userList;
   }
 
   /// This method will fetch the user data from Firestore
@@ -208,7 +194,7 @@ class UserService {
     request.fields['type'] = 'base64';
     request.fields['image'] = base64Image;
 
-    final streamedResponse = await request.send();
+    final streamedResponse = await _httpClient.send(request);
     final response = await http.Response.fromStream(streamedResponse);
 
     final responseData = json.decode(response.body);
