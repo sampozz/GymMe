@@ -277,7 +277,7 @@ class _NewSlotState extends State<NewSlot> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         title: Text(widget.oldSlot == null ? 'Create new slot' : 'Edit slot'),
