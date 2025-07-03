@@ -326,8 +326,6 @@ class GymPage extends StatelessWidget {
           _buildHeader(gym),
           ..._buildActivityList(context, gym, user?.isAdmin ?? false),
           _buildInformationList(gym),
-          // TODO: add regolamento
-          // TODO: add prezziario
           ..._buildAdminActions(context, gym, user?.isAdmin ?? false),
         ],
       ),

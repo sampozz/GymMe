@@ -60,7 +60,7 @@ class CustomBottomNavBar extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(200)),
               color: Theme.of(
                 context,
-              ).colorScheme.inversePrimary.withValues(alpha: 80),
+              ).colorScheme.inversePrimary.withValues(alpha: 0.85),
             ),
             child:
                 isLoading

@@ -378,7 +378,6 @@ class _HomeState extends State<Home> {
       });
     });
 
-    // TODO: sort the gym list by distance
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
       appBar: _useMobileLayout ? CustomAppBar(user: _user) : null,

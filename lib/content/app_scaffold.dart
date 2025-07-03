@@ -113,8 +113,6 @@ class _AppScaffoldState extends State<AppScaffold> {
     screenProvider.screenData = MediaQuery.of(context);
     User? user = context.watch<UserProvider>().user;
 
-    // TODO: setup internationalization
-
     if (user?.isAdmin ?? false) {
       _createAdminPagesList();
     } else {
